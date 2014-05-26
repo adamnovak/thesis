@@ -126,6 +126,68 @@ Theses have elements.  Isn't that nice?
         
 \chapter{Background}
 
+% How bioinformatics in general works
+
+    % Download data
+    
+    % Analyze data
+    
+    % Already a huge pain with TCGA
+    
+        % Anyone who wants to work with the data needs a place to locally mirror it
+        
+        % And that place has to meet TCGA's exacting standards for data security and access control.
+        
+        % It would be much easier if TCGA could just do all the access control itself.
+        
+    % This is not going to be able to scale much bigger. Already it's very difficult for smaller labs to use these huge community data sets.
+
+% How genomics works
+
+     % We have The Human Reference Genome
+     
+     % This gives us a linear contig-base coordinate space
+     
+     % We map reads to and define genes on that coordinate space
+     
+        % And define "variation" as any deviation from that sequence
+     
+     % Everybody uses it, and when we update it everybody has to upgrade
+     
+        % All the coordinates change
+
+% HG38 changes
+
+    % Version jump
+    
+    % Lots of alt haplotypes
+    
+    % Plausible centromeres
+    
+% How variant analysis works
+
+    % Make big VCFs
+    
+    % Store all the records as version of a variant at a coordinate position.
+    
+    % Ignore the fact that people have alternate haplotypes
+    
+        % No way to specify or look up which haplotype a person has
+        
+        % Only some coordinate positions are defined for any given person, so some variants are nonsensical for some people.
+        
+    % The same variant can be called different ways depending on the aligner
+    
+    % And the same variant can be written in any of three different syntaxes
+
+        % Each of which results in completely different parser data structures available to analysis code
+        
+    % VCF creates complexity where it isn't and turns holes in the abstractions into pitfall traps for unwary bioinformaticists.
+    
+% So the old way of doing things is fraying around the edges
+
+
+
 \chapter{Preliminary Work}
 
 \section{Project \#1: Tumor Map Visualization}
