@@ -26,7 +26,7 @@
 
 % Declarations for Front Matter
 
-\title{The Elements of Theses}
+\title{Infrastructure for Scalable Analysis of Genomic Variation}
 \author{Adam M. Novak}
 \degreeyear{2014}
 \degreemonth{June}
@@ -64,17 +64,83 @@ Theses have elements.  Isn't that nice?
 
 \chapter{Introduction}
 
+% Biology only works at scale
+
+    % Scale in population and in time is what allows evolution to work
+    
+    % Scale produces drug resistance in bacteria
+    
+    % Scale produces cancer in healthy people
+    
+    % We won't be able to understand biology until we can match its scale
+
+% High throughput is along the wrong dimension (so far)
+    
+    % We have a lot of features of a few samples.
+    
+    % To some extent we can get by with clever algorithms and educated guesses as prior knowledge.
+
+% We need to be able to handle millions or even billions of samples if we want to be able to do biology just by looking.
+
+    % Cancer, for example, won't make sense until we do this
+    
+% We need to be able to do this with something not millions of times better than current computing hardware
+
+     % Because the transistors are now nearly as small as the stuff we're sequencing
+
+% We can't scale that big by pushing BAM files around.
+
+    % A billion 100-gig BAM files is 93 exabytes. That is too big to download.
+
+% 1 in a million things start to happen, and we need infrastructure to handle them
+    
+    % We need to handle overlapping variants
+    
+    % We can't just throw out the alternate haplotypes
+    
+    % Assuming that everyone is contiguous in reference genome coordinates is going to get us into trouble
+    
+    % We can't keep messing around with the reference coordinates because we can't keep re-mapping every single read ever read.
+    
+    % We'll want to look at important variation in repetitive areas, and we may not yet have long reads
+
+% So I'm going to build some stuff we will need in order to make this work
+    
+    % A non-linear coordinate system with stable base identifiers
+    
+    % A reference graph
+    
+        % Can capture more than just a single reference sequence
+        
+        % Reduce mapping bias
+        
+        % Probably less racist
+        
+    % A deterministic way to identify observed bases within that graph
+        
+    % A hierarchy of different versions of this graph with differing levels of specificity
+        
+        % Interlinked so you can project up and down for a rigorous notion of multimaping
+        
+% Then I'm going to try it out and discover something useful.
+        
 \chapter{Background}
 
-\chapter{Preliminary Results}
+\chapter{Preliminary Work}
+
+\section{Project \#1: Tumor Map Visualization}
+
+\section{Project \#2: NOTCH2NL Copy Number Variation Analysis}
+
+\section{Project \#3: Mapping to a Reference Genome Structure}
 
 \chapter{Proposed Work}
 
-\section{Specific Aim \#1}
+\section{Specific Aim \#1: Develop Reference Hierarchy Theory}
 
-\section{Specific Aim \#2}
+\section{Specific Aim \#2: Engineer Scalable Software Tools}
 
-\section{Specific Aim \#3}
+\section{Specific Aim \#3: Discover Biologically Relevant Variation}
 
 \appendix
 \chapter{Some Ancillary Stuff}
