@@ -151,10 +151,14 @@ Theses have elements.  Isn't that nice?
      % We map reads to and define genes on that coordinate space
      
         % And define "variation" as any deviation from that sequence
+        
+        % We have mapping bias which is probably racist
      
      % Everybody uses it, and when we update it everybody has to upgrade
      
         % All the coordinates change
+        
+        % Published coordinates from back in the day no longer work and need to be lifted over or even remapped
 
 % HG38 changes
 
@@ -186,23 +190,115 @@ Theses have elements.  Isn't that nice?
     
 % So the old way of doing things is fraying around the edges
 
+% We think we can make a better way using a few key technologies
 
+    % We want to make a graph reference
+        
+        % We already have haplotypes bubbling off, so we really have a graph already
+        
+        % Benedict did all this previous work on graph genomes
+        
+    % We want to put this in an aligned hierarchy
+        
+        % Like something out of HAL, but with a different interpretation.
+    
+    % We want to employ FMD-index technology and succinct data structures to map to it uniquely at any given level
+    
+    % We want to employ Spark/GraphX to build a system to traverse and query these graphs
+    
+    % We want to employ Avro to give this system a consistent API accessible from a variety of languages.
+    
+% When this is done, I anticipate it being useful for things like NOTCH2NL
+    
+    % NOTCH2NL used to be annotated as one gene in hg19
+    
+    % In hg38 we've worked out that it is really 4 similar genes, -A through -D.
+    
+    % Now we have 4 very similar genes, near each other, and we want to look at variation in them.
+    
+    % We have all this microarray data and sequencing data that's super hard to pin down to one and only one paralog.
+    
+    % To get something out of this region, we need a way to work with multimapped data in a rigorous way.
 
 \chapter{Preliminary Work}
 
+% I have already some some work on infrastructure for the scalable analysis of genomic variation.
+
 \section{Project \#1: Tumor Map Visualization}
+
+% I made a pan-cancer visualization of the entire cross-tissue TCGA data set
+    
+    % Lay out all the tumors by a similarity metric, and squish them into a hexagonal grid in 2D
+    
+    % Let people fly around it with Google Maps
+    
+    % Then draw map overlays depicting various tumor or patient attributes.
+
+    % Less a scaling up of the analysis than a scaling down of the data set into a space where people are comfortable working.
+    
+% See the paper. 
 
 \section{Project \#2: NOTCH2NL Copy Number Variation Analysis}
 
+% I made a first pass at analyzing the NOTCH2NL region
+    
+    % I specifically worked on a linear programming based approach to make copy number calls on our corrected assembly using CGH microarray probes originally designed for an assembly that conflated the NOTCH2NL genes
+    
+    % Trying to handle multimapping, because if I threw out multimapping I would have thrown out XX% of the data.
+        
+        % This again isn't really scaling, but it's something we need to do to support scaling.
+    
+% We found that CNV in the NOTCH2NL region can explain disease.
+
+    % See the paper.
+
 \section{Project \#3: Mapping to a Reference Genome Structure}
+
+% We developed a rigorous theory for making reference graphs, putting them in hierarchies, and mapping to them based on context.
+
+% I'm going to need this in my system as an alternative to linear coordinates, since linear coordinates have all the problems mentioned above.
+
+% The hierarchy stuff is also how I plan to formalize multimapping into something useful.
+
+% See the paper.
 
 \chapter{Proposed Work}
 
 \section{Specific Aim \#1: Develop Reference Hierarchy Theory}
 
+% I need a rigorous theory of reference structures, reference hierarchies, mapping, and multimapping
+
+% Also a mathematics of variants as paths, and a reference as a collection of equal variants.
+
+% This is mostly completed.
+
 \section{Specific Aim \#2: Engineer Scalable Software Tools}
 
+% I need to turn Specific Aim #1 from math into software.
+
+% To be minimally useful it needs to be able to do at least what we do now: map to hg38 plus alt haplotypes
+    
+    % But in a graph-based way
+    
+% What I actually want to do is to be able to map to hg38 and alts, plus a bunch of other variants.
+
+    % I'd like to show that this reduces reference bias in mapping
+    
+% I don't plan to scale to more than tens of genomes' worth of sequence in the reference within the scope of this project.
+
+    % I can fit a bunch of examples of variants in without full genomes to hold them.
+    
+% I'm going to stick an API on it so the software is accessible from multiple languages
+
+    % Ideally with RPC so you don't need to mirror this whole graph structure in order to play with it.
+
 \section{Specific Aim \#3: Discover Biologically Relevant Variation}
+
+% Once I've built the system, I'll browse around the graph and see if I can find anything interesting.
+
+% Since this system will be well-designed for analyzing structural variants, I will see if I can compile some broad statistics about the number and type of structural variants in my reference versus in other compendiums of structural variation.
+
+% If I can't find anything else, I could take another look at the NOTCH2NL region, and repeat my analysis of the CGH microarray data in graph terms.
 
 \appendix
 \chapter{Some Ancillary Stuff}
