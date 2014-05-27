@@ -22,6 +22,8 @@
 % and also eliminates issues where the default papersize is A4
 \usepackage[letterpaper, left=1.5in, right=1.25in, top=1.25in, bottom=1.25in, includefoot]{geometry}
 
+\usepackage{url}
+
 \begin{document}
 
 % Declarations for Front Matter
@@ -52,7 +54,6 @@
 \listoftables
 
 \begin{abstract}
-Theses have elements.  Isn't that nice?
 
 \end{abstract}
 
@@ -63,6 +64,16 @@ Theses have elements.  Isn't that nice?
 \end{frontmatter}
 
 \chapter{Introduction}
+
+Biology happens at scale. Scale in population and in time give evolution the raw materials it needs to shape biological systems worth studying. Scale enables bacteria to become resistant to antibiotics. Scale allows cancer to arise with alarming regularity in healthy people. Scale powers the adaptive immune system, and simultaneously enables pathogens to evade it. To really understand biological systems, we need to be able to match their scale.
+
+In recent years, in part due to a precipitous drop in the cost of DNA sequencing, the scale of biological data collection has dramatically increased \cite{wetterstrand2014dna}. Unfortunately, it has increased disproportionately along the ``number of features'' axis, as opposed to the ``number of samples'' axis. The Cancer Genome Atlas, for example, has collected many types of data, including genomic DNA sequences, DNA methylation data, and mRNA expression levels, amounting to millions of features per sample \cite{tcga2014sample}. However, it has looked at a number of individual people and cancers only on the order of thousands \cite{tcga2014sample}. Similarly, while the 1000 Genomes Project found millions of unique genomic variants, it examined only on the order of a thousand individuals \cite{10002010map}. While such sample sizes may sound large to those who remember the years of effort and multi-billion-dollar expenditure required by the original Human Genome Project, they are woefully small compared to the numbers of features per sample. From a machine learning perspective, this limits the amount of useful knowledge that can be extracted from all of that data. If a theory is to be expected to generalize to new data (that is, if it is to actually reflect the biological processes at work), it generally ought to be based on more data points than features \cite{hua2005optimal}.
+
+For now, it is still possible to use such small sample sizes to do meaningful biology \cite{weinstein2013cancer}. However, at some point in the future, we will exhaust what we can learn by combining our prior knowledge of genetics and biochemistry with a few thousand high-throughput sequencing samples, and we will need to scale up data collection and data analysis in terms of number of samples.
+
+Unfortunately, to scale by even a couple or orders of magnitude in sample sizes, the way bioinformatics is done will need to change. As it is, working on huge datasets like the sequencing reads from TCGA can be an enormous challenge at the merely technical level, with thousands of gigabytes of data to transfer, store, analyze, and protect from unauthorized access. At some point, we will have to abandon the idea that every lab that wants to analyze these enormous community data sets ought to have its own local copy.
+
+Moreover, when we start to scale up to large numbers of samples, our data sets are more likely to contain individuals who are in some way out of the ordinary, and consequently our engineering standards need to be tightened. For example, if a bioinformatics analysis pipeline assumes that a certain run of genes occur in a certain order and orientation, an increased number of samples pushed through this pipeline translates into an increased chance of encountering an individual who contradicts that assumption, resulting in at best a run-time error and an unhappy bioinformaticist, and at worst a subtly incorrect result in a published paper. All the corner cases---the pathological combinations of variants that we just assume won't occur, or the genomic regions that we would rather not talk about---need to be found and addressed if bioinformatic analyses are going to be made to scale to the sizes they need to scale to.
 
 % Biology only works at scale
 
