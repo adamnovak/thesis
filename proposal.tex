@@ -33,12 +33,12 @@
 \degreeyear{2014}
 \degreemonth{June}
 \degree{DOCTOR OF PHILOSOPHY}
-\chair{Professor David Haussler}
-\committeememberone{Professor Ivory Insular}
-\committeemembertwo{Professor General Reference}
-\committeememberthree{Professor Ipsum Lorem}
+\chair{Professor Josh Stuart}
+\committeememberone{Professor David Haussler}
+\committeemembertwo{Professor Ed Green}
+\committeememberthree{Professor Lise Getoor}
 \numberofmembers{4} %% (including chair) possible: 3, 4, 5, 6
-\deanlineone{Dean John Doe}
+\deanlineone{Dean \textbf{TODO FIXME}}
 \deanlinetwo{Vice Provost and Dean of Graduate Studies}
 \deanlinethree{}
 \field{Bioinformatics}
@@ -151,6 +151,24 @@ For my thesis project, I intend to formalize the mathematics of constructing and
         
 \chapter{Background}
 
+\section{How Bioinformatics Works}
+
+There is a single generic workflow underlying a large portion of what bioinformaticists do all day. It has two steps:
+
+\begin{itemize}
+\item \textbf{Download} the data that you want to work with.
+\item \textbf{Save} that data on your computer.
+\item \textbf{Analyze} the data to reach scientific conclusions.
+\end{itemize}
+
+While most researchers are concentrating on the last step of this process, as the datasets have grown, the first two steps have become a nontrivial problem. Take, for example, the case of the TCGA dataset, which has hundreds of BAM files of DNA sequence from tumor samples \cite{tcga2014sample}. Each of these BAM files can be nearly a hundred gigabytes in size. In order for a lab to work with TCGA data, the lab needs to download a copy of it, and store it in a secure environment which meets TCGA's access control standards.
+
+Downloading tens of terabytes of data is not easy, and securely storing it once downloaded is even harder. One researcher in my lab managed to develop a data analysis anti-pattern wherein he would download one TCGA BAM file, analyze it, and then delete it, because he did not have sufficient secure storage space for the entire dataset he wanted to analyze. Even on current dataset sizes, downloading and locally storing them is difficult, especially for smaller labs which don't have much computing infrastructure. Moreover, as the datasets to be downloaded are growing faster than the networks over which they are supposed to travel, this problem is unlikely to get better any time soon \cite{stein2010case}.
+
+The case is only somewhat better for variation datasets than for sequence datasets. The 1000 Genomes Project variant data releases, for example, total about 500 gigabytes \cite{10002013release}. While this is certainly easier to download and store than tens of terabytes of read data would be, it's still much more than any scientist would want to carry around on their Macbook. It requires infrastructure to store, and that infrastructure needs to be repeated at every institution which would like to access the data.
+
+While these datasets might be manageable at their current sizes, with on the order of a thousand samples, the same techniques are not going to be practical for working on datasets with the millions or even billions of samples which will be needed to crack really tough bioinformatics problems. In order to scale up to the point where it is really useful, bioinformatics needs to transition to a shared-infrastructure model \cite{stein2010case}.
+
 % How bioinformatics in general works
 
     % Download data
@@ -166,6 +184,8 @@ For my thesis project, I intend to formalize the mathematics of constructing and
         % It would be much easier if TCGA could just do all the access control itself.
         
     % This is not going to be able to scale much bigger. Already it's very difficult for smaller labs to use these huge community data sets.
+
+\section{How Genomics Works}
 
 % How genomics works
 
@@ -295,7 +315,7 @@ For my thesis project, I intend to formalize the mathematics of constructing and
 
 % Also a mathematics of variants as paths, and a reference as a collection of equal variants.
 
-% This is mostly completed.
+% This is mostly completed, but we're working on new and exciting things like mapping on credit.
 
 \section{Specific Aim \#2: Engineer Scalable Software Tools}
 
@@ -304,6 +324,8 @@ For my thesis project, I intend to formalize the mathematics of constructing and
 % To be minimally useful it needs to be able to do at least what we do now: map to hg38 plus alt haplotypes
     
     % But in a graph-based way
+    
+% So far I've implemented this for the hg38 MHC region.
     
 % What I actually want to do is to be able to map to hg38 and alts, plus a bunch of other variants.
 
@@ -315,7 +337,7 @@ For my thesis project, I intend to formalize the mathematics of constructing and
     
 % I'm going to stick an API on it so the software is accessible from multiple languages
 
-    % Ideally with RPC so you don't need to mirror this whole graph structure in order to play with it.
+    % Ideally with RPC so you don't need to mirror this whole graph structure in order to slice it and look up variants.
 
 \section{Specific Aim \#3: Discover Biologically Relevant Variation}
 
