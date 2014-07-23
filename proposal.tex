@@ -222,6 +222,12 @@ The golden path model is inextricably bound to the concept of ``the human genome
 
 \section{The Release of GRCh38}
 
+A new version of the official human reference genome, GRCh38, was recently released \cite{karolchik2014new}. In addition to marking the transition to a unified version numbering scheme across major genome browsers, this new release continues the GRC's gradual migration away from the golden path concept. Although GRCh38 is still constructed around a single (chimeric) haploid genome, the new reference assembly also provides sequences for hundreds of so-called ``alt loci''---additional pieces of sequence with a specified alignment to that genome which describe some of the structurally distinct haplotypes which have been observed in humans. The older GRCh37, by comparison, contained only three genomic regions with alt loci \cite{church2011modernizing}. This means that the GRCh38 assembly, taken as a whole, is fundamentally nonlinear at more than just a few problematic locations. Unfortunately, popular tools like BWA have not yet been updated to fully account for these alternate haplotypes \cite{li2014bwa}.
+
+The new assembly also contains sequence for the centromeres---the central portions of the chromosomes, which contain extremely long and repetitive sequences that continue to defy conventional sequencing and assembly methods \cite{karolchik2014new}. However, these new centromere sequences are not directly derived from actual sequence observations, but are instead plausible linearizations of a series of graph-based centromere models \cite{miga2014centromere}. Unfortunately, the linear format discards much of the uncertainty information present in the graph models. Moreover, this additional sequence was found during testing to cause trouble for traditional short-read alignment pipelines, so GRCh38 also comes as an ``analysis set'' with these sequences masked out \cite{karolchik2014new}.
+
+In summary, GRCh38 both marks the continuation of a trend towards nonlinearity in the human reference and an example of the shortcomings of the golden path approach. Until tools can be updated to account for these new features of the assembly, GRCh38 cannot be used to its full potential.
+
 % HG38 changes
 
     % Version jump
@@ -229,6 +235,8 @@ The golden path model is inextricably bound to the concept of ``the human genome
     % Lots of alt haplotypes
     
     % Plausible centromeres
+    
+\section{Description of Human Genomic Variants}
     
 % How variant analysis works
 
@@ -252,7 +260,15 @@ The golden path model is inextricably bound to the concept of ``the human genome
     
 % So the old way of doing things is fraying around the edges
 
+\section{String Indexing with the Burrows-Wheeler Transform}
+
 % How the BWT works and is useful for genomics
+
+    % How some BWT implementations (like RLCSA) fall over when you try and put many gigabytes of stuff in them.
+
+    % And how SGA has a decent implementation of it
+
+\section{The FMD-Index}
 
 % How the FMD-index works
 
@@ -273,6 +289,12 @@ The golden path model is inextricably bound to the concept of ``the human genome
     % We want to employ Spark/GraphX to build a system to traverse and query these graphs
     
     % We want to employ Avro to give this system a consistent API accessible from a variety of languages.
+
+\section{Previous String Graph Indices}
+    
+    % Talk about that thing that the RLCSA people did that works only for properly sortable graphs or whatever
+
+\section{NOTCH2NL and Sequence Ambiguity}
     
 % When this is done, I anticipate it being useful for things like NOTCH2NL
     
