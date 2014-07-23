@@ -153,13 +153,13 @@ For my thesis project, I intend to formalize the mathematics of constructing and
 
 \section{How Bioinformatics Works}
 
-There is a single generic workflow underlying a large portion of what bioinformaticists do all day. It has two steps:
+There is a single generic workflow underlying a large portion of what bioinformaticists do all day. It has three steps:
 
-\begin{itemize}
+\begin{enumerate}
 \item \textbf{Download} the data that you want to work with.
 \item \textbf{Save} that data on your computer.
 \item \textbf{Analyze} the data to reach scientific conclusions.
-\end{itemize}
+\end{enumerate}
 
 While most researchers are concentrating on the last step of this process, as the datasets have grown, the first two steps have become a nontrivial problem. Take, for example, the case of the TCGA dataset, which has hundreds of BAM files of DNA sequence from tumor samples \cite{tcga2014sample}. Each of these BAM files can be nearly a hundred gigabytes in size. In order for a lab to work with TCGA data, the lab needs to download a copy of it, and store it in a secure environment which meets TCGA's access control standards.
 
@@ -187,6 +187,21 @@ While these datasets might be manageable at their current sizes, with on the ord
 
 \section{How Genomics Works}
 
+The general workflow of human genomics runs as follows:
+
+\begin{enumerate}
+\item \textbf{Sequence} some human genomes.
+\item \textbf{Map} the resulting reads to the current human reference genome.
+\item \textbf{Call} variants describing how your samples differ from the reference genome.
+\item \textbf{Analyze} your variant and read data and reach scientific conclusions.
+\end{enumerate}
+
+Human genomics exists in the context of the official human reference genome, maintained by the Genome Reference Consortium (GRC) \cite{church2011modernizing}. This reference genome assembly was originally created by stitching together actual observed pieces of DNA sequence into a single-copy haploid ``golden path'' representing a complete genome \cite{church2011modernizing}. Under this model, a hypothetical perfect assembly would have a single contig per chromosome. Such an assembly naturally suggests a coordinate system: bases can be referred to by the contig they are on and their offset from the beginning of that contig.
+
+This coordinate system is a critical piece of genomics infrastructure. It allows the reference genome to be annotated with genes and other elements, defines the space in which read mapping maps, and provides the backbone to which descriptions of genomic variation are anchored; the entire field depends on it. Unfortunately, whenever the official human reference genome is updated, and bases are inserted or removed, the old coordinates are no longer valid on the new reference, and a period of mass confusion ensues as everyone who studies human genomics translates everything they are working on to the new coordinate system, and then wonders whether their colleagues have done the same yet.
+
+The golden path model is inextricably bound to the concept of ``the human genome''---the idea that one prototypical sequence is a suitable foundation for the field of genomics. This idea has been central to human genomics, but it is not without its flaws. Putting aside the unfortunate normative implications of declaring the allele from whoever you sequenced first as ``reference'' and any alternatives from other populations as ``variant'', using a single reference genome when mapping sequencing reads leads to the well-known phenomenon of ``reference bias''. Reads matching the reference genome at a variant site tend to map better and more often than those supporting differences from the reference; this problem affects many popular short-read aligners \cite{lunter2011stampy}. Moreover, there are genomic regions, such as the Major Histocompatibility Complex (MHC) region on chromosome 6, in which there are structurally distinct haplotypes present in the population \cite{church2011modernizing}. Mapping reads only against the haplotype actually included in the assembled golden path will almost certainly introduce a bias against mapping reads from the alternative haplotypes.
+
 % How genomics works
 
      % We have The Human Reference Genome
@@ -204,6 +219,8 @@ While these datasets might be manageable at their current sizes, with on the ord
         % All the coordinates change
         
         % Published coordinates from back in the day no longer work and need to be lifted over or even remapped
+
+\section{The Release of GRCh38}
 
 % HG38 changes
 
@@ -234,6 +251,10 @@ While these datasets might be manageable at their current sizes, with on the ord
     % VCF creates complexity where it isn't and turns holes in the abstractions into pitfall traps for unwary bioinformaticists.
     
 % So the old way of doing things is fraying around the edges
+
+% How the BWT works and is useful for genomics
+
+% How the FMD-index works
 
 % We think we can make a better way using a few key technologies
 
