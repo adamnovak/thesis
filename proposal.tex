@@ -237,7 +237,17 @@ In summary, GRCh38 both marks the continuation of a trend towards nonlinearity i
     % Plausible centromeres
     
 \section{Description of Human Genomic Variants}
-    
+
+There is no single prototypical workflow for the analysis of variant data; what you do with it depends heavily on the scientific question that you are trying to answer. However, there are a few extremely common practices in the field. One of these is to store variant data in Variant Call Format (VCF) files, a column-based text format developed as part of the 1000 Genomes Project \cite{danecek2011variant}. Samples are represented by columns, and variant positions in the human genome by rows. VCF files can be supplemented by an index on genomic position, but no work appears to have yet been done to also provide an index by sample; consequently, the scalability of VCF is limited to numbers of samples that can be scanned through efficiently \cite{danecek2011variant}.
+
+VCF encodes individual samples' genomes by defining a series of variant sites along the length of the linear reference genome, defining a set of alternate alleles which have been observed at each site (in addition to the allele in the reference), and then indicating which alleles (in what phasing relationship) are present in each sample at each site. This approach works extremely well for some types of variation (like SNPs and short indels in structurally quiet regions), but it also has some shortcomings.
+
+One problem with the VCF format is that the semantics of not having a variant record at a certain location in the reference is not defined. Does it mean that that position in the reference is known not to be variable in the population (or at least in the sampled portion of it)? Or does it mean that that location is not in the region covered by the VCF file? To solve this problem, the VCF format has been extended by Illumina to create the gVCF format, in which genotyped but nonvariant positions are also described \cite{saunders2014about}.
+
+Another potential problem with the VCF format, at least from the point of view of people who need to read it, is that it is very featureful. There is a valiant attempt made to have the format specify itself through the inclusion of header lines defining various fields; however, if the fields defined differ from those which a particular parser is expecting, the parser is unlikely to be able to use the file. There are no fewer than three distinct syntaxes for specifying variants: the original syntax, best suited to SNPs and short indels, in which alternate alleles are short stretches of sequence; a symbolic format, in which alternate alleles are mere specifications of inversion or duplication, or even references to named alleles defined elsewhere; and a breakend-based format, in which structural variants (and related sequence changes) are defined as a series of possibly-paired breakend records describing how the reference would have had to have been cut and spliced to produce the sample \cite{marshall2013variant}. VCF parsers do not help with integrating across or converting between these different internal formats, and some don't even support all of them. Tools written to directly extract information from VCFs without a parser library, in particular, often support only one or maybe two of these formats. Furthermore, between the three different formats and the fact that different alignment parameters can induce variant callers to describe the same sample sequence as different variants, it is very difficult to compare two VCF files at the textual level.
+
+A final issue with the VCF format is its tight coupling to the linearity of the reference genome. While its breakend system allows the specification of complex rearrangement graphs for samples, there is no explicit support for even the alt loci of the current GRCh38 reference. If one were to specify variant records on one of the MHC alt haplotypes, for example, there would be no way to specify phasing with variants on the main chr6, because VCF specifies records with different ``chromosomes'' to be unphased relative to each other \cite{marshall2013variant}. Moreover, there is no way to explicitly specify that a sample uses a certain alt locus; it would be necessary to infer this from the existence of called genotypes in the coordinates of that alt. It would certainly be possible adopt certain conventions within the existing VCF format to work around this problem (for example, wiring the alt loci into their parent chromosomes with breakends whenever they are present), but no such conventions are standardized, and they are thus useless for data interchange.
+
 % How variant analysis works
 
     % Make big VCFs
@@ -293,6 +303,10 @@ In summary, GRCh38 both marks the continuation of a trend towards nonlinearity i
 \section{Previous String Graph Indices}
     
     % Talk about that thing that the RLCSA people did that works only for properly sortable graphs or whatever
+    
+    % Talk about Gil's lockstep HMM chromotype approach
+    
+        % Not really an index
 
 \section{NOTCH2NL and Sequence Ambiguity}
     
