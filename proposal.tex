@@ -272,15 +272,53 @@ A final issue with the VCF format is its tight coupling to the linearity of the 
 
 \section{String Indexing with the Burrows-Wheeler Transform}
 
-% How the BWT works and is useful for genomics
+The method that I propose to allow creating and mapping to graph-based reference structures involves starting with a large collection of individual haplotypes, each of which is several gigabases of DNA sequence. In order to combine these haplotypes into a useful reference data structure, they need to be compressed. These haplotypes are likely to be very highly compressible, since individual genomes are generally very similar to each other.
+
+One particularly useful algorithm in string compression is the Burrows-Wheeler Transform (BWT). The BWT takes strings and rearranges them for increased compressibility, by putting characters from similar contexts near each other \cite{burrows1994block}. (It is interesting to think of the BWT as defining a new, context-based coordinate system.)
+
+The BWT operates by taking the string to be compressed and imagining all possible rotations of it; each rotation is derived from the previous one by taking the first character and moving it to the end \cite{burrows1994block}. The rotations are then sorted lexicographically, and the last characters of all the rotations become the transformed string \cite{burrows1994block}.
+
+The BWT makes strings more compressible by grouping characters by the context they appear in (specifically, the strings they appear before). If two characters both appear before a suffix starting with ``andy'', they will appear near each other in the BWT. Assuming some letters are more likely to precede this string than others are (for example, ``c'' and ``h'' as opposed to ``e'' or ``n''), this creates a region of the BWT which is enriched for those characters. This in turn makes that region more compressible by something like move-to-front encoding or even simple run-length encoding \cite{burrows1994block}.
+
+% What the BWT is
+
+% How the BWT works
+    
+    % Imagine all the rotations of the string
+    
+    % Sort them
+    
+    % Take the last column
+    
+\section{Searching in BWTs with the FM-index}
+
+% BWT as an index
+    
+    % Sort by context
+    
+    % FM-index and how it works
+
+% How the BWT is useful for genomics
 
     % How some BWT implementations (like RLCSA) fall over when you try and put many gigabytes of stuff in them.
 
     % And how SGA has a decent implementation of it
 
-\section{The FMD-Index}
+\section{Bidirectional DNA Search with the FMD-Index}
 
 % How the FMD-index works
+
+\section{Previous Graph Indices}
+    
+    % Talk about that thing that the RLCSA people did that works only for properly sortable graphs or whatever
+    
+    % Talk about Gil's lockstep HMM chromotype approach
+    
+        % Not really an index
+
+\section{Cloud Computing with Apache Spark}
+
+\section{API Description with Avro}
 
 % We think we can make a better way using a few key technologies
 
@@ -299,14 +337,6 @@ A final issue with the VCF format is its tight coupling to the linearity of the 
     % We want to employ Spark/GraphX to build a system to traverse and query these graphs
     
     % We want to employ Avro to give this system a consistent API accessible from a variety of languages.
-
-\section{Previous String Graph Indices}
-    
-    % Talk about that thing that the RLCSA people did that works only for properly sortable graphs or whatever
-    
-    % Talk about Gil's lockstep HMM chromotype approach
-    
-        % Not really an index
 
 \section{NOTCH2NL and Sequence Ambiguity}
     
