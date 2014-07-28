@@ -271,14 +271,19 @@ A final issue with the VCF format is its tight coupling to the linearity of the 
 % So the old way of doing things is fraying around the edges
 
 \section{String Compression with the Burrows-Wheeler Transform}
+\label{sec:bwt}
 
 The method that I propose to allow creating and mapping to graph-based reference structures involves starting with a large collection of individual haplotypes, each of which is several gigabases of DNA sequence. In order to combine these haplotypes into a useful reference data structure, they need to be compressed. These haplotypes are likely to be very highly compressible, since individual genomes are generally very similar to each other.
 
 One particularly useful algorithm in string compression is the Burrows-Wheeler Transform (BWT). The BWT takes strings and rearranges them for increased compressibility, by putting characters from similar contexts near each other \cite{burrows1994block}. (It is interesting to think of the BWT as defining a new, context-based coordinate system.)
 
-The BWT operates by taking the string to be compressed and imagining all possible rotations of it; each rotation is derived from the previous one by taking the first character and moving it to the end \cite{burrows1994block}. The rotations are then sorted lexicographically, and the last characters of all the rotations become the transformed string \cite{burrows1994block}.
+The BWT operates by taking the string to be compressed (generally with a sentinel value ``\$'' lexicographically smaller than all other characters to mark the end) and imagining all possible rotations of it \cite{burrows1994block, ferragina2000opportunistic}. Each rotation is derived from the previous one by taking the first character and moving it to the end \cite{burrows1994block}. The rotations are then sorted lexicographically, and the last characters of all the rotations become the transformed string \cite{burrows1994block}.
 
 The BWT makes strings more compressible by grouping characters by the context they appear in (specifically, the strings they appear before). If two characters both appear before a suffix starting with ``andy'', they will appear near each other in the BWT. Assuming some letters are more likely to precede this string than others are (for example, ``c'' and ``h'' as opposed to ``e'' or ``n''), this creates a region of the BWT which is enriched for those characters. This in turn makes that region more compressible by something like move-to-front encoding or even simple run-length encoding \cite{burrows1994block}.
+
+The implied BWT matrix, with all the sorted rotations as rows, is generally not kept, but it is often useful to consider the BWT's answer in its context as the last column of this matrix \cite{burrows1994block, ferragina2000opportunistic}. It is also useful to think of this matrix as made up of ``character instances'', where characters in the matrix that are derived from the same position in the original string are the same character instance. (Imagine uniquely coloring the character at each position on the original string before creating the matrix.)
+
+Note that the instances of any given character in the last column appear in the same relative order in the first column. Consider just the rows where the character in question appears in the first column. When sorting these rows, the first column is uninformative (since it is constant across all rows), and the rows are sorted lexicographically by the remaining columns in order. Rotating all the strings so the uninformative column appears last will not change the order of the other columns, and thus will not change the relative sort order of the rows. So the instances of the character stay in the same relative order in the last column as in the first column \cite{langmead2013introduction}.
 
 % What the BWT is
 
@@ -294,23 +299,47 @@ The BWT makes strings more compressible by grouping characters by the context th
 
 The suffix array of a string is an array of indices into the string, sorted in the lexicographical order of the suffixes that they point to \cite{manber1993suffix}. For example, the string ``dog'' has suffixes ``dog'' at index 0, ``og'' at index 1, and ``g'' at index 2, so its suffix array would be $[0, 2, 1]$, corresponding to the suffix sort order $[``dog'', ``g'', ``og'']$.
 
-Suffix arrays can be used as indices to speed up substring search on the string they are derived from. Because a suffix array is equivalent to a sorted list of all the suffixes in a string, and because every substring of the string is at the beginning of some suffix, a simple binary search is sufficient to find (at least one instance of) any substring that is present. Supplementing the suffix array with a longest common prefix array, holding the length of the longest common prefix of adjacent suffixes, can further speed up this search, by requiring only a single-character comparison (instead of a string comparison) at each search step \cite{manber1993suffix}.
+Suffix arrays have some useful properties. The most important of these is that all of the suffixes that start with the same substring appear in a single contiguous block \cite{ferragina2000opportunistic}. This block starts at the position corresponding to the number of occurrences of lexicographically smaller substrings of the same length \cite{ferragina2000opportunistic}. This is particularly obvious in the case of single-character substrings: all the suffixes (and, thus, all the substrings) beginning with a certain character appear in one block, coming immediately after all suffixes beginning with lexicographically smaller characters.
+
+Suffix arrays can be used as indices to speed up substring search on the string they are derived from. Because of the block structure described above, and because every substring is at the beginning of some suffix, a simple binary search is sufficient to find (at least one instance of) any substring that is present, and a simple scan of prefix comparisons can pull out its entire block \cite{manber1993suffix}. Supplementing the suffix array with a longest common prefix array, holding the length of the longest common prefix of adjacent suffixes, can further speed up the search, by requiring only a single-character comparison (instead of a string comparison) at each search step \cite{manber1993suffix}.
 
 % What a suffix array is
 
 % Why you can use it for search
+
+% Useful properties
+    
+    % All the suffixes starting with the same substring are in a contiguous block
+    
+    % Specifically, all the substrings starting with the same letter are in a contiguous block, which starts at a predictable position based on how many of each character exist in the string.
     
 \section{Searching in BWTs with the FM-index}
 
-Since a BWT sorts all rotations of the string being transformed, the BWT of a string implies its suffix array. 
+Constructing the BWT matrix is essentially the same task as constructing the suffix array of the string being transformed. Since the rotations of the string contain the ``\$'' sentinel less than all other characters, the rotations are actually sorted by the portion before the ``\$'' character---that is, by the corresponding suffixes of the original string. 
+
+% OK I can't really connect this to the suffix array properly, but here's how I actually understand it.
+
+A BWT can be augmented with a small amount of additional information to create an FM-index (named after its inventors), which, like a suffix array, allows efficient substring search on the original string, but which also retains the compression afforded by the BWT \cite{ferragina2000opportunistic}.
+
+The FM-index is based primarily on the idea of an LF (i.e. last-first) mapping. This mapping maps each character instance in the last column of the BWT matrix to the row in which that same character instance (i.e. both corresponding to the same position in the original string) appears in the first column. Because each BWT matrix row is a rotation of the original string, the last column of the row (and the BWT at the corresponding position) will contain the character instance immediately preceding the one just looked up. Thus, following the LF-mapping around the BWT allows the characters of the original string to be enumerated in reverse order \cite{ferragina2000opportunistic}.
+
+The LF-mapping can be calculated easily from the BWT. To LF-map the character instance at a certain index in the BWT, count up the number of characters in the BWT lexicographically less than the character, and add the character instance's rank among all instances of that character. This gives the index of the LF-mapping result in the BWT.
+
+To see why this works, recall that in a suffix array, and thus also in the BWT matrix, all the suffixes (or here rotations) that start with a given character form a contiguous block, coming just after all those beginning with smaller characters. Thus, the first calculation is to find the start of this block. And since, as shown in section~\ref{sec:bwt}, the relative order of character instances in the first column is the same as that in the last column, to find the offset into that contiguous block that this particular character instance resides at, we merely need to find its rank among instances of the same character in the last column, which is the BWT string \cite{langmead2013introduction}.
 
 % BWT as an index
+    
+    % Based on a different way to reverse the BWT using an LF mapping.
+    
+        % LF mapping goes from a position in the BWT to the position of the character instance that precedes it.
     
     % Sort by context
     
     % FM-index and how it works
         
         % Basically, you are using the BWT and the occurrences to imply the suffix array, and then doing a search on that suffix array.
+        
+        % Specifically, you have this occurrences array, and this counts array, and follow this formula to shrink a range down to just the range that actually matches your search string.
 
 % How the BWT is useful for genomics
 
