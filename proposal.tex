@@ -270,7 +270,7 @@ A final issue with the VCF format is its tight coupling to the linearity of the 
     
 % So the old way of doing things is fraying around the edges
 
-\section{String Indexing with the Burrows-Wheeler Transform}
+\section{String Compression with the Burrows-Wheeler Transform}
 
 The method that I propose to allow creating and mapping to graph-based reference structures involves starting with a large collection of individual haplotypes, each of which is several gigabases of DNA sequence. In order to combine these haplotypes into a useful reference data structure, they need to be compressed. These haplotypes are likely to be very highly compressible, since individual genomes are generally very similar to each other.
 
@@ -290,13 +290,27 @@ The BWT makes strings more compressible by grouping characters by the context th
     
     % Take the last column
     
+\section{Substring Search with the Suffix Array}
+
+The suffix array of a string is an array of indices into the string, sorted in the lexicographical order of the suffixes that they point to \cite{manber1993suffix}. For example, the string ``dog'' has suffixes ``dog'' at index 0, ``og'' at index 1, and ``g'' at index 2, so its suffix array would be $[0, 2, 1]$, corresponding to the suffix sort order $[``dog'', ``g'', ``og'']$.
+
+Suffix arrays can be used as indices to speed up substring search on the string they are derived from. Because a suffix array is equivalent to a sorted list of all the suffixes in a string, and because every substring of the string is at the beginning of some suffix, a simple binary search is sufficient to find (at least one instance of) any substring that is present. Supplementing the suffix array with a longest common prefix array, holding the length of the longest common prefix of adjacent suffixes, can further speed up this search, by requiring only a single-character comparison (instead of a string comparison) at each search step \cite{manber1993suffix}.
+
+% What a suffix array is
+
+% Why you can use it for search
+    
 \section{Searching in BWTs with the FM-index}
+
+Since a BWT sorts all rotations of the string being transformed, the BWT of a string implies its suffix array. 
 
 % BWT as an index
     
     % Sort by context
     
     % FM-index and how it works
+        
+        % Basically, you are using the BWT and the occurrences to imply the suffix array, and then doing a search on that suffix array.
 
 % How the BWT is useful for genomics
 
