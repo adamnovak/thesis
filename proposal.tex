@@ -327,6 +327,14 @@ The LF-mapping can be calculated easily from the BWT. To LF-map the character in
 
 To see why this works, recall that in a suffix array, and thus also in the BWT matrix, all the suffixes (or here rotations) that start with a given character form a contiguous block, coming just after all those beginning with smaller characters. Thus, the first calculation is to find the start of this block. And since, as shown in section~\ref{sec:bwt}, the relative order of character instances in the first column is the same as that in the last column, to find the offset into that contiguous block that this particular character instance resides at, we merely need to find its rank among instances of the same character in the last column, which is the BWT string \cite{langmead2013introduction}.
 
+The LF-mapping in turn can be used to construct a search algorithm, which will find the start and end indices of the range of rows in the BWT matrix that begin with some query string. This search algorithm is an example of ``backward search'', because it processes the characters in the query string from back to front. The algorithm begins by selecting the entire BWT matrix, which is the range beginning with the empty string. Then, for each character in the query string, from the last forwards, the algorithm extends the searched string at the front with that character. It takes the new character and finds the ranks in the BWT of first and last instances of it contained within the currently selected result range. It then LF-maps each of those instances, and takes the range between them as the search result for the search string extended with that character. If there are no instances of the character to map, then the searched string is not found in the index \cite{ferragina2000opportunistic}.
+
+Each row of the BWT matrix in the old range started with an instance of the old search string. Each of the rows that ended in the new query character corresponded to an instance of the old search string occurring after the new query character, and thus implying an instance of the new, one-character-longer search string. The LF-mapping step finds the rows in the BWT matrix where the instances of the new query character appear at the beginning. Thus, such an algorithm can be used to search for substrings in a string, using the BWT of the string \cite{ferragina2000opportunistic}.
+
+By pre-calculating some auxiliary data structures, such as a table with the start index of each character's range in the BWT matrix, and succinct data structures for $O(1)$ rank queries, this algorithm can be made to run in time linear in the length of the query string, and constant in the length of the index \cite{ferragina2000opportunistic}. 
+
+% TODO: Indexing multiple strings, locate, sampled suffix arrays.
+
 % BWT as an index
     
     % Based on a different way to reverse the BWT using an LF mapping.
@@ -341,13 +349,21 @@ To see why this works, recall that in a suffix array, and thus also in the BWT m
         
         % Specifically, you have this occurrences array, and this counts array, and follow this formula to shrink a range down to just the range that actually matches your search string.
 
+\section{Bidirectional DNA Search with the FMD-Index}
+
+BWT-based indices have found many applications in genomics. The popular short read aligner \texttt{bwa}, for example, is built on an FM-index of the reference genome; indeed, the name stands for ``Burrows--Wheeler Aligner'' \cite{li2014bwa,li2009fast}. The ``String Graph Assembler'' \texttt{sga} also uses a BWT-based index to do its work, but in this case indexes reads themselves \cite{simpson2012efficient}.
+
+In genomics, the strings being indexed are DNA strings, consisting of As, Gs, Cs, and Ts. These DNA strings are usually excerpts from double-stranded DNA genomes, in which, for each chromosome, two strands of DNA form a double helix. One strand runs in one direction, and the other strand runs in the other direction, with bases complemented (As and Ts swapped, and Gs and Cs swapped). It's impossible to tell whether a DNA sequencing read came from the forward strand or the reverse-complement strand until a match is found for it in a reference somewhere. Thus, many analysis problems in genomics need to consider not only some set of DNA strings but also their reverse complements.
+
+The existence of reverse complements is accounted for in \texttt{sga} by creating two FM-indices of the input data: one index of the forward strand, and one of the implied reverse-complement strand \cite{simpson2012efficient}. This construction allows for some DNA query string to be searched against both indices, and for results to be collected from both strands of each sequence in the index.
+
+However, there is a more elegant approach which allows the same search to be performed against a single index, and moreover allows bidirectional extension of the search string. This data structure, the ``FMD-index'' (the ``D'' is for ``DNA''), is simply an FM-index of both the forward and reverse strands of all input sequences, concatenated into a single data set \cite{li2012exploring}.
+
 % How the BWT is useful for genomics
 
     % How some BWT implementations (like RLCSA) fall over when you try and put many gigabytes of stuff in them.
 
     % And how SGA has a decent implementation of it
-
-\section{Bidirectional DNA Search with the FMD-Index}
 
 % How the FMD-index works
 
@@ -355,7 +371,7 @@ To see why this works, recall that in a suffix array, and thus also in the BWT m
     
     % Talk about that thing that the RLCSA people did that works only for properly sortable graphs or whatever
     
-    % Talk about Gil's lockstep HMM chromotype approach
+    % Talk about lockstep HMM chromotype approach
     
         % Not really an index
 
