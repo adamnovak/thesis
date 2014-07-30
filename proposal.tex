@@ -387,7 +387,41 @@ Another, slightly newer approach uses the concept of a ``population reference gr
 
     % Not really an index
 
-\section{Cloud Computing with Apache Spark}
+\section{Interactive Distributed Computing with Apache Spark}
+
+In order to move bioinformatics to a shared-infrastructure model, it is necessary to build distributed bioinformatics tools. At least some of those tools should present interactive APIs accessible over the Internet; not every person who wants to make a query against shared infrastructure wants to have to write their own batch job to do it.
+
+One useful tool for building distributed, interactive applications is Apache Spark. Spark is designed as an improvement on earlier batch-oriented map/reduce implementations which, while scalable to very large data sets, are fundamentally non-interactive \cite{zaharia2012fast,zaharia2012resilient}. In Spark, intermediate results and frequently-accessed data sets can be kept in memory across the nodes of the cluster, instead of being spilled to disk, so repeated queries, iterative computations, and cumulative pipelines are much faster \cite{zaharia2012fast,zaharia2012resilient}. In Spark, distributed data is stored in the form of Resilient Distributed Datasets (RDDs), which permit distributed in-memory data structures to survive node failures \cite{zaharia2012resilient}. Since large pieces of computing infrastructure often suffer from individual node failures, which can force a naively-designed in-memory analysis pipeline to completely restart, this sort of fault tolerance is important \cite{thanakornworakij2013reliability}.
+
+Spark is the centerpiece of a complete next-generation cluster infrastructure. For persistent storage of data on disk, Spark integrates with Apache Hadoop's Hadoop Filesystem (HDFS) system, which effectively distributes and replicates large data files across cluster nodes' disks. Spark works to schedule operations on on-disk data on the nodes where the data is actually stored, to prevent it having to be sent over the network, and allows disk I/O to be distributed to partially compensate for the relative slowness of access to spinning disks. % TODO: cite
+
+% We are moving to shared infrastructure for a reason, not just so we can throw our existing tools on someone else's machines
+
+% The reason is that our data sets are getting too big to conveniently drag around with us
+
+% We need to use something fancier than your everyday C/Python/Perl/Bash amalgamation that is your typical bioinformatics pipeline.
+
+% We need tools that let us operate on large data sets in parallel, across many machines
+    
+    % Parallel storage
+    
+    % Parallel I/O
+    
+    % Parallel processing
+    
+% Apache Spark does this
+    
+    % Uses HDFS for parallel storage and I/O
+    
+        % Still need to replicate important data sets to different geographical/political/administrative regions to avoid things like someone blowing them up, but basically solves data loss due to disk failures.
+        
+    % Lets you specify iterative computations that happen in memory, distributed across your cluster.
+    
+    % With Mesos, multiple users can work on the same infrastructure against the same dataset.
+    
+    % Lets scientists interactively poke at data
+
+
 
 \section{API Description with Avro}
 
