@@ -23,6 +23,7 @@
 \usepackage[letterpaper, left=1.5in, right=1.25in, top=1.25in, bottom=1.25in, includefoot]{geometry}
 
 \usepackage{url}
+\usepackage{listings}
 
 \begin{document}
 
@@ -423,9 +424,54 @@ Spark is the centerpiece of a complete next-generation cluster infrastructure. F
     
     % Lets scientists interactively poke at data
 
-
-
 \section{API Description with Avro}
+
+Whereas bioinformatics practice has in the past centered around file formats as the interfaces between the different components of analysis systems, a move to shared infrastructure offers an opportunity, and in some ways creates a requirement, to standardize on application programming interfaces (APIs) instead. If the idea is to use shared infrastructure and send the code to the data, then the code is going to have to know how to run on the shared infrastructure when it gets there, by being written against a standardized API. Moreover, while any competent bioinformaticist can write a good-enough FASTA parser, in a system like HDFS, where even parsing a file can be a complex distributed operation, user applications would be best off delegating that sort of work.
+
+In addition to these sorts of internal APIs, a move to shared infrastructure will require creating external, higher-level query APIs, for the sorts of database searches and queries which do not necessarily merit spinning up an entire distributed processing pipeline.
+
+One method to specify these APIs, and the complex data types which they need to exchange, is with the interface description language (IDL) of Apache Avro \cite{apache2014avro}. This language allows the specification of protocols through which applications can exchange messages and data with pieces of shared infrastructure \cite{apache2014avro}. Remote procedure call (RPC) code for accessing these APIs either within a cloud computing environment or over the Internet can be automatically generated from the specification, targeting several popular languages \cite{apache2014avro}. Avro descriptions of record structures can also be used to define on-disk file formats for data stored in HDFS, with parallel serialization and deserialization code also being generated automatically \cite{massie2013powerful}. 
+
+An example Avro IDL is given below:
+
+\begin{lstlisting}
+protocol Aligner {
+    record Alignment {
+        string gappedQuery;
+        string gappedReference;
+    }
+    Alignment align(string query);
+}
+\end{lstlisting}
+
+This IDL defines a protocol called \texttt{Aligner}, which has one remote call, \texttt{align}. The \texttt{align} function takes a single string, which is the sequence to align, and returns an \texttt{Alignment} record, which is defined as a pair of strings representing the alignment of the query to some reference.
+
+% We want to standardize on APIs over file formats
+
+    % Because things like reading a file are hard at scale
+    
+    % Because if you want to send the code to the data, the code needs to be able to interface with the system surrounding it at the other end
+        
+        % Not all queries are big enough to merit sending up entire VMs
+        
+        % Even a VM you sent up would need to pull data out of this fancy distributed data store, which is more complicated than opening a file
+        
+    % Replace "formats" with "schemas"
+    
+    % Enumerate RPC operations that code you send up is going to have
+    
+    % Or that the shared datastores will present to outside users for queries.
+    
+% One method for specifying these APIs, and the data types that they exchange, is with the Interface Description Language (IDL) Apache Avro.
+    
+    % It integrates well with Spark and Hadoop
+    
+    % You can specify an API and get code generation for an RPC implementation.
+
+
+
+
+
 
 % We think we can make a better way using a few key technologies
 
