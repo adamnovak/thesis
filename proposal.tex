@@ -24,6 +24,7 @@
 
 \usepackage{url}
 \usepackage{listings}
+\usepackage{graphicx}
 
 \begin{document}
 
@@ -509,9 +510,20 @@ In addition to accounting for the existence of distinct alternatives for certain
 
 \chapter{Preliminary Work}
 
+I have already completed, or nearly completed, several smaller projects which are relevant to the work proposed here. The first of these is a web-based tool for visualizing information on cancer patients, which is tied to the project at hand by the thread of spatial metaphors. The second previous project, an analysis of copy number variation in the NOTCH2NL gene family, is an early example of how graphical models accounting for the existence of paralogs can produce useful biological results. The third project, a theoretical treatment of mapping to a graph-based reference genome, laid out a mathematical formalism for some of the problems which the current proposed work aims to solve.
+
 % I have already some some work on infrastructure for the scalable analysis of genomic variation.
 
 \section{Project \#1: Tumor Map Visualization}
+
+The first piece of preliminary work presented here is the UCSC Tumor Map, visible in Figure \ref{fig:tumormap}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=0.5\textwidth]{figures/tumormap.png}
+    \caption{A screenshot of the UCSC Tumor Map. Individual tumor samples are represented by cells in a hexagonal grid, laid out using a spring layout algorithm based on molecular similarity. Hexes can be colored using various data overlays, and statistical queries can be run interactively.}
+    \label{fig:tumormap}
+\end{figure}
 
 % I made a pan-cancer visualization of the entire cross-tissue TCGA data set
     
