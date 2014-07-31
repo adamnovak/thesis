@@ -493,6 +493,8 @@ This IDL defines a protocol called \texttt{Aligner}, which has one remote call, 
 
 \section{NOTCH2NL and Sequence Ambiguity}
     
+In addition to accounting for the existence of distinct alternatives for certain regions of the current human reference genome, graph-based approaches could also potentially assist with analyzing genomic regions which are problematically similar to each other. One example which is difficult to analyze for this region is the 1q21.1 region on chromosome 1, near the notoriously repetitive centromere \cite{jacobs2014recently}. This region contains, in the old GRCh37 human genome assembly, a gene called NOTCH2NL \cite{jacobs2014recently}. In light of new sequencing data from haploid cells, however, it has been found that this single gene in the reference assembly is actually four different genes, NOTCH2NL-A through -D, which had been misassembled together because of their high sequence identities \cite{jacobs2014recently}. Even once assembled correctly, the similarity of these four genes frustrates short-read mapping, because many reads are too short to map unambiguously to one copy over the others \cite{jacobs2014recently}. A graph-based conception of a reference genome might be able to improve the analysis of these genes, and other mutually-similar sets or genomic regions, by explicitly modeling the similarities at play and handling multimapping in a useful way.
+    
 % When this is done, I anticipate it being useful for things like NOTCH2NL
     
     % NOTCH2NL used to be annotated as one gene in hg19
