@@ -516,14 +516,24 @@ I have already completed, or nearly completed, several smaller projects which ar
 
 \section{Project \#1: Tumor Map Visualization}
 
-The first piece of preliminary work presented here is the UCSC Tumor Map, visible in Figure \ref{fig:tumormap}.
+The first piece of preliminary work presented here is the UCSC Tumor Map, visible in Figure \ref{fig:tumormap}. The Tumor Map is a web-based interactive analysis tool for exploring cancer data sets. 
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=0.5\textwidth]{figures/tumormap.png}
-    \caption{A screenshot of the UCSC Tumor Map. Individual tumor samples are represented by cells in a hexagonal grid, laid out using a spring layout algorithm based on molecular similarity. Hexes can be colored using various data overlays, and statistical queries can be run interactively.}
+    \includegraphics[width=1.0\textwidth]{figures/tumormap.png}
+    \caption{A screenshot of the UCSC Tumor Map. Individual tumor samples are represented by cells in a hexagonal grid, laid out using a spring layout algorithm based on molecular similarity. The map is browseable using a Google Maps interface. Hexes can be colored using various data overlays, and statistical queries can be run interactively.}
     \label{fig:tumormap}
 \end{figure}
+
+The visualization itself consists of a hexagonal grid on which tumor samples are arranged, with at most one sample in each cell. Samples are arranged according to sample-sample similarity values from a similarity matrix, which are then used as spring strengths in the DrL graph spring layout algorithm \cite{martin2008drl}. If the cell a sample would occupy is already filled, it is placed in a minimally distant free cell. This algorithm is found to produce ``islands'' of similar samples, with some interaction between and substructure within them.
+
+The hexagonal grid is conceptually a map: tumor samples are placed near other samples that they are similar to, and far from samples that they are very different from. This creates a two-dimensional space in which scientists can form and test hypotheses about what features drive these similarities and differences. To aid in this process, the Tumor Map provides a facility for displaying attribute overlays, allowing continuous, binary, or categorical per-sample data to be visualized in this space. By default, the visualization displays a tissue overlay, coloring each sample according to the tissue from which the tumor was originally derived. Other attribute overlays depicting per-tumor characteristics like mutations in important cancer genes, or the relative levels of activation of various transcriptional programs, can be brought up using the dropdown in the upper left. Up to two can be displayed at a time, using a dynamically-generated color scheme.
+
+The visualization provides facilities for running statistical tests on the attribute overlays. When the visualization is first opened, attributes are sorted by a layout-aware density metric, with attributes that have particularly high or low values significantly clustered together in the space defined by the map being sorted to the top of the list. Other statistical tests available include layout-aware and layout-independent association tests, to find other attributes statistically significantly related to a ``pivot'' attribute, and a dichotomy-based sort to find attributes that are statistically significantly different between two user-selected groups of samples. Using these tools, scientists can quickly ask and answer questions like ``what's special about this little clump of tumors budding off from this island?'' or ``what other kinds of tumors look like TP53-mutated tumors in this space?''.
+
+The current official version is built against the TCGA PanCancer data set, with a variety of locally-produced and imported overlays, but the code to generate the visualization is implemented as a Galaxy tool, and can be used to generate a visualization from any appropriately formatted similarity matrix and set of overlays \cite{weinstein2013cancer,giardine2005galaxy}. The full details about the data that went into the current sample visualization, as well as more information on the algorithms used, can be found in \cite{novak2014ucsc}.
+
+The UCSC Tumor Map is worth mentioning here primarily because, anecdotally, scientists appear to enjoy using it. Its primary focus is bringing the concept of space to pan-cancer tumor analysis, and, whether or not it ever gets used to discover an important novel result, it is clear that scientists want to be able to use spatial thinking to understand datasets. This lesson on the importance of spatial metaphors will be applied in the development of the graph-based genome representations that are proposed here.
 
 % I made a pan-cancer visualization of the entire cross-tissue TCGA data set
     
