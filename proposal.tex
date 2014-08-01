@@ -28,6 +28,9 @@
 
 \begin{document}
 
+% Have a command for vocab words
+\newcommand{\vocab}[1]{\textbf{#1}}
+
 % Declarations for Front Matter
 
 \title{Infrastructure for Scalable Analysis of Genomic Variation}
@@ -585,6 +588,53 @@ This prior work is important for the project being proposed now because it illus
     % See the paper.
 
 \section{Project \#3: Mapping to a Reference Genome Structure}
+
+In order to implement any sort of new data structure, it is necessary to work out what operations the structure is to support and how those algorithms are supposed to work. To that end, as a preliminary to the work proposed here, a rigorous mathematical model of ``reference structures'' and their associated operations \cite{paten2014mapping}. 
+
+% TODO: This section is lifted from the paper and needs to fit in with the rest (i.e. match in person and stuff).
+
+We model both reference and individual genome assemblies as \vocab{sequence graphs}, which allow for a more general class of assembly representation, and which incorporate phased contig/scaffold representations as a special case. 
+
+A \vocab{base instance} is a pair $(b,P)$ consisting of a labeling base $b$ in $\{\mathrm{A},\mathrm{C},\mathrm{T},\mathrm{G}\}$ and a \vocab{position} $P$. All positions are globally unique, so given a position $P$, one may determine the base at that position, i.e. the unique $b$ such that $(b,P)$ is a base instance. The nucleotides in all genomes are described as base instances. 
+
+In order to define a sequence graph, we need to specify how base instances are connected to form sequences. To do this generally, as DNA is double stranded, we must distinguish the forward and reverse complement orientations of base instances. Each base instance $(b,P)$ has a \vocab{left side}, denoted $P_l$, and a \vocab{right side}, denoted $P_r$. An \vocab{adjacency} is an unordered pair of two sides; an adjacency ${P_s, Q_t}$ asserts that the $s$ side of the base at position $P$ is connected to the $t$ side of the base at position $Q$. 
+
+A \vocab{sequence graph} $G = (V_G,E_G)$ is a bidirected graph \cite{medvedev2009maximum} in which each node in the set $V_G$ of nodes is a base instance and each edge in the set $E_G$ of edges is an adjacency connecting the sides of two base instances. The forward label of a node $(b,P)$ is the base $b$, and the reverse label is the reverse complement base $b*$, where $\mathrm{A}* = \mathrm{T}$, $\mathrm{T}* = \mathrm{A}$, $\mathrm{G}* = \mathrm{C}$, and $\mathrm{C}* = \mathrm{G}$. Using its sides for orientation, for a base instance $(b, P)$ we write $b(P_l) = b$ and $b(P_r) = b*$ to denote the base label oriented by the given side.
+
+A \vocab{linear thread} is a special kind of path in a sequence graph composed of a sequence of oriented nodes and edges terminated by oriented nodes, such that each node other than the first and last node on the path is entered on one side and exited on the other. Nodes can be visited more than once in a thread. The traversal of a thread specifies a sequence of nucleotides, decoded by enumerating the labels of base instances in the order and orientation specified by the thread, such that if a base instance $(b, P)$ is oriented from $P_l$ to $P_r$ then $b(P_l) = b$ is incorporated into the traversal, and if oriented from $P_r$  to $P_l$  then $b(P_r) = b*$ is incorporated into the traversal. A \vocab{circular thread} is a circular path of oriented nodes and edges in which each node is entered on one side and exited on the other. Its traversal is a circular sequence of nucleotides, like a mitochondrial or bacterial sequence.  
+
+A \vocab{contig graph}, or \vocab{contig}, is a sequence graph that consists of a single linear or circular thread with no node repetitions. A phased sequence graph is a sequence graph consisting of a set of disjoint contig subgraphs.
+
+Any sequence graph that is not a phased sequence graph is called \vocab{unphased}. Unphased sequence graphs can be used to represent genomes in which there is some uncertainty in phasing or assembly. They can also be used to represent populations of genomes in which numerous variations are described, e.g. an extension of a reference genome assembly to include more than one variant of some regions
+
+Let us assume that we are given an input sequence graph $G$ and a target sequence graph $H$. The task is to map the input base instances in $V_G$ to corresponding target base instances in $V_H$. Often the input graph will represent the genome of a particular individual and the target graph will be used as a reference genome. To avoid wrongly categorizing genetic variations in the input graph, we leave a base instance in $V_G$ unmapped if it can plausibly map to more than one base instance in $V_H$. The mapping may therefore be partial; i.e. it is not assumed that all elements of VG will be mapped. Since the identifier $P$ of the base instance $(b,P)$ determines the base $b$, it suffices to map positions uniquely to positions, i.e. identifiers to identifiers. However, to account for the double-sided nature of DNA strands, we must allow a position $P$ in $G$ to map to a position in $H$ in either the forward or reverse orientation. Formally, a mapping from a sequence graph $G$ to a sequence graph $H$ is a partial function $M$ from the set of positions in $G$ to the set of positions in $H$ such that for every position $P$ in $G$, either $M(P)$ is undefined and we say that position $P$ is \vocab{unmapped} in $H$, or there is a position $Q$ in $H$ such that $M(P) = Q$ and either $b(P_l) = b(Q_l)$ (and we say that $P$ is \vocab{forward mapped} to $Q$ in $H$), or $b(P_l) = b(Q_r)$ (and we say that $P$ is \vocab{reverse mapped} to $Q$ in $H$). In either of the latter two cases we say that position $P$ \vocab{maps} to the position $Q$ in $H$ (or more generally that the position $P$ is mapped in $H$).  
+
+Let $H$ be a phased sequence graph to be treated as a target (e.g. reference) genome. For each side $Q_s$ in $H$ the \vocab{unique context} of $Q_s$, denoted $U(Q_s)$, is the shortest suffix $u$ of the traversal of a thread in $H$ ending at $Q$ entered from its $s$ side, such that $u$ occurs exactly once as a traversal of a thread in $H$ (ending at any side of any node). The suffix $u$ includes the base of $Q$, and does not always include other bases. If no such unique suffix $u$ exists for $Q_s$, we say that the side $Q_s$ is \vocab{unmappable} (Fig. 4).
+
+For a side $P_s$ in a phased sequence graph $G$, $P_s$ is matched to a side $Q_t$ in a phased target sequence graph $H$ if a suffix of the traversal of the thread ending at and including $P$ entered from its s side is the same as $U(Q_t)$. The essential property of the unique contexts of $H$ is that, as a family, they don’t share suffixes, which means any side in any $G$ can be matched to at most one side in $H$. 
+
+Given the above matching of sides, the left-right exact match mapping $M_e$ of positions is defined as follows; a position $P$ in $G$ is:
+\begin{itemize}
+\item unmapped in $H$ (and $M_e(P)$ is undefined) if neither $P_l$ or $P_r$ are matched anywhere, 
+\item \vocab{left-mapped} at $M_e(P) = Q$ if $P_l$  is matched to a side of $Q$, but $P_r$  is not matched anywhere, 
+\item \vocab{right-mapped} at $M_e(P) = Q$ if $P_r$ is matched to a side of $Q$, but $P_l$ is not matched anywhere,
+\item \vocab{fully-mapped} at $M_e(P) = Q$ if $P_l$  is matched to one side of $Q$ and $P_r$ is matched to the other side of $Q$,
+\item else $P$ is \vocab{inconsistently-mapped} in $H$ (and $M_e(P)$ is undefined).
+\end{itemize}
+
+Combining cases, we say that position $P$ is mapped in $H$ if it is left-mapped, right-mapped or fully-mapped, and not mapped in $H$ if is it either unmapped or inconsistently-mapped. This defines the left-right exact match mapping $M_e$ from $G$ to $H$. 
+
+A toy example of a reference structure is given in Figure \ref{fig:lrexactmatch}.
+
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.0\textwidth]{figures/lrexactmatch.png}
+    \caption{An example of two query sequences (top and bottom) being mapped to a reference structure (middle) by the Left-Right Exact Match mapping scheme.}
+    \label{fig:lrexactmatch}
+\end{figure}
+
+A full description of reference structure theory is available in \cite{paten2014mapping}.
+
 
 % We developed a rigorous theory for making reference graphs, putting them in hierarchies, and mapping to them based on context.
 
