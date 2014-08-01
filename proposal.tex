@@ -562,7 +562,7 @@ The microarrays provided comparative genomic hybridization (CGH) data: for each 
 
 This information on probe mapping locations was used to create a graphical integer linear programming (ILP) model of the sample and standard normal genomes. Each probe mapping location became two graph nodes, one representing its copy number in the sample, and one representing its copy number in the standard normal genome (which may have itself had copy number differences relative to the hyatidiform mole assembly). Each mapping location in each genome had a linear programming variable representing its copy number, and constraints were added penalizing copy number differences between adjacent probe mapping locations. For each probe, all of its mapping locations in each genome were linked together in an affinity-weighted sum representing the total hybridization of that probe in that genome; the hybridization levels of each probe in each genome were constrained together to penalize deviation from the observed microarray hybridization ratios for the sample being analyzed (after normalizing against a series of control samples for the array, if available). Additionally, all copy number estimates were slightly penalized for deviations from the ordinarily expected value of 2 copies, which is generally what copy number is in a diploid genome. Each sample's linear programming problem was solved with the CBC linear programming solver, finding optimal copy numbers for each probe mapping location in each genome under the constraints imposed by the graph. The process was repeated with different linear programming constraint weights in order to distinguish high- and low-confidence copy number changes \cite{forrest2013cbc}.
 
-\begin{figure}[ht]
+\begin{figure}[h!t]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/notch2nl.png}
     \caption{Linear-programming-based copy number inference pipeline results for patients with microcephaly (red), patients with macrocephaly (blue), and control patients. Regions which are potentially (light) or with high confidence (dark) altered in copy number are highlighted. Black lines show linear-programming-processed copy numbers at microarray probe binding locations. NOTCH2NL-B copy number is reduced with high confidence in 4 of 8 patients with microcephaly. NOTCH2NL-A copy number is reduced with high confidence in 2 of 8 patients with microcephaly. The dataset is consistent with at least one copy of NOTCH2NL-A or NOTCH2NL-B being deleted in each microcephaly patient, and at least one being duplicated in each macrocephaly patient. No copy number alterations were detected in any of the NOTCH2NL genes for any of the controls. Adapted from \cite{jacobs2014recently} Figure 5B.}
@@ -593,15 +593,17 @@ In order to implement any sort of new data structure, it is necessary to work ou
 
 % TODO: This section is lifted from the paper and needs to fit in with the rest (i.e. match in person and stuff).
 
+% TODO: Make this section explanatory so you can understand where we're going with this.
+
 We model both reference and individual genome assemblies as \vocab{sequence graphs}, which allow for a more general class of assembly representation, and which incorporate phased contig/scaffold representations as a special case. 
 
 A \vocab{base instance} is a pair $(b,P)$ consisting of a labeling base $b$ in $\{\mathrm{A},\mathrm{C},\mathrm{T},\mathrm{G}\}$ and a \vocab{position} $P$. All positions are globally unique, so given a position $P$, one may determine the base at that position, i.e. the unique $b$ such that $(b,P)$ is a base instance. The nucleotides in all genomes are described as base instances. 
 
 In order to define a sequence graph, we need to specify how base instances are connected to form sequences. To do this generally, as DNA is double stranded, we must distinguish the forward and reverse complement orientations of base instances. Each base instance $(b,P)$ has a \vocab{left side}, denoted $P_l$, and a \vocab{right side}, denoted $P_r$. An \vocab{adjacency} is an unordered pair of two sides; an adjacency ${P_s, Q_t}$ asserts that the $s$ side of the base at position $P$ is connected to the $t$ side of the base at position $Q$. 
 
-A \vocab{sequence graph} $G = (V_G,E_G)$ is a bidirected graph \cite{medvedev2009maximum} in which each node in the set $V_G$ of nodes is a base instance and each edge in the set $E_G$ of edges is an adjacency connecting the sides of two base instances. The forward label of a node $(b,P)$ is the base $b$, and the reverse label is the reverse complement base $b*$, where $\mathrm{A}* = \mathrm{T}$, $\mathrm{T}* = \mathrm{A}$, $\mathrm{G}* = \mathrm{C}$, and $\mathrm{C}* = \mathrm{G}$. Using its sides for orientation, for a base instance $(b, P)$ we write $b(P_l) = b$ and $b(P_r) = b*$ to denote the base label oriented by the given side.
+A \vocab{sequence graph} $G = (V_G,E_G)$ is a bidirected graph \cite{medvedev2009maximum} in which each node in the set $V_G$ of nodes is a base instance and each edge in the set $E_G$ of edges is an adjacency connecting the sides of two base instances. The forward label of a node $(b,P)$ is the base $b$, and the reverse label is the reverse complement base $b^*$, where $\mathrm{A}^* = \mathrm{T}$, $\mathrm{T}^* = \mathrm{A}$, $\mathrm{G}^* = \mathrm{C}$, and $\mathrm{C}^* = \mathrm{G}$. Using its sides for orientation, for a base instance $(b, P)$ we write $b(P_l) = b$ and $b(P_r) = b^*$ to denote the base label oriented by the given side.
 
-A \vocab{linear thread} is a special kind of path in a sequence graph composed of a sequence of oriented nodes and edges terminated by oriented nodes, such that each node other than the first and last node on the path is entered on one side and exited on the other. Nodes can be visited more than once in a thread. The traversal of a thread specifies a sequence of nucleotides, decoded by enumerating the labels of base instances in the order and orientation specified by the thread, such that if a base instance $(b, P)$ is oriented from $P_l$ to $P_r$ then $b(P_l) = b$ is incorporated into the traversal, and if oriented from $P_r$  to $P_l$  then $b(P_r) = b*$ is incorporated into the traversal. A \vocab{circular thread} is a circular path of oriented nodes and edges in which each node is entered on one side and exited on the other. Its traversal is a circular sequence of nucleotides, like a mitochondrial or bacterial sequence.  
+A \vocab{linear thread} is a special kind of path in a sequence graph composed of a sequence of oriented nodes and edges terminated by oriented nodes, such that each node other than the first and last node on the path is entered on one side and exited on the other. Nodes can be visited more than once in a thread. The traversal of a thread specifies a sequence of nucleotides, decoded by enumerating the labels of base instances in the order and orientation specified by the thread, such that if a base instance $(b, P)$ is oriented from $P_l$ to $P_r$ then $b(P_l) = b$ is incorporated into the traversal, and if oriented from $P_r$  to $P_l$  then $b(P_r) = b^*$ is incorporated into the traversal. A \vocab{circular thread} is a circular path of oriented nodes and edges in which each node is entered on one side and exited on the other. Its traversal is a circular sequence of nucleotides, like a mitochondrial or bacterial sequence.  
 
 A \vocab{contig graph}, or \vocab{contig}, is a sequence graph that consists of a single linear or circular thread with no node repetitions. A phased sequence graph is a sequence graph consisting of a set of disjoint contig subgraphs.
 
@@ -624,16 +626,23 @@ Given the above matching of sides, the left-right exact match mapping $M_e$ of p
 
 Combining cases, we say that position $P$ is mapped in $H$ if it is left-mapped, right-mapped or fully-mapped, and not mapped in $H$ if is it either unmapped or inconsistently-mapped. This defines the left-right exact match mapping $M_e$ from $G$ to $H$. 
 
-A toy example of a reference structure is given in Figure \ref{fig:lrexactmatch}.
+A \vocab{mapping scheme} for a sequence graph $H$ is a definition, rule or procedure that defines a mapping $M$ from positions in $G$ to positions in $H$ for all possible sequence graphs $G$. The pair $(H, M)$, consisting of a sequence graph $H$ and a mapping scheme for $H$ is called a \vocab{reference structure}.  For example, if $H$ is a phased sequence graph and we define the mapping $M$ from $G$ to $H$ to be the mapping $M_e$ for each phased sequence graph $G$, and leave the mapping of every position in a unphased input graph $G$ undefined, then $M$ is a mapping scheme for $H$ and $(H, M)$ is a reference structure. 
+
+Toy examples of reference structures are given in Figures \ref{fig:lrexactmatch} and \ref{fig:lrexactmatchgraph}. A full description of reference structure theory is available in \cite{paten2014mapping}.
 
 \begin{figure}[ht]
     \centering
     \includegraphics[width=1.0\textwidth]{figures/lrexactmatch.png}
-    \caption{An example of two query sequences (top and bottom) being mapped to a reference structure (middle) by the Left-Right Exact Match mapping scheme.}
+    \caption{An example of two query sequences (top and bottom) being mapped to a Left-Right Exact Match reference structure (middle). Shown here are the unique contexts for every side in the sequence graph. For a node $(b, P)$ denoted with $L=t$ and $R=u$ the left unique context is the string $tb$ and the right unique context is the string $(bu)^*$; in this and subsequent figures the right unique context string is shown as its reverse complement so that both unique contexts of a position can be read from left-to-right. A side labeled ``None'' is unmappable.}
     \label{fig:lrexactmatch}
 \end{figure}
 
-A full description of reference structure theory is available in \cite{paten2014mapping}.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=1.0\textwidth]{figures/lrexactmatchgraph.png}
+    \caption{Mapping phased input sequence graphs to a target unphased sequence graph for the left-right exact match mapping case. The two haplotypes used to build the target sequence graph are shown as the input sequence graphs immediately above and below the target sequence graph.  L and R are left and right minimally unique contexts for all threads (excluding the base itself). A novel haplotype that differs from the haplotypes used to build the target sequence graph is shown at the bottom as an input sequence graph mapped to the target sequence graph.} 
+    \label{fig:lrexactmatchgraph}
+\end{figure}
 
 
 % We developed a rigorous theory for making reference graphs, putting them in hierarchies, and mapping to them based on context.
@@ -645,6 +654,8 @@ A full description of reference structure theory is available in \cite{paten2014
 % See the paper.
 
 \chapter{Proposed Work}
+
+Building on the foundations of the preliminary work described above, a three-part research agenda is proposed. First, the reference structure theory just described will be further developed with additional mapping schemes, culminating in the publication of a complete paper describing the theory and its new extensions. Second, this extended theory will be implemented in a set of scalable software tools, using advanced string and graph indexing algorithms, and presenting a well-defined API, suitable for use in a shared-infrastructure environment. Finally, these tools will be used to explore huamn genomic regions which have hitherto frustrated traditional analysis methods, like the major histocompatibility complex and the centromeres, in hopes of discovering and characterizing potentially important variation, with particular attention to structural variation.
 
 \section{Specific Aim \#1: Develop Reference Hierarchy Theory}
 
