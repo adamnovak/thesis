@@ -734,13 +734,15 @@ The culmination of this part of the research program will be a publication detai
 \section{Specific Aim \#2: Engineer Scalable Software Tools}
 \label{sec:aim2}
 
-The second main component of my project, which can to some extent happen concomitantly with the first, is to turn the above mathematical models into scalable code, which can process data sets on the order of a whole genome or larger.
+The second main component of my project, which can to some extent happen concomitantly with the first, is to turn the above mathematical models into scalable code, which can process data sets on the order of a whole genome or larger. Existing bioinformatics tools---most notably, aligners and variant callers---generally are not able to account for even the alt loci of GRCh37, let alone the hundreds of such loci in GRCh38 \cite{church2014story}. In order to merely correctly map to the current version of the human reference genome, new tools are required. Moreover, there are many potential applications of reference structures and reference hierarchy, most of which require a software implementation capable of working on billions of reference positions.
 
 \subsection{Build an Aligner for GRCh38 with Alt Loci}
 
+The first aspect of this is to build a tool capable of constructing a reference hierarchy from GRCh38, and and a tool for aligning short reads, or longer contigs, to this structure. These two tools together would constitute a reference-structure-based aligner and read mapper. This aligner would be useful primarily because of its ability to map to alt loci effectively, and because it would be able to map to general, higher-level merged reference structures in order to identify reads or portions of contigs as coming from a common genetic background. 
+
 \subsection{Incorporate Additional Variation}
 
-\subsection{Provide Reference Structure APIs}
+\subsection{Provide Reference Hierarchy APIs}
 
 \subsection{Deliverables} 
 
@@ -752,8 +754,7 @@ The second main component of my project, which can to some extent happen concomi
     
 % I need to build an aligner that can at least map to hg38 plus alt haplotypes
     
-    % Without getting upset that a read looks like it could map to multiple alts of the same region, and instead letting the aligner put it in that region.
-    
+    % Without getting upset that a read looks like it could map to multiple alts of the same region, and instead letting the aligner put it in that region.    
 % So far I've implemented a prototype aligner for the hg38 MHC region.
     
     % It merges with merging schemes and maps with mapping schemes.
