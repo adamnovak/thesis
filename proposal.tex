@@ -188,9 +188,91 @@ While these datasets might be manageable at their current sizes, on the order of
         
     % This is not going to be able to scale much bigger. Already it's very difficult for smaller labs to use these huge community data sets.
 
+\section{Interactive Distributed Computing with Apache Spark}
+
+In order to move bioinformatics to a shared-infrastructure model, it is necessary to build distributed bioinformatics tools. At least some of those tools should present interactive APIs accessible over the Internet; not every person who wants to make a query against shared infrastructure wants to write their own batch job to do it.
+
+One useful tool for building distributed, interactive applications is Apache Spark. Spark is designed as an improvement on earlier batch-oriented map/reduce implementations which, while scalable to very large data sets, are fundamentally non-interactive \cite{zaharia2012fast,zaharia2012resilient}. In Spark, intermediate results and frequently-accessed data sets can be kept in memory across the nodes of the cluster, instead of being spilled to disk, so repeated queries, iterative computations, and cumulative pipelines are much faster \cite{zaharia2012fast,zaharia2012resilient}. One of the major use cases of Spark is to provide an interactive terminal session for running queries on ``big data'' datasets \cite{zaharia2012fast,apache2014interactive}.
+
+In Spark, distributed data is stored in the form of Resilient Distributed Datasets (RDDs), which permit distributed in-memory data structures to survive node failures \cite{zaharia2012resilient}. Since large pieces of computing infrastructure often suffer from individual node failures, which can force a na\"{\i}vely-designed in-memory analysis pipeline to completely restart, this sort of fault tolerance is important \cite{thanakornworakij2013reliability}.
+
+Spark is the centerpiece of a complete next-generation cluster infrastructure. For persistent storage of data on disk, Spark integrates with Apache Hadoop's Hadoop Filesystem (HDFS), which effectively distributes and replicates large data files across cluster nodes' disks \cite{zaharia2012fast,borthakur2008hdfs}. Spark works to schedule operations on on-disk data on the nodes where the data is actually stored, to prevent it having to be sent over the network, and HDFS allows disk I/O to be distributed, partially compensating for the relative slowness of access to spinning disks \cite{borthakur2008hdfs}. For cluster job control, Spark integrates with Apache's next-generation cluster resource manager Mesos, or Hadoop's next-generation built-in scheduler YARN \cite{apache2014cluster}.
+
+Finally, while Spark is optimized for in-memory computing, it works perfectly well as a platform for batch jobs; the storage of commonly-accessed data in memory helps any job, especially jobs which need to iterate repeatedly on some intermediate state, such as machine learning pipelines \cite{zaharia2012fast}. This makes Spark, or a subset of or wrapper over Spark, a reasonable choice to present as an interface for people who \textit{do} want to make batch queries against shared infrastructure.
+
+% We are moving to shared infrastructure for a reason, not just so we can throw our existing tools on someone else's machines
+
+% The reason is that our data sets are getting too big to conveniently drag around with us
+
+% We need to use something fancier than your everyday C/Python/Perl/Bash amalgamation that is your typical bioinformatics pipeline.
+
+% We need tools that let us operate on large data sets in parallel, across many machines
+    
+    % Parallel storage
+    
+    % Parallel I/O
+    
+    % Parallel processing
+    
+% Apache Spark does this
+    
+    % Uses HDFS for parallel storage and I/O
+    
+        % Still need to replicate important data sets to different geographical/political/administrative regions to avoid things like someone blowing them up, but basically solves data loss due to disk failures.
+        
+    % Lets you specify iterative computations that happen in memory, distributed across your cluster.
+    
+    % With Mesos, multiple users can work on the same infrastructure against the same dataset.
+    
+    % Lets scientists interactively poke at data
+
+\section{API Description with Avro}
+
+Whereas bioinformatics practice has in the past centered around file formats as the interfaces between the different components of analysis systems, a move to shared infrastructure offers an opportunity, and in some ways creates a requirement, to standardize on application programming interfaces (APIs) instead. If the idea is to use shared infrastructure and send the code to the data, then the code is going to have to know how to run on the shared infrastructure when it gets there, by being written against a standardized API. Moreover, while any competent bioinformaticist can write a good-enough single-threaded FASTA parser, in a system like HDFS, where parsing a file can be a complex distributed operation, user applications would be best off delegating that sort of work.
+
+In addition to these sorts of internal APIs, a move to shared infrastructure will, as mentioned above, require creating external, higher-level query APIs, for the sorts of database searches and queries which do not necessarily merit spinning up an entire distributed processing pipeline.
+
+One method to specify these APIs, and the complex data types which they need to exchange, is with the interface description language (IDL) of Apache Avro \cite{apache2014avro}. This language allows the specification of protocols through which applications can exchange messages and data with pieces of shared infrastructure \cite{apache2014avro}. Remote procedure call (RPC) code for accessing these APIs either within a cloud computing environment or over the Internet can be automatically generated in several popular languages \cite{apache2014avro}. If the resource happens to be local, it can be (at least in some target languages) accessed through the same generated interface. Avro descriptions of record structures can also be used to define on-disk file formats for data stored in HDFS, with parallel serialization and deserialization code also being generated automatically \cite{massie2013powerful}. 
+
+An example Avro IDL is given below:
+
+\begin{lstlisting}[basicstyle=\ttfamily, frame=single]
+protocol Aligner {
+    record Alignment {
+        string gappedQuery;
+        string gappedReference;
+    }
+    Alignment align(string query);
+}
+\end{lstlisting}
+
+This IDL defines a protocol called \texttt{Aligner}, which has one remote call, \texttt{align}. The \texttt{align} function takes a single string, which is the sequence to align, and returns an \texttt{Alignment} record, which is defined as a pair of strings representing the alignment of the query to some reference.
+
+% We want to standardize on APIs over file formats
+
+    % Because things like reading a file are hard at scale
+    
+    % Because if you want to send the code to the data, the code needs to be able to interface with the system surrounding it at the other end
+        
+        % Not all queries are big enough to merit sending up entire VMs
+        
+        % Even a VM you sent up would need to pull data out of this fancy distributed data store, which is more complicated than opening a file
+        
+    % Replace "formats" with "schemas"
+    
+    % Enumerate RPC operations that code you send up is going to have
+    
+    % Or that the shared datastores will present to outside users for queries.
+    
+% One method for specifying these APIs, and the data types that they exchange, is with the Interface Description Language (IDL) Apache Avro.
+    
+    % It integrates well with Spark and Hadoop
+    
+    % You can specify an API and get code generation for an RPC implementation.
+
 \section{How Genomics Works}
 
-Human genomics exists in the context of the official human reference genome, maintained by the Genome Reference Consortium (GRC) \cite{church2011modernizing}. This reference genome assembly was originally created by stitching together actual observed pieces of DNA sequence into a single-copy haploid ``golden path'' representing a complete genome \cite{church2011modernizing}. Under this model, a hypothetical perfect assembly would have a single \vocab{contig}, or contiguous linear string of DNA bases, per chromosome. This naturally suggests a coordinate system: bases can be referred to by the contig they are on and their offset from the beginning of that contig.
+One piece of shared infrastructure that bioinformatics already uses is the human reference genome, built at great expense at the turn of the millennium and maintained by the Genome Reference Consortium (GRC) \cite{church2011modernizing}. This reference genome assembly was originally created by stitching together actual observed pieces of DNA sequence into a single-copy haploid \vocab{golden path} representing a complete genome \cite{church2011modernizing}. Under this model, a hypothetical perfect assembly would have a single \vocab{contig}, or contiguous linear string of DNA bases, per chromosome. This naturally suggests a coordinate system: bases can be referred to by the contig they are on and their offset from the beginning of that contig.
 
 This coordinate system is a critical piece of genomics infrastructure. It allows the reference genome to be annotated with genes and other elements. It provides the backbone to which descriptions of genomic variation are anchored. It defines the space in which genome sequencing happens, as short reads from sequencing machines are \vocab{mapped} to positions in this space. The entire field depends on this coordinate system.
 
@@ -246,6 +328,8 @@ Furthermore, there are no fewer than three distinct syntaxes for specifying vari
 
 A final issue with the VCF format is its tight coupling to the linearity of the reference genome. While its breakend system allows the specification of complex rearrangement graphs for samples, there is no explicit support for even the alt loci of the current GRCh38 reference. If one were to specify variant records on one of the MHC alt haplotypes, for example, there would be no way to specify phasing with variants on the main chr6, because VCF specifies records with different chromosome names to be unphased relative to each other \cite{marshall2013variant}. Moreover, there is no way to explicitly specify that a sample uses a certain alt locus; it would be necessary to infer this from the existence of called genotypes in the coordinates of that alt. It would certainly be possible adopt certain conventions within the existing VCF format to work around this problem (for example, wiring the alt loci into their parent chromosomes with breakends whenever they are present), but no such conventions are standardized, and they are thus useless for data interchange.
 
+A graph-based approach to the description of genomic variants could alleviate several of these problems, defining explicitly when an individual matches the primary path of the reference, and expressing clearly and concisely the alt loci that an individual carries, and any variations on top of them, in a single sufficiently general syntax.
+
 % How variant analysis works
 
     % Make big VCFs
@@ -268,6 +352,24 @@ A final issue with the VCF format is its tight coupling to the linearity of the 
     
 % So the old way of doing things is fraying around the edges
 
+\section{NOTCH2NL and Sequence Ambiguity}
+    
+In addition to accounting for the existence of distinct alternatives for certain regions of the current human reference genome, graph-based approaches could also potentially assist with analyzing genomic regions which are problematically similar to each other. One example is the 1q21.1 region on chromosome 1, near the notoriously repetitive centromere \cite{jacobs2014recently}. This region contains, in the old GRCh37 human genome assembly, a gene called NOTCH2NL \cite{jacobs2014recently}. It also contains ``the 1q21.1 distal deletion/duplication locus'' \cite{jacobs2014recently}, a region which has previously been associated with microcephaly (the development of an abnormally small head and brain) and macrocephaly (the development of an abnormally large head and brain) \cite{jacobs2014recently}. In the GRCh37 assembly, these two features are separated by another region, the ``Thrombocytopenia Absent Radius'' (TAR) region, the deletion of which causes, among other symptoms, the lack of a radius bone in the arm \cite{jacobs2014recently}. This has been thought to preclude the involvement of NOTCH2NL in microcephaly and macrocephaly, because generally patients with those conditions do not also suffer from TAR syndrome \cite{jacobs2014recently}.
+
+In light of new sequencing data from haploid cells, it has been found that the single NOTCH2NL gene in the GRCh37 assembly is actually four different genes, NOTCH2NL-A through -D, which were misassembled together because of their high sequence identities \cite{jacobs2014recently}. Furthermore, the TAR region does not actually appear to fall between NOTCH2NL-A, which best corresponds to the old assembly's NOTCH2NL, and the 1q21.1 locus \cite{jacobs2014recently}. Even after these assembly errors are corrected, however, the similarity of these four genes frustrates short-read mapping, because many reads are too short to map unambiguously to one copy over the others \cite{jacobs2014recently}. A graph-based conception of a reference genome might be able to improve the analysis of these genes, and other mutually-similar sets or genomic regions, by explicitly modeling the similarities at play and handling multimapping in a useful way.
+    
+% When this is done, I anticipate it being useful for things like NOTCH2NL
+    
+    % NOTCH2NL used to be annotated as one gene in hg19
+    
+    % In hg38 we've worked out that it is really 4 similar genes, -A through -D.
+    
+    % Now we have 4 very similar genes, near each other, and we want to look at variation in them.
+    
+    % We have all this microarray data and sequencing data that's super hard to pin down to one and only one paralog.
+    
+    % To get something out of this region, we need a way to work with multimapped data in a rigorous way.
+
 \section{String Compression with the Burrows-Wheeler Transform}
 \label{sec:bwt}
 
@@ -279,7 +381,7 @@ The BWT operates by taking the string to be compressed (generally with a sentine
 
 The BWT makes strings more compressible by grouping characters by the context they appear in (specifically, the strings they appear before). If two characters both appear before a suffix starting with ``andy'', they will appear near each other in the BWT. Assuming some letters are more likely to precede this string than others are (for example, ``c'' and ``h'' as opposed to ``e'' or ``n''), this creates a region of the BWT which is enriched for those characters. This in turn makes that region more compressible by something like move-to-front encoding or even simple run-length encoding \cite{burrows1994block}.
 
-The implied BWT matrix, with all the sorted rotations as rows, is generally not kept, but it is often useful to consider the BWT string in its context as the last column of this matrix \cite{burrows1994block, ferragina2000opportunistic}. It is also useful to think of this matrix as made up of ``character instances'', where characters in the matrix that are derived from the same position in the original string are the same character instance. (Imagine uniquely numbering the character at each position on the original string before creating the matrix.) Such a matrix is visible in Figure \ref{fig:bwt}.
+The implied BWT matrix, with all the sorted rotations as rows, is generally not kept, but it is often useful to consider the BWT string in its context as the last column of this matrix \cite{burrows1994block, ferragina2000opportunistic}. It is also useful to think of this matrix as made up of ``character instances'', where characters in the matrix that are derived from the same position in the original string are the same character instance. (Imagine uniquely numbering the character at each position on the original string before creating the matrix.) Such a matrix is visible in Figure~\ref{fig:bwt}.
 
 \begin{figure}[ht]
     \centering
@@ -302,7 +404,7 @@ Note that the instances of any given character in the last column appear in the 
     
 \section{Substring Search with the Suffix Array}
 
-The \vocab{suffix array} of a string is an array of indices into the string, sorted in the lexicographical order of the suffixes that they point to \cite{manber1993suffix}. For example, the string ``dog'' has suffixes ``dog'' at index 0, ``og'' at index 1, and ``g'' at index 2, so its suffix array would be $[0, 2, 1]$, corresponding to the suffix sort order $[\textrm{``dog''}, \textrm{``g''}, \textrm{``og''}]$. Another example suffix array is visiple in the leftmost column of Figure \ref{fig:bwt}.
+The \vocab{suffix array} of a string is an array of indices into the string, sorted in the lexicographical order of the suffixes that they point to \cite{manber1993suffix}. For example, the string ``dog'' has suffixes ``dog'' at index 0, ``og'' at index 1, and ``g'' at index 2, so its suffix array would be $[0, 2, 1]$, corresponding to the suffix sort order $[\textrm{``dog''}, \textrm{``g''}, \textrm{``og''}]$. Another example suffix array is visiple in the leftmost column of Figure~\ref{fig:bwt}.
 
 Suffix arrays have some useful properties. The most important of these is that all of the suffixes that start with the same substring appear in a single contiguous block \cite{ferragina2000opportunistic}. This block starts at the position corresponding to the number of occurrences of lexicographically smaller substrings of the same length \cite{ferragina2000opportunistic}. This is particularly obvious in the case of single-character substrings: all the suffixes (and, thus, all the substrings) beginning with a certain character appear in one block, coming immediately after all suffixes beginning with lexicographically smaller characters.
 
@@ -330,11 +432,11 @@ The FM-index is based primarily on the idea of an LF (i.e. last-first) mapping. 
 
 The LF-mapping can be calculated easily from the BWT. To LF-map the character instance at a certain index in the BWT, count up the number of characters in the BWT lexicographically less than the character, and add the character instance's rank among all instances of that character. This gives the index of the LF-mapping result in the BWT.
 
-To see why this works, recall that in a suffix array, and thus also in the BWT matrix, all the suffixes (or here rotations) that start with a given character form a contiguous block, coming just after all those beginning with smaller characters. Thus, the first calculation is to find the start of this block. And since, as shown in section~\ref{sec:bwt}, the relative order of character instances in the first column is the same as that in the last column, to find the offset into that contiguous block that this particular character instance resides at, we merely need to find its rank among instances of the same character in the last column, which is the BWT string \cite{langmead2013introduction}.
+To see why this works, recall that in a suffix array, and thus also in the BWT matrix, all the suffixes (or here rotations) that start with a given character form a contiguous block, coming just after all those beginning with smaller characters. Thus, the first calculation is to find the start of this block. And since, as shown in Section~\ref{sec:bwt}, the relative order of character instances in the first column is the same as that in the last column, to find the offset into that contiguous block that this particular character instance resides at, we merely need to find its rank among instances of the same character in the last column, which is the BWT string \cite{langmead2013introduction}.
 
 The LF-mapping in turn can be used to construct a search algorithm, which will find the start and end indices of the range of rows in the BWT matrix that begin with some query string. This search algorithm is an example of ``backward search'', because it processes the characters in the query string from back to front. The algorithm begins by selecting the entire BWT matrix, which is the range beginning with the empty string. Then, for each character in the query string, from the last forwards, the algorithm extends the searched string at the front with that character. It takes the new character and finds the ranks in the BWT of first and last instances of it contained within the currently selected result range. It then LF-maps each of those instances, and takes the range between them as the search result for the search string extended with that character. If there are no instances of the character to map, then the searched string is not found in the index \cite{ferragina2000opportunistic}.
 
-Each row of the BWT matrix in the old range started with an instance of the old search string. Each of the rows that ended in the new query character corresponded to an instance of the old search string occurring after the new query character, and thus implying an instance of the new, one-character-longer search string. The LF-mapping step finds the rows in the BWT matrix where the instances of the new query character appear at the beginning. Thus, such an algorithm can be used to search for substrings in a string, using the BWT of the string \cite{ferragina2000opportunistic}.
+Each row of the BWT matrix in the old range started with an instance of the old search string. Each of the rows that ended in the new query character corresponded to an instance of the old search string occurring after the new query character, and thus each implies an instance of the new, one-character-longer search string. The LF-mapping step finds the subset of the rows in the BWT matrix where the instances of the new query character appear at the beginning. Thus, such an algorithm can be used to search for substrings in a string, using the BWT of the string \cite{ferragina2000opportunistic}.
 
 By pre-calculating some auxiliary data structures, such as a table with the start index of each character's range in the BWT matrix, and succinct data structures for $O(1)$ rank queries, this algorithm can be made to run in time linear in the length of the query string, and constant in the length of the index \cite{ferragina2000opportunistic}. Furthermore, by augmenting the data structure with a downsampled copy of the suffix array, the location of each result in its source string can be calculated efficiently \cite{siren2009run}.
 
@@ -356,17 +458,17 @@ By pre-calculating some auxiliary data structures, such as a table with the star
 
 \section{Bidirectional DNA Search with the FMD-Index}
 
-BWT-based indices have found many applications in genomics, mostly due to their ability to efficiently search for and identify the locations of a substrings in very large data sets---with a few modifications, this is nearly the same as the read alignment problem. The popular short read aligner \texttt{bwa}, for example, is built on an FM-index of the reference genome; indeed, the name stands for ``Burrows--Wheeler Aligner'' \cite{li2014bwa,li2009fast}. The ``String Graph Assembler'' \texttt{sga} also uses a BWT-based index to do its work, but in this case indexes reads themselves \cite{simpson2012efficient}.
+BWT-based indices have found many applications in genomics, mostly due to their ability to efficiently search for and identify the locations of a substrings in very large data sets---with a few modifications, this search can be extended to align reads to a reference \cite{li2014bwa}. The popular short read aligner \texttt{bwa}, for example, is built on an FM-index of the reference genome; indeed, the name stands for ``Burrows--Wheeler Aligner'' \cite{li2014bwa,li2009fast}. The ``String Graph Assembler'' \texttt{sga} also uses a BWT-based index to do its work, but in this case indexes reads themselves \cite{simpson2012efficient}.
 
 In genomics, the strings being indexed are DNA strings, consisting of As, Gs, Cs, and Ts. These DNA strings are usually excerpts from double-stranded DNA genomes, in which, for each chromosome, two strands of DNA form a double helix. One strand runs in one direction, and the other strand runs in the other direction, with bases complemented (As and Ts swapped, and Gs and Cs swapped). It's impossible to tell whether a DNA sequencing read came from the forward strand or the reverse-complement strand until a match is found for it in a reference somewhere. Thus, many analysis problems in genomics need to consider not only some set of DNA strings but also their reverse complements.
 
-The existence of reverse complements is accounted for in \texttt{sga} by creating two FM-indices of the input data: one index of the forward strand, and one of the implied reverse-complement strand \cite{simpson2012efficient}. This construction allows for some DNA query string to be searched against both indices, and for results to be collected from both strands of each sequence in the index.
+The existence of reverse complements is accounted for in \texttt{sga} by creating two FM-indices of the input data: one index of the forward strand, and one of the reverse-complement strand \cite{simpson2012efficient}. This construction allows for DNA query strings to be searched against both indices, and for results to be collected from both strands of each sequence in the index.
 
 However, there is a more elegant approach which allows the same search to be performed against a single index, and moreover allows bidirectional extension of the search string. This data structure, the ``FMD-index'' (the ``D'' is for ``DNA''), is simply an FM-index of both the forward and reverse strands of all input sequences, concatenated into a single data set \cite{li2012exploring}.
 
-The FMD-index provides for double-ended search; that is, an intermediate search result can be extended with a character on either the left or right end of the query string. This works by having the FMD-index store as its intermediate result not just the single range in the BWT corresponding to BWT matrix rows that start with the query string, but also the (equally long) range of the BWT corresponding to rows that start with the reverse complement of the query string \cite{li2012exploring}. The fact that these two intervals will always be equally long is the key to the algorithm: because each string in the index is present as both itself and its reverse complement, any suffix of an indexed string beginning with the query string has a corresponding suffix of the reverse complement of that string which begins with the reverse-complemented query string. Also important to note is that while the forward range is jumping around in BWT coordinate space, extending the query string on the left always causes the reverse range to cover a subrange of what it covered previously (since the reverse complement of the query string was extended on the right, only BWT matrix rows which began with the original reverse-complement query string can possibly also begin with the longer reverse-complement query string).
+The FMD-index provides for double-ended search; that is, an intermediate search result can be extended with a character on either the left or right end of the query string. This works by having the FMD-index store as its intermediate result not just the single range in the BWT corresponding to BWT matrix rows that start with the query string, but also the (equally long) range of the BWT corresponding to rows that start with the reverse complement of the query string \cite{li2012exploring}. The fact that these two intervals will always be equally long is the key to the algorithm: because each string in the index is present as both itself and its reverse complement, any suffix of an indexed string beginning with the query string has a corresponding suffix of the reverse complement of that string which begins with the reverse-complemented query string. Also important to note is that while the forward range is jumping around in BWT coordinate space (to the regions of the BWT matrix that begin with the newly added character), extending the query string on the left always causes the reverse range to cover a subrange of what it covered previously: since the reverse complement of the query string was extended on the right, only BWT matrix rows which began with the original reverse-complement query string can possibly also begin with the longer reverse-complement query string.
 
-When the query string is extended on the left, the range corresponding to the results for the forward-orientation search string is updated as normal. The range corresponding to the reverse-complement orientation is updated by using the new interval length derived from the forward range, and a small dynamic programming problem is done over the alphabet to find the beginning of the subset of the reverse range. This is fairly simple because the reverse range can be partitioned into the ranges that would be selected upon left-extension with any character, ordered in lexicographic order by the reverse complement of the character. The dynamic programming simply consists of considering extending on each character up to the one actually being used in lexicographic order by reverse complement, calculating how long the result set would be on the forward strand, and adding that to the start of the reverse strand interval \cite{li2012exploring}.
+The FMD-index search algorithm works as follows: When the query string is extended on the left, the range corresponding to the results for the forward-orientation search string is updated as normal. The range corresponding to the reverse-complement orientation is updated by using the new interval length derived from the forward range, and a small dynamic programming problem is done over the alphabet to find the beginning of the subset of the reverse range. This is fairly simple because the reverse range can be partitioned into the ranges that would be selected upon left-extension with any character, ordered in lexicographic order by the reverse complement of the character. The dynamic programming simply consists of considering extending on each character up to the one actually being used in lexicographic order by reverse complement, calculating how long the result set would be on the forward strand, and adding that to the start of the reverse strand interval \cite{li2012exploring}.
 
 % TODO: Nobody will possibly be able to understand this. I wish someone else had ever explained this so I could steal their logic. Maybe I need an actual diagram here.
 
@@ -380,7 +482,7 @@ When the query string is extended on the left, the range corresponding to the re
 
 \section{Previous Graph Indices}
 
-If it is not yet obvious, the work that I am proposing involves implementing efficient search over graphs of genomic data. This is not a new idea. Many of the current approaches to this problem come at it from the perspective of trying to index a multiple sequence alignment \cite{siren2014indexing}. Two such approaches are described below.
+The work that I am proposing involves implementing efficient search over graphs of genomic sequence data. This is not a new idea. Many of the current approaches to this problem come at it from the perspective of trying to index a multiple sequence alignment \cite{siren2014indexing}. Two such approaches are described below.
 
 One approach, the Generalized Compressed Suffix Array (GCSA), extends the XBW transform (itself a generalization of the BWT to trees) to ``prefix-range-sorted automata'', which includes de Bruijn graphs, but which does not include all directed labeled graphs \cite{siren2014indexing}. However, the authors of that approach present only an implementation for (acyclic) multiple sequence alignments \cite{siren2014indexing}. Moreover, the approach presented there indexes all possible paths through the graph in question, which is a reasonable choice for indices derived from multiple alignments, but which might backfire for graphs with more complex cyclic structures, if such graphs can even be represented as prefix-range-sorted automata \cite{siren2014indexing}. The existence of polymorphic inversions, for example, where a genomic region is forwards in some individuals but backwards in others, is not addressed \cite{siren2014indexing}.
 
@@ -391,88 +493,6 @@ Another, slightly newer approach uses the concept of a ``population reference gr
 % Talk about lockstep HMM chromotype approach
 
     % Not really an index
-
-\section{Interactive Distributed Computing with Apache Spark}
-
-In order to move bioinformatics to a shared-infrastructure model, it is necessary to build distributed bioinformatics tools. At least some of those tools should present interactive APIs accessible over the Internet; not every person who wants to make a query against shared infrastructure wants to have to write their own batch job to do it.
-
-One useful tool for building distributed, interactive applications is Apache Spark. Spark is designed as an improvement on earlier batch-oriented map/reduce implementations which, while scalable to very large data sets, are fundamentally non-interactive \cite{zaharia2012fast,zaharia2012resilient}. In Spark, intermediate results and frequently-accessed data sets can be kept in memory across the nodes of the cluster, instead of being spilled to disk, so repeated queries, iterative computations, and cumulative pipelines are much faster \cite{zaharia2012fast,zaharia2012resilient}. One of the major use cases of Spark is to provide an interactive terminal session for running queries on ``big data'' datasets \cite{zaharia2012fast,apache2014interactive}.
-
-In Spark, distributed data is stored in the form of Resilient Distributed Datasets (RDDs), which permit distributed in-memory data structures to survive node failures \cite{zaharia2012resilient}. Since large pieces of computing infrastructure often suffer from individual node failures, which can force a naively-designed in-memory analysis pipeline to completely restart, this sort of fault tolerance is important \cite{thanakornworakij2013reliability}.
-
-Spark is the centerpiece of a complete next-generation cluster infrastructure. For persistent storage of data on disk, Spark integrates with Apache Hadoop's Hadoop Filesystem (HDFS) system, which effectively distributes and replicates large data files across cluster nodes' disks \cite{zaharia2012fast,borthakur2008hdfs}. Spark works to schedule operations on on-disk data on the nodes where the data is actually stored, to prevent it having to be sent over the network, and allows disk I/O to be distributed, partially compensating for the relative slowness of access to spinning disks \cite{borthakur2008hdfs}. For cluster job control, Spark integrates with Apache's next-generation cluster resource manager Mesos, or Hadoop's next-generation built-in YARN scheduler \cite{apache2014cluster}.
-
-% We are moving to shared infrastructure for a reason, not just so we can throw our existing tools on someone else's machines
-
-% The reason is that our data sets are getting too big to conveniently drag around with us
-
-% We need to use something fancier than your everyday C/Python/Perl/Bash amalgamation that is your typical bioinformatics pipeline.
-
-% We need tools that let us operate on large data sets in parallel, across many machines
-    
-    % Parallel storage
-    
-    % Parallel I/O
-    
-    % Parallel processing
-    
-% Apache Spark does this
-    
-    % Uses HDFS for parallel storage and I/O
-    
-        % Still need to replicate important data sets to different geographical/political/administrative regions to avoid things like someone blowing them up, but basically solves data loss due to disk failures.
-        
-    % Lets you specify iterative computations that happen in memory, distributed across your cluster.
-    
-    % With Mesos, multiple users can work on the same infrastructure against the same dataset.
-    
-    % Lets scientists interactively poke at data
-
-\section{API Description with Avro}
-
-Whereas bioinformatics practice has in the past centered around file formats as the interfaces between the different components of analysis systems, a move to shared infrastructure offers an opportunity, and in some ways creates a requirement, to standardize on application programming interfaces (APIs) instead. If the idea is to use shared infrastructure and send the code to the data, then the code is going to have to know how to run on the shared infrastructure when it gets there, by being written against a standardized API. Moreover, while any competent bioinformaticist can write a good-enough FASTA parser, in a system like HDFS, where even parsing a file can be a complex distributed operation, user applications would be best off delegating that sort of work.
-
-In addition to these sorts of internal APIs, a move to shared infrastructure will require creating external, higher-level query APIs, for the sorts of database searches and queries which do not necessarily merit spinning up an entire distributed processing pipeline.
-
-One method to specify these APIs, and the complex data types which they need to exchange, is with the interface description language (IDL) of Apache Avro \cite{apache2014avro}. This language allows the specification of protocols through which applications can exchange messages and data with pieces of shared infrastructure \cite{apache2014avro}. Remote procedure call (RPC) code for accessing these APIs either within a cloud computing environment or over the Internet can be automatically generated from the specification, targeting several popular languages \cite{apache2014avro}. Avro descriptions of record structures can also be used to define on-disk file formats for data stored in HDFS, with parallel serialization and deserialization code also being generated automatically \cite{massie2013powerful}. 
-
-An example Avro IDL is given below:
-
-\begin{lstlisting}
-protocol Aligner {
-    record Alignment {
-        string gappedQuery;
-        string gappedReference;
-    }
-    Alignment align(string query);
-}
-\end{lstlisting}
-
-This IDL defines a protocol called \texttt{Aligner}, which has one remote call, \texttt{align}. The \texttt{align} function takes a single string, which is the sequence to align, and returns an \texttt{Alignment} record, which is defined as a pair of strings representing the alignment of the query to some reference.
-
-% We want to standardize on APIs over file formats
-
-    % Because things like reading a file are hard at scale
-    
-    % Because if you want to send the code to the data, the code needs to be able to interface with the system surrounding it at the other end
-        
-        % Not all queries are big enough to merit sending up entire VMs
-        
-        % Even a VM you sent up would need to pull data out of this fancy distributed data store, which is more complicated than opening a file
-        
-    % Replace "formats" with "schemas"
-    
-    % Enumerate RPC operations that code you send up is going to have
-    
-    % Or that the shared datastores will present to outside users for queries.
-    
-% One method for specifying these APIs, and the data types that they exchange, is with the Interface Description Language (IDL) Apache Avro.
-    
-    % It integrates well with Spark and Hadoop
-    
-    % You can specify an API and get code generation for an RPC implementation.
-
-
 
 
 
@@ -495,24 +515,6 @@ This IDL defines a protocol called \texttt{Aligner}, which has one remote call, 
     
     % We want to employ Avro to give this system a consistent API accessible from a variety of languages.
 
-\section{NOTCH2NL and Sequence Ambiguity}
-    
-In addition to accounting for the existence of distinct alternatives for certain regions of the current human reference genome, graph-based approaches could also potentially assist with analyzing genomic regions which are problematically similar to each other. One example which is difficult to analyze for this region is the 1q21.1 region on chromosome 1, near the notoriously repetitive centromere \cite{jacobs2014recently}. This region contains, in the old GRCh37 human genome assembly, a gene called NOTCH2NL \cite{jacobs2014recently}. It also contains ``the 1q21.1 distal deletion/duplication locus'', a region which has previously been associated with microcephaly (the development of an abnormally small head and brain) and macrocephaly (the development of an abnormally large head and brain) \cite{jacobs2014recently}. In the GRCh37 assembly, these two features are separated by another region, the ``Thrombocytopenia Absent Radius'' (TAR) region, the deletion of which causes, among other symptoms, the lack of a radius bone in the arm \cite{jacobs2014recently}.
-
-In light of new sequencing data from haploid cells, it has been found that the single NOTCH2NL gene in the GRCh37 assembly is actually four different genes, NOTCH2NL-A through -D, which were misassembled together because of their high sequence identities \cite{jacobs2014recently}. Furthermore, the TAR region does not actually appear to fall between NOTCH2NL-A, which best corresponds to the old assembly's NOTCH2NL, and the 1q21.1 locus \cite{jacobs2014recently}. Even after these assembly errors are corrected, however, the similarity of these four genes frustrates short-read mapping, because many reads are too short to map unambiguously to one copy over the others \cite{jacobs2014recently}. A graph-based conception of a reference genome might be able to improve the analysis of these genes, and other mutually-similar sets or genomic regions, by explicitly modeling the similarities at play and handling multimapping in a useful way.
-    
-% When this is done, I anticipate it being useful for things like NOTCH2NL
-    
-    % NOTCH2NL used to be annotated as one gene in hg19
-    
-    % In hg38 we've worked out that it is really 4 similar genes, -A through -D.
-    
-    % Now we have 4 very similar genes, near each other, and we want to look at variation in them.
-    
-    % We have all this microarray data and sequencing data that's super hard to pin down to one and only one paralog.
-    
-    % To get something out of this region, we need a way to work with multimapped data in a rigorous way.
-
 \chapter{Preliminary Work}
 
 I have already completed, or nearly completed, several smaller projects which are relevant to the work proposed here. The first of these is a web-based tool for visualizing information on cancer patients, which is tied to the project at hand by the thread of spatial metaphors. The second previous project, an analysis of copy number variation in the NOTCH2NL gene family, is an early example of how graphical models accounting for the existence of paralogs can produce useful biological results. The third project, a theoretical treatment of mapping to a graph-based reference genome, laid out a mathematical formalism for some of the problems which the current proposed work aims to solve.
@@ -521,7 +523,7 @@ I have already completed, or nearly completed, several smaller projects which ar
 
 \section{Project \#1: Tumor Map Visualization}
 
-The first piece of preliminary work presented here is the UCSC Tumor Map, visible in Figure \ref{fig:tumormap}. The Tumor Map is a web-based interactive analysis tool for exploring cancer data sets. 
+The first piece of preliminary work presented here is the UCSC Tumor Map, visible in Figure~\ref{fig:tumormap}. The Tumor Map is a web-based interactive analysis tool for exploring cancer data sets. 
 
 \begin{figure}[ht]
     \centering
@@ -569,7 +571,7 @@ This information on probe mapping locations was used to create a graphical integ
     \label{fig:notch2nl}
 \end{figure}
 
-The results of this process are visible in Figure \ref{fig:notch2nl}. Copy number changes were found in the region of interest in all of the microcephaly and macrocephaly patients examined, and in none of the controls. Moreover, all of the copy number changes in microcephaly patients are consistent with a deletion of NOTCH2NL-A or NOTCH2NL-B (or both), and likewise the copy number changes in the two macrocephaly patients are consistent with similar duplications. Unfortunately, the NOTCH2NL genes do not always fall in the regions where copy number was determined to have been altered with high confidence; this only happens in 4 of the 8 microcephaly patients, and neither of the macrocephaly patients. However, this is in part due to the sparsity of probe mapping locations in the vicinities of the NOTCH2NL genes, where the hyatidiform mole assembly provides new sequence relative to previous assemblies.
+The results of this process are visible in Figure~\ref{fig:notch2nl}. Copy number changes were found in the region of interest in all of the microcephaly and macrocephaly patients examined, and in none of the controls. Moreover, all of the copy number changes in microcephaly patients are consistent with a deletion of NOTCH2NL-A or NOTCH2NL-B (or both), and likewise the copy number changes in the two macrocephaly patients are consistent with similar duplications. Unfortunately, the NOTCH2NL genes do not always fall in the regions where copy number was determined to have been altered with high confidence; this only happens in 4 of the 8 microcephaly patients, and neither of the macrocephaly patients. However, this is in part due to the sparsity of probe mapping locations in the vicinities of the NOTCH2NL genes, where the hyatidiform mole assembly provides new sequence relative to previous assemblies.
 
 This prior work is important for the project being proposed now because it illustrates the usefulness of graphical models of genomes and of genomic variation. The use of a graphical model here allowed information to be extracted from microarray probes which did not unambiguously map to only a single location in the genome, which in turn allowed microarray data from arrays designed on older references to be effectively used with a new custom reference. Furthermore, several seemingly distinct structural variants were uncovered in the region examined here. Although they may be private to the individuals in this study, it is clear that, if one wanted to store them in some sort of database of variation, one would need a way to effectively represent distinct, partially overlapping structural variants---a task for which graph representations are well-suited.
 
@@ -630,7 +632,7 @@ A \vocab{mapping scheme} for a sequence graph $H$ is a definition, rule or proce
 
 A \vocab{reference hierarchy} is a collection of reference structures at different levels, one built upon another. A higher-level reference structure is derived from a lower-level reference structure by merging some base instances in the lower-level structure together, and re-numbering all the nodes in the new structure as new positions. Base instances can only be merged if they share a base (in which case their corresponding sides are combined) or if they have complementary bases (in which case their opposite sides are combined). A \vocab{merging scheme} is an algorithm that specifies what base instances to merge when creating a higher-level reference structure. One example of a merging scheme is the \vocab{$p$-overlap merging scheme}, in which base instances whose contexts on one side match out to at least distance $p$ are merged.
 
-Toy examples of reference structures are given in Figures \ref{fig:lrexactmatch} and \ref{fig:lrexactmatchgraph}. A full description of reference structure theory is available in \cite{paten2014mapping}.
+Toy examples of reference structures are given in Figures~\ref{fig:lrexactmatch} and~\ref{fig:lrexactmatchgraph}. A full description of reference structure theory is available in \cite{paten2014mapping}.
 
 \begin{figure}[ht]
     \centering
@@ -672,7 +674,7 @@ The current prototype merging scheme that I am working with is the ``greedy'' me
 
 Although this merging scheme suffers from some theoretical shortcomings---for example, the results are dependent on the order in which genomes are added---in practice it seems to produce qualitatively clean-looking reference structures. Moreover, the positions of the initial reference structure (i.e. the GRCh38 primary path) are never merged with each other, making this an attractive merging scheme for creating a reference structure (and associated graph-based coordinate system) which is in many ways backwards-compatible with existing GRCh38 linear coordinates. Finally, since the procedure to place new variants in the reference graph is exactly the same as that used to map new samples to the reference graph, this merging scheme provides an obvious update path if one wanted to create a reference structure describing a large portion of the variation in the human population.
 
-To complete this part of the project, I will need to define a mathematical model of the greedy merging scheme in the language of reference structure theory, and prove its essential properties. I will also need to demonstrate that it is practical to apply it at the scale necessary to complete Specific Aim \#2 (Section \ref{sec:aim2}), through prototyping.
+To complete this part of the project, I will need to define a mathematical model of the greedy merging scheme in the language of reference structure theory, and prove its essential properties. I will also need to demonstrate that it is practical to apply it at the scale necessary to complete Specific Aim \#2 (Section~\ref{sec:aim2}), through prototyping.
 
 \subsection{Define a Practical Mapping Scheme}
 \label{subsec:aim1mapping}
@@ -751,7 +753,7 @@ Mapping reads or other sequence to the lowest level of this reference structure 
 
 As preliminary work for this portion of the project, I have already written a tool which can create two-level reference hierarchies using the greedy merging scheme. This code has been successfully used to build a reference structure for the MHC region of GRCh38, including alternate haplotypes. Unfortunately, my initial estimates of runtime and memory usage scaling indicate that this tool as currently implemented will not be able to construct such a reference hierarchy for the entirety of GRCh38 in a reasonable amount of time. Therefore, it will have to be re-engineered to both increase speed and decrease memory usage.
 
-The first approach that I am trying in order to improve the efficiency of mapping to reference structures (and thus also of the greedy merging scheme, which involves a large amount of mapping to intermediate reference structures) is to implement a ``retract'' operation on the intermediate search result ranges of an FM-index, as described in \ref{fischer2008other}. A preliminary implementation of this scheme has been created, but it still needs to be optimized through profiling (which is very difficult for multithreaded applications due to poor tool support), and compression of the auxilliary data structures still needs to be implemented.
+The first approach that I am trying in order to improve the efficiency of mapping to reference structures (and thus also of the greedy merging scheme, which involves a large amount of mapping to intermediate reference structures) is to implement a ``retract'' operation on the intermediate search result ranges of an FM-index, as described in~\ref{fischer2008other}. A preliminary implementation of this scheme has been created, but it still needs to be optimized through profiling (which is very difficult for multithreaded applications due to poor tool support), and compression of the auxilliary data structures still needs to be implemented.
 
 \subsection{Incorporate Additional Variation}
 \label{subsec:aim2variation}
@@ -820,7 +822,7 @@ A second project which I propose to undertake with my new tools is to realign ex
 \subsection{Expand Reference Structure}
 \label{subsec:aim3maintenance}
 
-Finally, after completing the rest of my project, I will endeavor to at least temporarily maintain, and develop a process to maintain, a one true reference hierarchy for the human genome. This hierarchy will be based on the current GRC human genome release, and supplemented by merging in additional high-quality sequence which the GRC did not deign to include as alt loci, but which is still representative of human diversity. If possible I would like to include many whole human genomes, but if that proves computationally intractable or otherwise inadequate as a way to capture variation, I will attempt to merely include examples of different variants with sufficient context to tie them in to the higher-level reference structure. This is essentially an extension of one of the deliverables from \ref{subsec:aim2deliverables}, but whereas that portion of the project was its initial construction, this portion encompasses making provisions and building infrastructure for its ongoing maintenance.
+Finally, after completing the rest of my project, I will endeavor to at least temporarily maintain, and develop a process to maintain, a one true reference hierarchy for the human genome. This hierarchy will be based on the current GRC human genome release, and supplemented by merging in additional high-quality sequence which the GRC did not deign to include as alt loci, but which is still representative of human diversity. If possible I would like to include many whole human genomes, but if that proves computationally intractable or otherwise inadequate as a way to capture variation, I will attempt to merely include examples of different variants with sufficient context to tie them in to the higher-level reference structure. This is essentially an extension of one of the deliverables from~\ref{subsec:aim2deliverables}, but whereas that portion of the project was its initial construction, this portion encompasses making provisions and building infrastructure for its ongoing maintenance.
 
 The biological content of this project is mostly speculative: while building a massive index of human variation, I may find interesting variants.
 
