@@ -1,0 +1,423 @@
+%!PS-Adobe-3.1 EPSF-3.0
+%%BoundingBox: 0 0 540 97
+%%LanguageLevel: 3
+
+%% Common postScript header.
+
+/boxHere {
+% Draw a box at current position.
+% Usage width height boxAt
+dup 0 exch   %stack width height 0 height
+rlineto      %stack width height
+exch dup 0   %stack height width width 0
+rlineto      %stack height width
+exch         %stack width height
+0 exch       %stack width 0 height
+neg          %stack width 0 -height
+rlineto      %stack width
+neg 0        %stack -width 0
+rlineto
+} def
+
+/boxAt {
+% Draw a box at a position.  Usage:
+% width height x y boxAt
+moveto
+boxHere
+} def
+
+/fillBox {
+% Draw filled box at a position. Usage:
+% width height x y fillBox
+newpath
+boxAt
+fill
+} def
+
+/strokeBox {
+% Draw stroked box at a position. Usage:
+% width height x y strokeBox
+newpath
+boxAt
+stroke
+} def
+
+/smallFont {
+/Times-Roman findfont
+10 scalefont
+setfont
+} def
+
+/showBefore {
+% Draw text immediately before rather
+% than immediately after current position.
+% Usage (some text) showBefore
+dup
+stringwidth
+neg
+exch
+neg
+exch
+rmoveto
+show
+} def
+
+/showMiddle {
+% Draw text centered at current position.
+% Usage (some text) showMiddle
+dup stringwidth
+2 div neg
+exch
+2 div neg
+exch
+rmoveto
+show
+} def
+
+/ellipse {
+/endangle exch def
+/startangle exch def
+/yrad exch def
+/xrad exch def
+/y exch def
+/x exch def
+/savematrix matrix currentmatrix def
+x y translate
+xrad yrad scale
+0 0 1 startangle endangle arc
+savematrix setmatrix
+} def
+/fillTextBox {
+true charpath pathbbox
+/y2 exch def /x2 exch def
+/y1 exch def /x1 exch def
+/w x2 x1 sub def
+/h y2 y1 sub def
+w h x1 y1 fillBox
+} def
+
+smallFont
+
+gsave
+cliprestore 0 0 540 96.2510 rectclip
+0.451883 setlinewidth
+cliprestore 0.4519 59.6485 539.0962 36.6025 rectclip
+0 setgray
+/Helvetica findfont 8.676151 scalefont setfont
+213.0628 86.5808 moveto
+(10 bases) showBefore
+newpath
+213.9665 89.6987 moveto
+326.0335 89.6987 lineto
+stroke
+newpath
+213.9665 95.1213 moveto
+213.9665 83.8243 lineto
+stroke
+newpath
+326.0335 95.1213 moveto
+326.0335 83.8243 lineto
+stroke
+330.5523 88.8854 moveto
+(refmhc) show
+0.4519 11.2971 33.8912 71.8494 fillBox
+0.4519 11.2971 89.9247 71.8494 fillBox
+71.1715 73.9280 moveto
+(1,290,250) showMiddle
+0.4519 11.2971 146.4100 71.8494 fillBox
+127.6569 73.9280 moveto
+(1,290,255) showMiddle
+0.4519 11.2971 202.4435 71.8494 fillBox
+183.6904 73.9280 moveto
+(1,290,260) showMiddle
+0.4519 11.2971 258.4770 71.8494 fillBox
+239.7238 73.9280 moveto
+(1,290,265) showMiddle
+0.4519 11.2971 314.5105 71.8494 fillBox
+295.7573 73.9280 moveto
+(1,290,270) showMiddle
+0.4519 11.2971 370.9958 71.8494 fillBox
+352.2427 73.9280 moveto
+(1,290,275) showMiddle
+0.4519 11.2971 427.0293 71.8494 fillBox
+408.2762 73.9280 moveto
+(1,290,280) showMiddle
+0.4519 11.2971 483.0628 71.8494 fillBox
+464.3096 73.9280 moveto
+(1,290,285) showMiddle
+5.4226 63.0828 moveto
+(G) showMiddle
+16.4937 63.0828 moveto
+(G) showMiddle
+27.7908 63.0828 moveto
+(G) showMiddle
+39.0879 63.0828 moveto
+(C) showMiddle
+50.3849 63.0828 moveto
+(A) showMiddle
+61.6820 63.0828 moveto
+(G) showMiddle
+72.7531 63.0828 moveto
+(A) showMiddle
+83.8243 63.0828 moveto
+(G) showMiddle
+95.1213 63.0828 moveto
+(G) showMiddle
+106.4184 63.0828 moveto
+(A) showMiddle
+117.7155 63.0828 moveto
+(G) showMiddle
+129.0126 63.0828 moveto
+(G) showMiddle
+140.3096 63.0828 moveto
+(A) showMiddle
+151.3808 63.0828 moveto
+(G) showMiddle
+162.4519 63.0828 moveto
+(C) showMiddle
+173.7490 63.0828 moveto
+(T) showMiddle
+185.0460 63.0828 moveto
+(C) showMiddle
+196.3431 63.0828 moveto
+(A) showMiddle
+207.6402 63.0828 moveto
+(G) showMiddle
+218.9372 63.0828 moveto
+(T) showMiddle
+230.0084 63.0828 moveto
+(G) showMiddle
+241.0795 63.0828 moveto
+(G) showMiddle
+252.3766 63.0828 moveto
+(C) showMiddle
+263.6736 63.0828 moveto
+(T) showMiddle
+274.9707 63.0828 moveto
+(G) showMiddle
+286.2678 63.0828 moveto
+(A) showMiddle
+297.5649 63.0828 moveto
+(G) showMiddle
+308.6360 63.0828 moveto
+(G) showMiddle
+319.7071 63.0828 moveto
+(C) showMiddle
+331.0042 63.0828 moveto
+(T) showMiddle
+342.3013 63.0828 moveto
+(G) showMiddle
+353.5983 63.0828 moveto
+(A) showMiddle
+364.8954 63.0828 moveto
+(C) showMiddle
+376.1925 63.0828 moveto
+(C) showMiddle
+387.2636 63.0828 moveto
+(G) showMiddle
+398.3347 63.0828 moveto
+(C) showMiddle
+409.6318 63.0828 moveto
+(G) showMiddle
+420.9289 63.0828 moveto
+(G) showMiddle
+432.2259 63.0828 moveto
+(G) showMiddle
+443.5230 63.0828 moveto
+(C) showMiddle
+454.8201 63.0828 moveto
+(T) showMiddle
+465.8912 63.0828 moveto
+(T) showMiddle
+476.9623 63.0828 moveto
+(G) showMiddle
+488.2594 63.0828 moveto
+(G) showMiddle
+499.5565 63.0828 moveto
+(G) showMiddle
+510.8536 63.0828 moveto
+(G) showMiddle
+522.1506 63.0828 moveto
+(A) showMiddle
+533.4477 63.0828 moveto
+(C) showMiddle
+cliprestore 0 -0.0000 540 96.2510 rectclip
+cliprestore 0.4519 0.4519 539.0962 95.3473 rectclip
+270.2259 51.1079 moveto
+(GI568335879ICnaturalHam5Mis4) showMiddle
+cliprestore 0 -0.0000 540 96.2510 rectclip
+cliprestore 0.4519 -0.0000 539.0962 48.8033 rectclip
+cliprestore 0.4519 -0.0000 539.0962 48.8033 rectclip
+0.5843 0.8000 0.9882 setrgbcolor
+303.2134 11.2971 0.4519 35.6987 fillBox
+1 setgray
+-162.6778 38.2293 moveto
+(.) showMiddle
+-151.6067 38.2293 moveto
+(.) showMiddle
+-140.3096 38.2293 moveto
+(.) showMiddle
+-129.0126 38.2293 moveto
+(.) showMiddle
+-117.7155 38.2293 moveto
+(.) showMiddle
+-106.4184 38.2293 moveto
+(.) showMiddle
+-95.3473 38.2293 moveto
+(.) showMiddle
+-84.2762 38.2293 moveto
+(.) showMiddle
+-72.9791 38.2293 moveto
+(.) showMiddle
+-61.6820 38.2293 moveto
+(.) showMiddle
+-50.3849 38.2293 moveto
+(.) showMiddle
+-39.0879 38.2293 moveto
+(.) showMiddle
+-28.0167 38.2293 moveto
+(.) showMiddle
+-16.9456 38.2293 moveto
+(.) showMiddle
+-5.6485 38.2293 moveto
+(.) showMiddle
+5.6485 38.2293 moveto
+(.) showMiddle
+16.9456 38.2293 moveto
+(.) showMiddle
+28.2427 38.2293 moveto
+(.) showMiddle
+39.3138 38.2293 moveto
+(.) showMiddle
+50.3849 38.2293 moveto
+(.) showMiddle
+61.6820 38.2293 moveto
+(.) showMiddle
+72.9791 38.2293 moveto
+(.) showMiddle
+84.2762 38.2293 moveto
+(.) showMiddle
+95.5732 38.2293 moveto
+(.) showMiddle
+106.6444 38.2293 moveto
+(.) showMiddle
+117.7155 38.2293 moveto
+(.) showMiddle
+129.0126 38.2293 moveto
+(.) showMiddle
+140.3096 38.2293 moveto
+(.) showMiddle
+151.6067 38.2293 moveto
+(.) showMiddle
+162.9038 38.2293 moveto
+(.) showMiddle
+173.9749 38.2293 moveto
+(.) showMiddle
+185.0460 38.2293 moveto
+(.) showMiddle
+196.3431 38.2293 moveto
+(.) showMiddle
+207.6402 38.2293 moveto
+(.) showMiddle
+218.9372 38.2293 moveto
+(.) showMiddle
+230.2343 38.2293 moveto
+(.) showMiddle
+241.3054 38.2293 moveto
+(.) showMiddle
+252.3766 38.2293 moveto
+(.) showMiddle
+263.6736 38.2293 moveto
+(.) showMiddle
+274.9707 38.2293 moveto
+(.) showMiddle
+286.2678 38.2293 moveto
+(.) showMiddle
+297.5649 38.2293 moveto
+(.) showMiddle
+0.5843 0.8000 0.9882 setrgbcolor
+359.2469 11.2971 180.3013 12.2008 fillBox
+1 setgray
+185.2720 14.7314 moveto
+(.) showMiddle
+196.3431 14.7314 moveto
+(.) showMiddle
+207.6402 14.7314 moveto
+(.) showMiddle
+218.9372 14.7314 moveto
+(.) showMiddle
+230.2343 14.7314 moveto
+(.) showMiddle
+241.5314 14.7314 moveto
+(.) showMiddle
+252.6025 14.7314 moveto
+(.) showMiddle
+263.6736 14.7314 moveto
+(.) showMiddle
+274.9707 14.7314 moveto
+(.) showMiddle
+286.2678 14.7314 moveto
+(.) showMiddle
+297.5649 14.7314 moveto
+(.) showMiddle
+308.8619 14.7314 moveto
+(.) showMiddle
+319.9331 14.7314 moveto
+(.) showMiddle
+331.0042 14.7314 moveto
+(.) showMiddle
+342.3013 14.7314 moveto
+(.) showMiddle
+353.5983 14.7314 moveto
+(.) showMiddle
+364.8954 14.7314 moveto
+(.) showMiddle
+376.1925 14.7314 moveto
+(.) showMiddle
+387.4895 14.7314 moveto
+(.) showMiddle
+398.5607 14.7314 moveto
+(.) showMiddle
+409.6318 14.7314 moveto
+(.) showMiddle
+420.9289 14.7314 moveto
+(.) showMiddle
+432.2259 14.7314 moveto
+(.) showMiddle
+443.5230 14.7314 moveto
+(.) showMiddle
+454.8201 14.7314 moveto
+(.) showMiddle
+465.8912 14.7314 moveto
+(.) showMiddle
+476.9623 14.7314 moveto
+(.) showMiddle
+488.2594 14.7314 moveto
+(.) showMiddle
+499.5565 14.7314 moveto
+(.) showMiddle
+510.8536 14.7314 moveto
+(.) showMiddle
+522.1506 14.7314 moveto
+(.) showMiddle
+533.4477 14.7314 moveto
+(.) showMiddle
+0.9020 0.5098 0 setrgbcolor
+newpath
+303.4393 35.4728 moveto
+180.5272 26.8870 lineto
+stroke
+newpath
+180.5272 26.8870 moveto
+180.5272 15.1381 lineto
+stroke
+0.5020 setgray
+newpath
+539.7741 23.2720 moveto
+539.7741 31.4059 lineto
+stroke
+newpath
+539.7741 31.4059 moveto
+539.7741 46.7699 lineto
+stroke
+cliprestore 0 -0.0000 540 96.2510 rectclip

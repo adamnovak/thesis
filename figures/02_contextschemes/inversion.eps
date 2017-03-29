@@ -1,0 +1,280 @@
+%!PS-Adobe-3.1 EPSF-3.0
+%%BoundingBox: 0 0 540 85
+%%LanguageLevel: 3
+
+%% Common postScript header.
+
+/boxHere {
+% Draw a box at current position.
+% Usage width height boxAt
+dup 0 exch   %stack width height 0 height
+rlineto      %stack width height
+exch dup 0   %stack height width width 0
+rlineto      %stack height width
+exch         %stack width height
+0 exch       %stack width 0 height
+neg          %stack width 0 -height
+rlineto      %stack width
+neg 0        %stack -width 0
+rlineto
+} def
+
+/boxAt {
+% Draw a box at a position.  Usage:
+% width height x y boxAt
+moveto
+boxHere
+} def
+
+/fillBox {
+% Draw filled box at a position. Usage:
+% width height x y fillBox
+newpath
+boxAt
+fill
+} def
+
+/strokeBox {
+% Draw stroked box at a position. Usage:
+% width height x y strokeBox
+newpath
+boxAt
+stroke
+} def
+
+/smallFont {
+/Times-Roman findfont
+10 scalefont
+setfont
+} def
+
+/showBefore {
+% Draw text immediately before rather
+% than immediately after current position.
+% Usage (some text) showBefore
+dup
+stringwidth
+neg
+exch
+neg
+exch
+rmoveto
+show
+} def
+
+/showMiddle {
+% Draw text centered at current position.
+% Usage (some text) showMiddle
+dup stringwidth
+2 div neg
+exch
+2 div neg
+exch
+rmoveto
+show
+} def
+
+/ellipse {
+/endangle exch def
+/startangle exch def
+/yrad exch def
+/xrad exch def
+/y exch def
+/x exch def
+/savematrix matrix currentmatrix def
+x y translate
+xrad yrad scale
+0 0 1 startangle endangle arc
+savematrix setmatrix
+} def
+/fillTextBox {
+true charpath pathbbox
+/y2 exch def /x2 exch def
+/y1 exch def /x1 exch def
+/w x2 x1 sub def
+/h y2 y1 sub def
+w h x1 y1 fillBox
+} def
+
+smallFont
+
+gsave
+cliprestore 0 0 540 84.9540 rectclip
+0.451883 setlinewidth
+cliprestore 0.4519 59.6485 539.0962 25.3054 rectclip
+0 setgray
+/Helvetica findfont 8.676151 scalefont setfont
+188.6611 75.2837 moveto
+(2 kb) showBefore
+newpath
+189.5649 78.4017 moveto
+350.8870 78.4017 lineto
+stroke
+newpath
+189.5649 83.8243 moveto
+189.5649 72.5272 lineto
+stroke
+newpath
+350.8870 83.8243 moveto
+350.8870 72.5272 lineto
+stroke
+355.4059 77.5883 moveto
+(refmhc) show
+0.4519 11.2971 23.4979 60.5523 fillBox
+0.4519 11.2971 63.7155 60.5523 fillBox
+44.9623 62.6310 moveto
+(2,529,500) showMiddle
+0.4519 11.2971 104.3849 60.5523 fillBox
+85.6318 62.6310 moveto
+(2,530,000) showMiddle
+0.4519 11.2971 144.6025 60.5523 fillBox
+125.8494 62.6310 moveto
+(2,530,500) showMiddle
+0.4519 11.2971 184.8201 60.5523 fillBox
+166.0669 62.6310 moveto
+(2,531,000) showMiddle
+0.4519 11.2971 225.0377 60.5523 fillBox
+206.2845 62.6310 moveto
+(2,531,500) showMiddle
+0.4519 11.2971 265.7071 60.5523 fillBox
+246.9540 62.6310 moveto
+(2,532,000) showMiddle
+0.4519 11.2971 305.9247 60.5523 fillBox
+287.1715 62.6310 moveto
+(2,532,500) showMiddle
+0.4519 11.2971 346.1423 60.5523 fillBox
+327.3891 62.6310 moveto
+(2,533,000) showMiddle
+0.4519 11.2971 386.8117 60.5523 fillBox
+368.0586 62.6310 moveto
+(2,533,500) showMiddle
+0.4519 11.2971 427.0293 60.5523 fillBox
+408.2762 62.6310 moveto
+(2,534,000) showMiddle
+0.4519 11.2971 467.2469 60.5523 fillBox
+448.4937 62.6310 moveto
+(2,534,500) showMiddle
+0.4519 11.2971 507.4644 60.5523 fillBox
+488.7113 62.6310 moveto
+(2,535,000) showMiddle
+cliprestore 0 0 540 84.9540 rectclip
+cliprestore 0.4519 0.4519 539.0962 84.0502 rectclip
+270.2259 51.1079 moveto
+(GI568335879ICnaturalHam5Mis4) showMiddle
+cliprestore 0 0 540 84.9540 rectclip
+cliprestore 0.4519 0 539.0962 48.8033 rectclip
+cliprestore 0.4519 0 539.0962 48.8033 rectclip
+0.5843 0.8000 0.9882 setrgbcolor
+19.8828 11.2971 0.4519 35.6987 fillBox
+59.1967 11.2971 20.3347 35.6987 fillBox
+22.1423 11.2971 79.5314 35.6987 fillBox
+8.1339 11.2971 102.1255 35.6987 fillBox
+5.4226 11.2971 110.2594 35.6987 fillBox
+0.4519 11.2971 115.6820 35.6987 fillBox
+3.1632 11.2971 116.1339 35.6987 fillBox
+18.9791 11.2971 120.2008 35.6987 fillBox
+2.7113 11.2971 139.6318 35.6987 fillBox
+36.6025 11.2971 142.3431 35.6987 fillBox
+30.2762 11.2971 178.9456 35.6987 fillBox
+0.4519 11.2971 209.2218 35.6987 fillBox
+0.4519 11.2971 209.6736 35.6987 fillBox
+0.9038 11.2971 210.5774 35.6987 fillBox
+0.4519 11.2971 211.4812 35.6987 fillBox
+0.9098 0.6118 0.6118 setrgbcolor
+13.1046 11.2971 268.8703 12.2008 fillBox
+14.4603 11.2971 254.4100 12.2008 fillBox
+7.6820 11.2971 245.8243 12.2008 fillBox
+28.0167 11.2971 217.8075 12.2008 fillBox
+5.4226 11.2971 212.3849 12.2008 fillBox
+1.3556 11.2971 211.0293 12.2008 fillBox
+0.5843 0.8000 0.9882 setrgbcolor
+16.7197 11.2971 281.9749 35.6987 fillBox
+29.3724 11.2971 300.0502 35.6987 fillBox
+26.6611 11.2971 329.4226 35.6987 fillBox
+13.5565 11.2971 356.0837 35.6987 fillBox
+4.9707 11.2971 369.6402 35.6987 fillBox
+2.7113 11.2971 374.6109 35.6987 fillBox
+9.9414 11.2971 377.3222 35.6987 fillBox
+39.7657 11.2971 387.2636 35.6987 fillBox
+0.4519 11.2971 427.0293 35.6987 fillBox
+11.2971 11.2971 427.0293 12.2008 fillBox
+1.3556 11.2971 438.3264 35.6987 fillBox
+6.7782 11.2971 439.6820 35.6987 fillBox
+10.3933 11.2971 446.4603 35.6987 fillBox
+16.2678 11.2971 456.8536 35.6987 fillBox
+6.7782 11.2971 473.1213 35.6987 fillBox
+14.4603 11.2971 479.8996 35.6987 fillBox
+9.9414 11.2971 494.3598 35.6987 fillBox
+2.2594 11.2971 513.7908 35.6987 fillBox
+7.2301 11.2971 516.0502 35.6987 fillBox
+16.2678 11.2971 523.2803 35.6987 fillBox
+0.9020 0.5098 0 setrgbcolor
+newpath
+101.8996 40.8954 moveto
+102.3515 40.8954 lineto
+stroke
+newpath
+115.9079 40.8954 moveto
+116.3598 40.8954 lineto
+stroke
+newpath
+119.5230 40.8954 moveto
+120.4268 40.8954 lineto
+stroke
+newpath
+139.4059 40.8954 moveto
+139.8577 40.8954 lineto
+stroke
+newpath
+209.4477 40.8954 moveto
+209.8996 40.8954 lineto
+stroke
+newpath
+210.3515 40.8954 moveto
+210.8033 40.8954 lineto
+stroke
+newpath
+211.2552 35.4728 moveto
+282.2008 26.8870 lineto
+stroke
+newpath
+282.2008 26.8870 moveto
+282.2008 15.1381 lineto
+stroke
+newpath
+253.7322 17.3975 moveto
+254.6360 17.3975 lineto
+stroke
+newpath
+211.2552 23.2720 moveto
+282.2008 31.4059 lineto
+stroke
+newpath
+282.2008 31.4059 moveto
+282.2008 46.7699 lineto
+stroke
+newpath
+298.9205 40.8954 moveto
+300.2762 40.8954 lineto
+stroke
+newpath
+426.8033 35.4728 moveto
+427.2552 26.8870 lineto
+stroke
+newpath
+427.2552 26.8870 moveto
+427.2552 15.1381 lineto
+stroke
+newpath
+438.5523 23.2720 moveto
+438.5523 31.4059 lineto
+stroke
+newpath
+438.5523 31.4059 moveto
+438.5523 46.7699 lineto
+stroke
+newpath
+504.5272 40.8954 moveto
+514.0167 40.8954 lineto
+stroke
+cliprestore 0 0 540 84.9540 rectclip

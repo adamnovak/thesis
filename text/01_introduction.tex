@@ -316,7 +316,7 @@ The implied BWT matrix, with all the sorted rotations as rows, is generally not 
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/bwt.png}
+    \includegraphics[width=1.0\textwidth]{figures/01_introduction/bwt.png}
     \caption[An example BWT matrix for the string ``GATTACA'']{An example BWT matrix for the string ``GATTACA''. The sentinel value ``\$'' is appended to the end of the string, all rotations of the string are calculated, and the rotations are sorted. Bases are colored according to base identity and numbered according to position in the original string. The characters in the far right column are the BWT of the original string, while the numbers in the far left column are the suffix array (represented as indices into the original string).}
     \label{fig:bwt}
 \end{figure}
@@ -454,7 +454,7 @@ The first piece of preliminary work presented here is the UCSC Tumor Map, visibl
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/tumormap.png}
+    \includegraphics[width=1.0\textwidth]{figures/01_introduction/tumormap.png}
     \caption[A screenshot of the UCSC Tumor Map]{A screenshot of the UCSC Tumor Map. Individual tumor samples are represented by hexes in a hexagonal grid, laid out using a spring layout algorithm based on molecular similarity. The map is browseable using a Google Maps interface. Hexes can be colored using various data overlays, and statistical queries can be run interactively.}
     \label{fig:tumormap}
 \end{figure}
@@ -493,7 +493,7 @@ This information on probe mapping locations was used to create an integer linear
 
 \begin{figure}[h!t]
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/notch2nl.png}
+    \includegraphics[width=1.0\textwidth]{figures/01_introduction/notch2nl.png}
     \caption[Results from the linear programming copy number inference pipeline]{Results from the linear programming copy number inference pipeline. Patients with microcephaly have red highlights, patients with macrocephaly have blue highlights, and control patients have no highlights. Regions which are potentially (light) or with high confidence (dark) altered in copy number are highlighted. Black lines show linear-programming-processed copy numbers at microarray probe binding locations. NOTCH2NL-B copy number is reduced with high confidence in 4 of 8 patients with microcephaly. NOTCH2NL-A copy number is reduced with high confidence in 2 of 8 patients with microcephaly. The dataset is consistent with at least one copy of NOTCH2NL-A or NOTCH2NL-B being deleted in each microcephaly patient, and at least one being duplicated in each macrocephaly patient. No copy number alterations were detected in any of the NOTCH2NL genes for any of the controls. Adapted from \cite{jacobs2014recently} Figure 5B.}
     \label{fig:notch2nl}
 \end{figure}
@@ -564,14 +564,14 @@ Toy examples of reference structures are given in Figures~\ref{fig:lrexactmatch}
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/lrexactmatch.png}
+    \includegraphics[width=1.0\textwidth]{figures/01_introduction/lrexactmatch.png}
     \caption[An example of reference structure mapping]{An example of reference structure mapping. Two query sequences (top and bottom) are mapped to a left-right exact match reference structure (middle). Shown here are the unique contexts for every side in the sequence graph. For a node $(b, P)$ denoted with $L=t$ and $R=u$ the left unique context is the string $tb$ and the right unique context is the string $(bu)^*$; in this and subsequent figures the right unique context string is shown as its reverse complement so that both unique contexts of a position can be read from left-to-right. A side labeled ``None'' is unmappable. Adapted from \cite{paten2014mapping} Figure 5.}
     \label{fig:lrexactmatch}
 \end{figure}
 
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=1.0\textwidth]{figures/lrexactmatchgraph.png}
+    \includegraphics[width=1.0\textwidth]{figures/01_introduction/lrexactmatchgraph.png}
     \caption[An example of left-right exact match mapping]{An example of left-right exact match mapping. Phased input sequence graphs are mapped to a target unphased sequence graph. The two haplotypes used to build the target sequence graph are shown as the input sequence graphs immediately above and below the target sequence graph. L and R are left and right minimally unique contexts for all threads (excluding the base itself). A novel haplotype is shown at the bottom as an input sequence graph mapped to the target sequence graph. Adapted from \cite{paten2014mapping} Figure 6.} 
     \label{fig:lrexactmatchgraph}
 \end{figure}
