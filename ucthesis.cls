@@ -17,8 +17,8 @@
 %%% ====================================================================
 %%%  @LaTeX-class-file{
 %%%     filename        = "ucthesis.cls",
-%%%     version         = "3.2-ucsc-3",
-%%%     date            = "23 May 2014",
+%%%     version         = "3.2-ucsc-4",
+%%%     date            = "29 March 2017",
 %%%     license         = "LPPL",
 %%%     codetable       = "ISO/ASCII",
 %%%     keywords        = "LaTeX, ucthesis",
@@ -109,7 +109,7 @@
 %%% ====================================================================
 
 \NeedsTeXFormat{LaTeX2e}
-\ProvidesClass{ucthesis}[2006/05/04 v3.2-ucsc-2 University of California Thesis Class]
+\ProvidesClass{ucthesis}[2006/05/04 v3.2-ucsc-4 University of California Thesis Class]
 
 %    ****************************************
 %    *               OPTIONS                *
@@ -441,17 +441,14 @@ Copyright \copyright\ by\par
 % ABSTRACT
 %
 % The ABSTRACT environment allows for multi-page abstracts which,
-% in accordance with UC rules, is numbered separately from the rest
-% of the rest of the dissertation in Arabic.  It requires definition
-% of the \title, \author, \degree, \field, \campus, and \chair macros.
+% in accordance with UCSC rules, is numbered along with other front 
+% matter pages in Roman numerals. It requires definition% of the 
+% \title, \author, \degree, \field, \campus, and \chair macros.
 
 
 \def\abstract{
 \begin{alwayssingle}
-\pagestyle{empty}
-\thispagestyle{empty}
 \addcontentsline{toc}{chapter}{\abstractname}
-%\setcounter{page}{1}
 \begin{center}
 {\fmfont
 {\bfseries \abstractname}\par
