@@ -1,4 +1,6 @@
-\chapter{Introduction}
+\chapter{Introduction and Background}
+
+\section{Introduction}
 
 Biology happens at scale. Scale, in population and in time, gives evolution the raw material it needs to shape biological systems worth studying. Scale enables bacteria to become resistant to antibiotics. Scale allows cancer to arise with alarming regularity in healthy people. Scale powers the adaptive immune system, and simultaneously enables pathogens to evade it. To really understand biological systems, we need to be able to match their scale.
 
@@ -82,9 +84,9 @@ For my thesis project, I will formalize the mathematics of constructing and mapp
         
 % Then I'm going to try it out and discover something useful.
         
-\chapter{Background}
+\section{Background}
 
-\section{How Bioinformatics Works}
+\subsection{How Bioinformatics Works}
 
 In my experience, there is a single workflow underlying most of what bioinformaticists do all day. It has three steps:
 
@@ -118,7 +120,7 @@ While these datasets might be manageable at their current sizes, on the order of
         
     % This is not going to be able to scale much bigger. Already it's very difficult for smaller labs to use these huge community data sets.
 
-\section{Interactive Distributed Computing with Apache Spark}
+\subsection{Interactive Distributed Computing with Apache Spark}
 
 In order to move bioinformatics to a shared-infrastructure model, we must build distributed bioinformatics tools. At least some of those tools should present interactive APIs accessible over the Internet; not every person who wants to make a query against shared infrastructure wants to write their own batch job to do it.
 
@@ -156,7 +158,7 @@ Finally, while Spark is optimized for in-memory computing, it works perfectly we
     
     % Lets scientists interactively poke at data
 
-\section{API Description with Avro}
+\subsection{API Description with Avro}
 
 Whereas bioinformatics practice has in the past centered around file formats as the interfaces between the different components of analysis systems, a move to shared infrastructure offers an opportunity, and in some ways creates a requirement, to rebuild the field on top of application programming interfaces (APIs) instead. If the idea is to use shared infrastructure and send the code to the data, then the code is going to have to know how to run on the shared infrastructure when it gets there, by being written against a standardized API. While any competent bioinformaticist can write a good-enough single-threaded FASTA (DNA sequence) parser, it is significantly harder to write a good enough distributed, parallel, fault-tolerant FASTA parser. In a system like HDFS, where parsing a file can be a complex distributed operation, user applications would be best off delegating that sort of work.
 
@@ -200,7 +202,7 @@ This IDL defines a protocol called \texttt{Aligner}, which has one remote call, 
     
     % You can specify an API and get code generation for an RPC implementation.
 
-\section{How Genomics Works}
+\subsection{How Genomics Works}
 
 One piece of shared infrastructure that bioinformatics already uses is the human reference genome, which was built at great expense at the turn of the millennium and is maintained by the Genome Reference Consortium (GRC) \cite{church2011modernizing}. This reference genome assembly was originally created by stitching together actual observed pieces of DNA sequence into a single-copy haploid \vocab{golden path} representing a complete genome \cite{church2011modernizing}. Under this model, a hypothetical perfect assembly would have a single \vocab{contig}, or contiguous linear string of DNA bases, per chromosome. This naturally suggests a coordinate system: bases can be referred to by the contig they are on and their offset from the beginning of that contig.
 
@@ -228,7 +230,7 @@ The golden path model is inextricably bound to the concept of ``the human genome
         
         % Published coordinates from back in the day no longer work and need to be lifted over or even remapped
 
-\section{The Release of GRCh38}
+\subsection{The Release of GRCh38}
 
 A new version of the official human reference genome, GRCh38, was recently released \cite{karolchik2014new}. In addition to marking the transition to a unified version numbering scheme across major genome browsers, this new release continues the GRC's gradual migration away from the golden path concept. Although GRCh38 is still constructed around a single (chimeric) haploid genome, the new reference assembly also provides sequences for hundreds of so-called \vocab{alt loci}---additional pieces of sequence with a specified alignment to that genome which describe some of the structurally distinct local genomic arrangements which have been observed in humans. The older GRCh37, by comparison, contained only three genomic regions with alt loci \cite{church2011modernizing}. This means that the GRCh38 assembly, taken as a whole, is fundamentally nonlinear at more than just a few problematic locations. Unfortunately, popular tools like BWA have not yet been updated to fully account for these alt loci \cite{li2014bwa}.
 
@@ -244,7 +246,7 @@ In summary, GRCh38 both marks the continuation of a trend towards nonlinearity i
     
     % Plausible centromeres
     
-\section{Description of Human Genomic Variants}
+\subsection{Description of Human Genomic Variants}
 
 There is no prototypical workflow for the analysis of variant data; what you do with it depends heavily on the scientific question that you are trying to answer. However, there are a few extremely common practices in the field. One of these is to store variant data in Variant Call Format (VCF) files, a column-based text format developed as part of the 1000 Genomes Project \cite{danecek2011variant}. Samples are represented by columns, and polymorphic positions in the human genome by rows. VCF files can be supplemented by an index on genomic position, but no work appears to have yet been done to also provide an index by sample; consequently, the scalability of VCF is currently limited to numbers of samples that can be scanned through efficiently \cite{danecek2011variant}.
 
@@ -282,8 +284,8 @@ A graph-based approach to the description of genomic variants could alleviate se
     
 % So the old way of doing things is fraying around the edges
 
-\section{NOTCH2NL and Sequence Ambiguity}
-\label{sec:notch}
+\subsection{NOTCH2NL and Sequence Ambiguity}
+\label{subsec:notch}
     
 In addition to accounting for the existence of alt loci, graph-based approaches could also facilitate analysis of genomic regions which are problematically similar to each other. One example is the 1q21.1 region on chromosome 1, near the notoriously repetitive centromere \cite{jacobs2014recently}. This region contains, in the old GRCh37 human genome assembly, a gene called NOTCH2NL \cite{jacobs2014recently}. It also contains ``the 1q21.1 distal deletion/duplication locus'' \cite{jacobs2014recently}, a region which has previously been associated with microcephaly (the development of an abnormally small head and brain) and macrocephaly (the development of an abnormally large head and brain) \cite{jacobs2014recently}. In the GRCh37 assembly, these two features are separated by another region, the ``Thrombocytopenia Absent Radius'' (TAR) region, the deletion of which causes, among other symptoms, the lack of a radius bone in the arm \cite{jacobs2014recently}. This has been thought to preclude the involvement of NOTCH2NL in microcephaly and macrocephaly, because generally patients with those conditions do not also suffer from TAR syndrome \cite{jacobs2014recently}.
 
@@ -301,8 +303,8 @@ In light of new sequencing data from haploid cells, it has been found that the s
     
     % To get something out of this region, we need a way to work with multimapped data in a rigorous way.
 
-\section{String Compression with the Burrows-Wheeler Transform}
-\label{sec:bwt}
+\subsection{String Compression with the Burrows-Wheeler Transform}
+\label{subsec:bwt}
 
 In part because of the shortcomings of VCF and its linear reference, I propose moving to an entirely graph-based conception of variants that incorporates them into a ``reference structure''. I propose a method for creating and mapping to graph-based reference structures, based primarily on string operations on a large collection of individual haplotypes. A single individual has several gigabases of DNA sequence; in order to combine many such haplotypes into a useful reference data structure, they need to be compressed. Thankfully, collections of haplotypes are likely to be highly compressible, since individual genomes are generally very similar to each other.
 
@@ -333,7 +335,7 @@ Note that the instances of any given character in the last column appear in the 
     
     % Take the last column
     
-\section{Substring Search with the Suffix Array}
+\subsection{Substring Search with the Suffix Array}
 
 The \vocab{suffix array} of a string is an array of indices into the string, sorted in the lexicographical order of the suffixes that they point to \cite{manber1993suffix}. For example, the string ``dog'' has suffixes ``dog'' at index 0, ``og'' at index 1, and ``g'' at index 2, so its suffix array would be $[0, 2, 1]$, corresponding to the suffix sort order $[\textrm{``dog''}, \textrm{``g''}, \textrm{``og''}]$. Another example suffix array is visible in the leftmost column of Figure~\ref{fig:bwt}.
 
@@ -351,7 +353,7 @@ Suffix arrays can be used as indices to speed up substring search on the string 
     
     % Specifically, all the substrings starting with the same letter are in a contiguous block, which starts at a predictable position based on how many of each character exist in the string.
     
-\section{Searching in BWTs with the FM-index}
+\subsection{Searching in BWTs with the FM-index}
 
 Constructing the BWT matrix is essentially the same task as constructing the suffix array of the string being transformed. All the rotations of the string contain the ``\$'' sentinel which is lexicographically less than all other characters. Thus the rotations are actually sorted by the portion before the ``\$'' character---that is, by the corresponding suffixes of the original string. This is the same sort used to construct the suffix array.
 
@@ -361,11 +363,11 @@ A BWT can be augmented with a small amount of additional information to create a
 
 Since only the last column of the BWT matrix (i.e. the actual BWT string) is used in the algorithm, only that string needs to be stored. Furthermore, the LF-mapping can easily be calculated from the BWT string. To LF-map the character instance at a certain index in the BWT, count up the number of characters in the BWT lexicographically less than the character, and add the character instance's rank among all instances of that character. This gives the index of the LF-mapping result in the BWT.
 
-To see why this works, recall that in a suffix array, and thus also in the BWT matrix, all the suffixes (or here rotations) that start with a given character form a contiguous block, coming just after all those beginning with smaller characters. Thus, the first calculation is to find the start of this block. And since, as shown in Section~\ref{sec:bwt}, the relative order of character instances in the first column is the same as that in the last column, to find the offset of this particular character instance in that contiguous block, we merely need to find its rank among instances of the same character in the last column, which is the BWT string \cite{langmead2013introduction}.
+To see why this works, recall that in a suffix array, and thus also in the BWT matrix, all the suffixes (or here rotations) that start with a given character form a contiguous block, coming just after all those beginning with smaller characters. Thus, the first calculation is to find the start of this block. And since, as shown in Subsection~\ref{subsec:bwt}, the relative order of character instances in the first column is the same as that in the last column, to find the offset of this particular character instance in that contiguous block, we merely need to find its rank among instances of the same character in the last column, which is the BWT string \cite{langmead2013introduction}.
 
 We can now define \vocab{backward search}, a search algorithm using the BWT which processes the characters in the query string from back to front. The algorithm begins by selecting the entire BWT matrix, which is the range of suffixes that begin with the empty string. Then, for each character in the query string, from the last forwards, the algorithm extends the searched string at the front with that character. It takes the new character and finds the first and last instances of it in the BWT contained within the currently selected result range. It then LF-maps each of those instances, and takes the range between them as the new result range for the query string extended with that character. If there are no instances of the character to map, then the searched string is not found in the index \cite{ferragina2000opportunistic}.
 
-Each row of the BWT matrix in the old range started with an instance of the old query string. Each of the rows that ended in the new query character corresponded to an instance of the old query string occurring after the new query character, and thus each implies an instance of the new, one-character-longer query string. The LF-mapping step finds the contiguous block of rows in the BWT matrix where those instances of the search string appear, the boundaries of which correspond to the first and last instances of the new character in the old BWT range (by the conservation of ordering mentioned at the end of Section~\ref{sec:bwt}). Thus, such an algorithm can be used to search for substrings in a string, using the BWT of the string \cite{ferragina2000opportunistic}.
+Each row of the BWT matrix in the old range started with an instance of the old query string. Each of the rows that ended in the new query character corresponded to an instance of the old query string occurring after the new query character, and thus each implies an instance of the new, one-character-longer query string. The LF-mapping step finds the contiguous block of rows in the BWT matrix where those instances of the search string appear, the boundaries of which correspond to the first and last instances of the new character in the old BWT range (by the conservation of ordering mentioned at the end of Subsection~\ref{subsec:bwt}). Thus, such an algorithm can be used to search for substrings in a string, using the BWT of the string \cite{ferragina2000opportunistic}.
 
 By pre-calculating some auxiliary data structures, such as a table with the start index of each character's range in the BWT matrix, and by using succinct data structures for $O(1)$ rank queries, this algorithm can be made to run in time linear in the length of the query string, and constant in the length of the index \cite{ferragina2000opportunistic}. Furthermore, using a downsampled copy of the suffix array, the location of each result in its source string can be calculated efficiently \cite{siren2009run}.
 
@@ -385,7 +387,7 @@ By pre-calculating some auxiliary data structures, such as a table with the star
         
         % Specifically, you have this occurrences array, and this counts array, and follow this formula to shrink a range down to just the range that actually matches your query string.
 
-\section{Bidirectional DNA Search with the FMD-Index}
+\subsection{Bidirectional DNA Search with the FMD-Index}
 
 BWT-based indices have found many applications in genomics, mostly due to their ability to efficiently search for and identify the locations of a substrings in very large data sets---with a few modifications, this search can be extended to align reads to a reference \cite{li2014bwa}. The popular short read aligner \texttt{bwa}, for example, is built on an FM-index of the reference genome; indeed, the name stands for ``Burrows--Wheeler Aligner'' \cite{li2014bwa,li2009fast}. The ``String Graph Assembler'' \texttt{sga} also uses a BWT-based index to do its work, but in this case indexes reads themselves \cite{simpson2012efficient}.
 
@@ -407,7 +409,7 @@ The FMD-index search algorithm works as follows: When the query string is extend
 
 % How the FMD-index works
 
-\section{Previous Graph Indices}
+\subsection{Previous Graph Indices}
 
 The work that I am proposing involves implementing efficient search over graphs of genomic sequence data. This is not a new idea. Many of the current approaches to this problem come at it from the perspective of trying to index a multiple sequence alignment \cite{siren2014indexing}. Two such approaches are described below.
 
@@ -442,13 +444,13 @@ Another, slightly newer approach uses the concept of a ``population reference gr
     
     % We want to employ Avro to give this system a consistent API accessible from a variety of languages.
 
-\chapter{Preliminary Work}
+\section{Preliminary Work}
 
 I have already completed several smaller projects which are relevant to the work proposed here. The first of these is a web-based tool for visualizing information on cancer patients, which is tied to the project at hand by the thread of spatial metaphors. The second previous project, an analysis of copy number variation in the NOTCH2NL gene family, is an early example of how graphical models accounting for the existence of paralogs can produce useful biological results. The third project, a theoretical treatment of mapping to a graph-based reference genome, lays out a mathematical formalism for some of the problems the current work aims to solve. These pieces of preliminary work illustrate both the need for the current proposed research and my competence to carry it out.
 
 % I have already some some work on infrastructure for the scalable analysis of genomic variation.
 
-\section{Project \#1: Tumor Map Visualization}
+\subsection{Project \#1: Tumor Map Visualization}
 
 The first piece of preliminary work presented here is the UCSC Tumor Map, visible in Figure~\ref{fig:tumormap}. The Tumor Map is a web-based interactive analysis tool for exploring cancer data sets. I developed the first version of the tool for a quarter-long rotation project in the Stuart Lab here at UCSC, and I have since been working with others in that lab to add new analysis features and to polish the tool for publication.
 
@@ -481,9 +483,9 @@ The UCSC Tumor Map is worth mentioning here primarily because it illustrates my 
     
 % See the paper. 
 
-\section{Project \#2: NOTCH2NL Copy Number Variation Analysis}
+\subsection{Project \#2: NOTCH2NL Copy Number Variation Analysis}
 
-My graph-based analysis of NOTCH2NL paralog copy number is a second and somewhat more relevant piece of prior work. As discussed in Section~\ref{sec:notch}, while the older GRCh37 human genome assembly had only a single NOTCH2NL gene annotated, new information from sequencing haploid cells (from a hyatidiform mole) revealed the existence of four paralogs, here dubbed NOTCH2NL-A, NOTCH2NL-B, NOTCH2NL-C, and NOTCH2NL-D \cite{jacobs2014recently}. Moreover, NOTCH2NL-A, -B, and -C were found to be located quite close to ``the 1q21.1 distal deletion/duplication locus'' \cite{jacobs2014recently}, copy number variations of which have been associated with congenital microcephaly and macrocephaly \cite{jacobs2014recently}. The goal of our project was to determine if deletions or duplications of any of the nearby NOTCH2NL genes could potentially explain these microcephalic and macrocephalic phenotypes.
+My graph-based analysis of NOTCH2NL paralog copy number is a second and somewhat more relevant piece of prior work. As discussed in Subsection~\ref{subsec:notch}, while the older GRCh37 human genome assembly had only a single NOTCH2NL gene annotated, new information from sequencing haploid cells (from a hyatidiform mole) revealed the existence of four paralogs, here dubbed NOTCH2NL-A, NOTCH2NL-B, NOTCH2NL-C, and NOTCH2NL-D \cite{jacobs2014recently}. Moreover, NOTCH2NL-A, -B, and -C were found to be located quite close to ``the 1q21.1 distal deletion/duplication locus'' \cite{jacobs2014recently}, copy number variations of which have been associated with congenital microcephaly and macrocephaly \cite{jacobs2014recently}. The goal of our project was to determine if deletions or duplications of any of the nearby NOTCH2NL genes could potentially explain these microcephalic and macrocephalic phenotypes.
 
 Our lab took several approaches to answering this question, including experimental wet-lab characterization of the NOTCH2NL proteins' effects on mice and reanalysis of high-throughput-sequencing data to look at copy number variations in these genes in the general population \cite{jacobs2014recently}. The approach that I took, however, relied on a collection of DNA microarrays from people with microcephaly, people with macrocephaly, and people with neither condition \cite{jacobs2014recently}.
 
@@ -516,8 +518,8 @@ This prior work serves the project being proposed now as an illustration of the 
 
     % See the paper.
 
-\section{Project \#3: Mapping to a Reference Genome Structure}
-\label{sec:mapping}
+\subsection{Project \#3: Mapping to a Reference Genome Structure}
+\label{subsec:mapping}
 
 In order to implement any sort of new data structure, it is necessary to work out what operations the structure is to support and what algorithms can provide them. To that end, as a preliminary to the work proposed here, we have developed a rigorous mathematical model of ``reference structures'' and their associated operations \cite{paten2014mapping}. My contribution here was primarily as a tester of the theory, contributing counterexamples and demonstrations of impracticality to make our current model stronger. Long portions of the following description of that model are adapted from \cite{paten2014mapping}. 
 
@@ -558,7 +560,7 @@ Combining cases, we say that position $P$ is mapped in $H$ if it is left-mapped,
 
 A \vocab{mapping scheme} for a sequence graph $H$ is a definition, rule or procedure that defines a mapping $M$ from positions in $G$ to positions in $H$ for all possible sequence graphs $G$. The pair $(H, M)$, consisting of a sequence graph $H$ and a mapping scheme for $H$ is called a \vocab{reference structure}. For example, if $H$ is a phased sequence graph and we define the mapping $M$ from $G$ to $H$ to be the mapping $M_e$ for each phased sequence graph $G$, and leave the mapping of every position in a unphased input graph $G$ undefined, then $M$ is a mapping scheme for $H$ and $(H, M)$ is a reference structure. 
 
-A \vocab{reference hierarchy} is a collection of reference structures at different levels, one built upon another. A higher-level reference structure is derived from a lower-level reference structure by merging some base instances in the lower-level structure together, and re-numbering all the nodes in the new structure as new positions. Base instances can only be merged if they share a base (in which case their corresponding sides are combined) or if they have complementary bases (in which case their opposite sides are combined). A \vocab{merging scheme} is an algorithm that specifies what base instances to merge when creating a higher-level reference structure. One example of a merging scheme is the \vocab{$\boldsymbol{p}$-overlap merging scheme}, in which base instances whose contexts on one side match out to at least distance $p$ are merged. (However, see Subsection~\ref{subsec:aim1merging} for issues I uncovered with this na\"{\i}ve scheme.)
+A \vocab{reference hierarchy} is a collection of reference structures at different levels, one built upon another. A higher-level reference structure is derived from a lower-level reference structure by merging some base instances in the lower-level structure together, and re-numbering all the nodes in the new structure as new positions. Base instances can only be merged if they share a base (in which case their corresponding sides are combined) or if they have complementary bases (in which case their opposite sides are combined). A \vocab{merging scheme} is an algorithm that specifies what base instances to merge when creating a higher-level reference structure. One example of a merging scheme is the \vocab{$\boldsymbol{p}$-overlap merging scheme}, in which base instances whose contexts on one side match out to at least distance $p$ are merged. (However, see Subsection~\ref{subsubsec:aim1merging} for issues I uncovered with this na\"{\i}ve scheme.)
 
 Toy examples of reference structures are given in Figures~\ref{fig:lrexactmatch} and~\ref{fig:lrexactmatchgraph}. A full description of reference structure theory is available in \cite{paten2014mapping}.
 
@@ -586,16 +588,16 @@ This piece of preliminary work is important to my project because it defines the
 
 % See the paper.
 
-\chapter{Proposed Work}
+\section{Proposed Work}
 
 Building on the foundation of the preliminary work described above, I propose a three-part research agenda. First, I will further develop the reference structure theory just described with new mapping and merging schemes, culminating in the publication of a complete paper describing the theory and its new extensions. Second, I will implement this extended theory in a set of scalable software tools, using advanced string and graph indexing algorithms. These tools will present a well-defined API, suitable for use in a shared-infrastructure environment. Finally, I will use these tools to explore human genomic regions which have hitherto frustrated traditional analysis methods, like the major histocompatibility complex, the 1q21.1 region of chromosome 1, and the centromeres, in hopes of discovering and characterizing potentially important structural variation.
 
-\section{Specific Aim \#1: Develop Reference Hierarchy Theory}
+\subsection{Specific Aim \#1: Develop Reference Hierarchy Theory}
 
 The first component of my project is to further develop the formalisms of mapping schemes, reference structures, and reference hierarchies. I will create a system that can replace existing alignment formalisms and traditional ways of conceptualizing the reference genome.
 
-\subsection{Define a Practical Merging Scheme}
-\label{subsec:aim1merging}
+\subsubsection{Define a Practical Merging Scheme}
+\label{subsubsec:aim1merging}
 
 One of the major tasks here is to come up with formalized, practical merging schemes. The $p$-overlap merging scheme \cite{paten2014mapping}, for example, has turned out to be quite impractical; when applied to real-world MHC data in a prototype implementation, it merges hundreds of thousands of unrelated bases together. I will identify, formalize, and prototype a more practical merging scheme.
 
@@ -603,19 +605,19 @@ The current prototype merging scheme that I have implemented is the \vocab{greed
 
 Although this merging scheme suffers from some theoretical shortcomings---for example, the results are dependent on the order in which genomes are added---in practice qualitatively clean-looking reference structures are produced. Moreover, the positions of the initial reference structure (i.e.\ the GRCh38 primary path) are never merged with each other, making this an attractive merging scheme for creating a reference structure (and associated graph-based coordinate system) which is backwards-compatible with existing GRCh38 linear coordinates. Finally, since the procedure to place new variants in the reference graph is exactly the same as that used to map new samples to the reference graph, this merging scheme provides an obvious update path.
 
-To complete this part of the project, I will need to define a mathematical model of the greedy merging scheme in the language of reference structure theory, and prove its essential properties. I will also need to demonstrate that it is practical to apply it at the scale necessary to complete Specific Aim \#2 (Section~\ref{sec:aim2}), through prototyping.
+To complete this part of the project, I will need to define a mathematical model of the greedy merging scheme in the language of reference structure theory, and prove its essential properties. I will also need to demonstrate that it is practical to apply it at the scale necessary to complete Specific Aim \#2 (Section~\ref{subsec:aim2}), through prototyping.
 
-\subsection{Define a Practical Mapping Scheme}
-\label{subsec:aim1mapping}
+\subsubsection{Define a Practical Mapping Scheme}
+\label{subsubsec:aim1mapping}
 
-Hand in hand with the above, I will also need to formally define and test a practical mapping scheme, both for mapping during the construction of a reference structure, and for mapping short reads (and upcoming long reads) to that reference structure. In this area my prior work has proven more fruitful. I have prototyped the (general) left-right exact match mapping scheme of Section~\ref{sec:mapping}. When used with the greedy merging scheme, left-right exact match mapping can produce a reasonable-looking reference structure out of the GRCh38 MHC region and its alt loci. However, that reference structure is still not all that great; there are large regions which are not merged due to mismatches or other small differences between the sequences being merged.
+Hand in hand with the above, I will also need to formally define and test a practical mapping scheme, both for mapping during the construction of a reference structure, and for mapping short reads (and upcoming long reads) to that reference structure. In this area my prior work has proven more fruitful. I have prototyped the (general) left-right exact match mapping scheme of Subsection~\ref{subsec:mapping}. When used with the greedy merging scheme, left-right exact match mapping can produce a reasonable-looking reference structure out of the GRCh38 MHC region and its alt loci. However, that reference structure is still not all that great; there are large regions which are not merged due to mismatches or other small differences between the sequences being merged.
 
 In order to rectify this problem, our lab has been working on alternative methods of mapping. One of the alternatives we are exploring is to post-process mappings from the left-right exact match scheme, automatically identifying ``bubbles'' of sequence which did not map together and trying to ``zip'' them closed by pairing up identical bases. Another student in the lab has looked at this option, which we have termed ``mapping on credit'', prototyped it, and determined that it can be formalized appropriately under our model; I will have to do (or perhaps merely adopt) this formalization.
 
 Another alternative that we are looking at is adding support for a limited number of mismatches. Another student in our lab has also been working on prototyping this, and it seems to be a better mapping scheme in terms of coverage, but also much slower, at least in its current prototype form, than the exact match version. I will need to speed up our prototype of this mapping scheme as much as possible in order to see if it would be practical to apply it on a larger scale.
 
-\subsection{Construct a Mathematics of Variants}
-\label{subsec:aim1math}
+\subsubsection{Construct a Mathematics of Variants}
+\label{subsubsec:aim1math}
 
 In addition to fleshing out the mathematical models of reference structures as they relate to mapping, I will also need to define mathematical tools for using reference structures, or perhaps more stripped-down sequence graphs without some of the mapping equipment, as repositories of information about genomic variation. A good reference structure for humans might be expected to include, in addition to the alleles represented by GRCh38 and its alt loci, information about other forms of variation. SNPs, short indels, and structural variants the GRC did not deem worthy of promotion to full alt loci would all appear. Having built this graph of human variation, it would be a poor decision to use it only for mapping and not for variant storage and analysis.
 
@@ -623,8 +625,8 @@ In order to use reference structures as a language for variation, I will need to
 
 Some work is already being done in this area, and I will strive to be compatible with it. For example, my lab is involved in the Global Alliance for Genomics and Health (GA4GH), an organization which is currently working on a graph-based format for representing variation. This format is based around a concept of variants being unary, as opposed to part of a set of alternative alleles \cite{ga4gh2014variation}. I will adopt and formalize these concepts.
 
-\subsection{Deliverables}
-\label{subsec:aim1deliverables}
+\subsubsection{Deliverables}
+\label{subsubsec:aim1deliverables}
 
 The culmination of this part of the research program will be a publication detailing the theory needed to build the software tools that come next. I will also deliver prototypes demonstrating that the mathematical formalisms I choose can be practically applied to real data at nontrivial (although not necessarily genomic) scales. These prototypes will in turn be used to compare the empirical performance of formalized reference structure theory merging and mapping to that of other methods of haplotype and read alignment.
 
@@ -666,36 +668,36 @@ The culmination of this part of the research program will be a publication detai
         
     % The culmination of this part of the research program will be a publication detailing nearly the entire theory needed to build the software tools that come next. 
         
-\section{Specific Aim \#2: Engineer Scalable Software Tools}
-\label{sec:aim2}
+\subsection{Specific Aim \#2: Engineer Scalable Software Tools}
+\label{subsec:aim2}
 
 The second main component of my project, which can to some extent happen concomitantly with the first, is to turn the above mathematical models into scalable code, which can process data sets on the order of a whole genome or larger. Existing bioinformatics tools---most notably, aligners and variant callers---generally are not able to account for even the alt loci of GRCh37, let alone the hundreds of such loci in GRCh38 \cite{church2014story}. In order to correctly map to the whole of the current human reference genome, new tools are required. Moreover, there are many potential applications of reference structures and reference hierarchies, most of which require a software implementation capable of working on billions of reference positions. I propose to create such an implementation.
 
-\subsection{Build an Aligner for GRCh38 with Alt Loci}
-\label{subsec:aim2aligner}
+\subsubsection{Build an Aligner for GRCh38 with Alt Loci}
+\label{subsubsec:aim2aligner}
 
 First, I will build a tool capable of constructing a reference hierarchy from GRCh38, and and a tool for aligning short reads, or longer contigs, to this structure. These two tools together will constitute a reference-structure-based aligner and read mapper. This aligner will be useful primarily because of its ability to map to alt loci effectively. The aligner will also be able to map to general, higher-level merged reference structures, in order to identify reads or portions of contigs as instances of similar sequences.
 
-The reference hierarchy I will use for this part of the project will contain, at the bottom level, all of the linear sequences of GRCh38, including chromosomes and alt loci. It will additionally have a single higher level, derived by the greedy merging scheme (Subsection~\ref{subsec:aim1merging}). Mapping reads or other sequence to the lowest level of this reference structure will be more or less equivalent to mapping to GRCh38 in its entirety with a more traditional aligner. It will even be possible to map to only a subset of the sequences in the index, in order to, for example, exclude the alt loci when looking for a unique mapping location along the primary path. However, at the upper level, the alt loci will be merged with the main chromosomes, with similar regions at least partially collapsed together. I theorize that this will result in significantly more unique mapping when mapping to the upper level, since multiple similar areas that might have matched a query sequence at the lower level would be merged into a single unique mapping location.
+The reference hierarchy I will use for this part of the project will contain, at the bottom level, all of the linear sequences of GRCh38, including chromosomes and alt loci. It will additionally have a single higher level, derived by the greedy merging scheme (Subsection~\ref{subsubsec:aim1merging}). Mapping reads or other sequence to the lowest level of this reference structure will be more or less equivalent to mapping to GRCh38 in its entirety with a more traditional aligner. It will even be possible to map to only a subset of the sequences in the index, in order to, for example, exclude the alt loci when looking for a unique mapping location along the primary path. However, at the upper level, the alt loci will be merged with the main chromosomes, with similar regions at least partially collapsed together. I theorize that this will result in significantly more unique mapping when mapping to the upper level, since multiple similar areas that might have matched a query sequence at the lower level would be merged into a single unique mapping location.
 
 As preliminary work for this portion of the project, I have already written a tool which can create two-level reference hierarchies using the greedy merging scheme. This code has been successfully used to build a reference structure for the MHC region of GRCh38, including alt loci. Unfortunately, my initial estimates of runtime and memory usage scaling indicate that this tool as currently implemented will not be able to construct such a reference hierarchy for the entirety of GRCh38 in a reasonable amount of time. Therefore, it will have to be re-engineered to both increase speed and decrease memory usage.
 
 The first optimization that I will make is to implement a ``retract'' operation on the intermediate search result ranges of an FM-index, as described in \cite{fischer2008other}. A preliminary implementation of this enhanced scheme has been created, but it still needs to be further optimized through profiling, and compression of the auxiliary data structures still needs to be implemented.
 
-\subsection{Incorporate Additional Variation}
-\label{subsec:aim2variation}
+\subsubsection{Incorporate Additional Variation}
+\label{subsubsec:aim2variation}
 
 It is desirable to have a system that can scale beyond just the current GRCh38. The GRC is already working on improving the quality of new alt loci candidates for inclusion in their next minor release \cite{church2014story}. Moreover, the more variation that goes into a reference hierarchy, the more representative it will be as a reference. It would be especially good if my reference hierarchy were to include a large portion of known SNPs and short indels, as well as common inversions, insertions, and deletions deemed too simple for promotion to full alt loci by the GRC. I hypothesize that adding in more human genomes or partial sequences of variable regions will improve mapping of reads to the upper-level reference structure, since it makes it more likely that the reads' source haplotype would be included. In order to test this hypothesis, I plan to incorporate other sources of sequence beyond GRCh38 into a larger, extended reference hierarchy. Having done this, I will evaluate the change in read mappability to see if reference bias in read mapping has been reduced, or at least diffused across many reference haplotypes.
 
-\subsection{Provide Reference Hierarchy APIs}
-\label{subsec:aim2api}
+\subsubsection{Provide Reference Hierarchy APIs}
+\label{subsubsec:aim2api}
 
 It is highly probable that, despite my efforts to compress them, the reference hierarchies which I produce for this project will be very large. Consequently, it would be useful to be able to leave them or future improved reference hierarchies in one or a few places, as shared infrastructure.
 
 To this end, I will design an API, or collection of APIs, to facilitate access to and use of reference hierarchies. These APIs will be designed to support access across a network connection, allowing client software to be run either remotely at other institutions or, for increased speed, locally on the same infrastructure that hosts the reference hierarchy. The two major use cases that I plan to support are mapping sequences to the reference hierarchy and browsing or querying the graph that defines the hierarchy's topology. These APIs will be specified, as much as possible, in Avro; some operations, however, may be more easily enabled by presenting a Spark interface to which a user or application can submit jobs. This would allow me to leverage GraphX, Spark's distributed graph-parallel computation component, to allow users to do arbitrary computations on the reference hierarchy graph \cite{xin2013graphx}.
 
-\subsection{Deliverables} 
-\label{subsec:aim2deliverables}
+\subsubsection{Deliverables} 
+\label{subsubsec:aim2deliverables}
 
 For this specific aim, I will deliver a reference hierarchy for GRCh38 with its alt loci, together with the software to build it and the software to map reads and longer pieces of sequence to it. This software will be designed so that it can be used to replace more traditional read mappers in a sequencing pipeline.
 
@@ -728,12 +730,12 @@ Finally, I will deliver a set of APIs enabling reference hierarchies to be store
 
     % Ideally with RPC so you don't need to mirror this whole graph structure in order to slice it and look up variants.
 
-\section{Specific Aim \#3: Discover Biologically Relevant Variation}
+\subsection{Specific Aim \#3: Discover Biologically Relevant Variation}
 
 My proposed work would be merely a computer science project if I did not attempt to actually do the sort of biological analyses that I purport to enable. Therefore, after completing the previous two aims, I intend to use my system to answer questions about biology. These questions are rather diverse, and each could probably be expanded into its own worthwhile research project, so I will be able to perform only preliminary experiments to answer each---my underlying purpose is merely to validate the tools that I am building. However, I still hope to produce useful results.
 
-\subsection{Apply Reference Structures to NOTCH2NL}
-\label{subsec:aim3notch}
+\subsubsection{Apply Reference Structures to NOTCH2NL}
+\label{subsubsec:aim3notch}
 
 The first question to which I propose to apply my tools is a question which I have worked on previously: the nature of the relationship between copy number of the NOTCH2NL genes and microcephaly or macrocephaly. Previous attempts to answer this question have been impeded by the difficulty of uniquely mapping reads or microarray probes to the different NOTCH2NL paralogs, due to the high level of similarity between them and the short lengths of the sequences being mapped \cite{jacobs2014recently}. The method I worked on dealt with fully handling multimapping of microarray probes when estimating copy number across the genome \cite{jacobs2014recently}.
 
@@ -741,19 +743,19 @@ I intend to formalize this method in the context of reference structures. I will
 
 As a result of these experiments, I hope to be able to produce subjectively cleaner copy number calls for the region, with a better idea (due to the merged structure of the graph) of the uncertainties involved in the assignment of copy number.
 
-\subsection{Realign Existing Datasets}
-\label{subsec:aim3realign}
+\subsubsection{Realign Existing Datasets}
+\label{subsubsec:aim3realign}
 
 A second project which I will undertake with my new tools is to realign existing aligned short read data sets (which did not properly account for the existence of alt loci) to the new reference hierarchy. I intend to produce an improved set of aligned reads, ideally consistently mapped to diploid paths through the upper level of the reference hierarchy. (This is what one should expect in most samples, since any given person is unlikely to have, for example, three distinct copies of the MHC region.) These new alignments will be made publicly available, both in graph-based form and in GRCh38 coordinates. To validate the new alignments, I intend to compare them to the old alignments; I anticipate that this new alignment method should produce very similar alignments, but with fewer unmapped reads, especially for reads that would have mapped well to alt loci that were excluded from the original reference used for mapping. I will attempt to measure this hypothesized effect.
 
-\subsection{Expand Reference Structure}
-\label{subsec:aim3maintenance}
+\subsubsection{Expand Reference Structure}
+\label{subsubsec:aim3maintenance}
 
-Finally, after completing the rest of my project, I will endeavor to at least temporarily maintain, and develop a process to maintain, a one true reference hierarchy for the human genome. This hierarchy will be based on the current GRC human genome release, and supplemented by merging in additional high-quality sequence which the GRC did not deign to include as alt loci, but which is still representative of human diversity. If possible I would like to include many whole human genomes, but if that proves computationally intractable or otherwise inadequate as a way to capture variation, I will instead use examples of different variants with sufficient flanking context. This is essentially an extension of one of the deliverables from Subsection~\ref{subsec:aim2deliverables}, but whereas that portion of the project was the initial construction of the reference hierarchy, this portion deals with making provisions and building infrastructure for its ongoing maintenance.
+Finally, after completing the rest of my project, I will endeavor to at least temporarily maintain, and develop a process to maintain, a one true reference hierarchy for the human genome. This hierarchy will be based on the current GRC human genome release, and supplemented by merging in additional high-quality sequence which the GRC did not deign to include as alt loci, but which is still representative of human diversity. If possible I would like to include many whole human genomes, but if that proves computationally intractable or otherwise inadequate as a way to capture variation, I will instead use examples of different variants with sufficient flanking context. This is essentially an extension of one of the deliverables from Subsection~\ref{subsubsec:aim2deliverables}, but whereas that portion of the project was the initial construction of the reference hierarchy, this portion deals with making provisions and building infrastructure for its ongoing maintenance.
 
 The biological relevance of this part of my project is mostly speculative: while building a massive index of human variation, I may find interesting variants. I will empirically and quantitatively characterize the set of variants that I encounter.
 
-\subsection{Deliverables}
+\subsubsection{Deliverables}
 
 This aim is quite broad, and has several independent deliverables. From the NOTCH2NL project, I will deliver a tool which can make NOTCH2NL paralog copy number calls from CGH microarray data more reliably than my previous implementation \cite{jacobs2014recently}. From the realignment project, I will deliver a set of several reference-hierarchy-aligned full human genomes created from short read sequence, and a comparative description of reference mapping bias for each. Finally, in the reference hierarchy maintenance project, I will deliver an up-to-date reference hierarchy based on GRCh38 (or the then-current GRC release), supplemented with additional sequence, a summary of the variants contained therein, and a plan for how this hierarchy could be maintained as a piece of shared infrastructure going forward.
 
