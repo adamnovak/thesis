@@ -27,11 +27,41 @@
 \usepackage{placeins}
 \usepackage{natbib}
 \usepackage{epstopdf}
+\usepackage{algorithmicx}
+\usepackage[noend]{algpseudocode}
+\usepackage{algorithm}
+\usepackage{marvosym}
+\usepackage{siunitx}
+\usepackage[hyphenbreaks]{breakurl}
 
-\begin{document}
+% We have long URLs, but Latex decides URLs must not linebreak and should instead wander off the right side of the text. This fixes that according to <http://tex.stackexchange.com/a/10401>
+\expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks%  save the current one
+      \do\a\do\b\do\c\do\d\do\e\do\f\do\g\do\h\do\i\do\j%
+      \do\k\do\l\do\m\do\n\do\o\do\p\do\q\do\r\do\s\do\t%
+      \do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D%
+      \do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N%
+      \do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X%
+      \do\Y\do\Z}
+      
+  % Add Yield as a pseudocode command
+\algnewcommand\algorithmicyield{\textbf{yield}}
+\algnewcommand\Yield{\algorithmicyield{} }%
+
+% Add Continue as a pseudocode command
+\algnewcommand\algorithmiccontinue{\textbf{continue}}
+\algnewcommand\Continue{\algorithmiccontinue{} }%
+
+% Add Break as a pseudocode command
+\algnewcommand\algorithmicbreak{\textbf{break}}
+\algnewcommand\Break{\algorithmicbreak{} }%
+
+% Non-useless comments
+\algrenewcomment[1]{\(\triangleright\) #1}%
 
 % Have a command for vocab words
 \newcommand{\vocab}[1]{\textbf{#1}\xspace}
+
+\begin{document}
 
 % All the title page and abstract stuff lives here.
 \input{text/00_frontmatter.tex}
@@ -45,27 +75,8 @@
 % paper.
 \input{text/02_contextschemes.tex}
 
-\appendix
-\chapter{Research Schedule}
-
-\begin{table}[ht]
-    \centering
-    \begin{tabular}{l|c}
-        \textbf{Task} & \textbf{Work Period} \\
-        \hline
-        Develop Mapping Scheme (\ref{subsec:aim1mapping}) & Q4 2014 \\
-        Develop Merging Scheme (\ref{subsec:aim1merging}) & Q4 2014 \\
-        Formalize Variant Mathematics (\ref{subsec:aim1math}) & Q1 2015 \\
-        Scale to GRCh38 (\ref{subsec:aim2aligner}) & Q2 2015--Q4 2015 \\
-        Add Additional Variation (\ref{subsec:aim2variation}) & Q1 2016 \\
-        Build Reference Hierarchy APIs (\ref{subsec:aim2api}) & Q2 2016 \\
-        Apply To NOTCH2NLs (\ref{subsec:aim3notch}) & Q3 2016 \\
-        Re-Align Existing Data (\ref{subsec:aim3realign}) & Q4 2016 \\
-        Maintain Reference Hierarchy (\ref{subsec:aim3maintenance}) & Q1 2017--Q2 2017 \\ 
-    \end{tabular}    
-    \caption{Research schedule for the proposed work.} 
-    \label{tbl:schedule}
-\end{table}
+% Chapter 3 is the gPBWT paper, with revisions
+\input{text/03_gpbwt.tex}
 
 
 % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
