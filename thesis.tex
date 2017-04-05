@@ -5,8 +5,14 @@
 % Not intended as a replacement for uctest.tex.
 
 \documentclass[11pt]{ucscthesis}
-\def\dsp{\def\baselinestretch{2.0}\large\normalsize}
-\dsp
+%\def\dsp{\def\baselinestretch{2.0}\large\normalsize}
+%\dsp
+
+% Define size since the document class doesn't.
+% See <http://tex.stackexchange.com/a/25351/115094>
+\makeatletter
+\let\@currsize\normalsize
+\makeatother
 
 % 2010june01 sol katzman:
 % package geometry should override the various margin settings from .clo and .cls
@@ -33,6 +39,7 @@
 \usepackage{marvosym}
 \usepackage{siunitx}
 \usepackage[hyphenbreaks]{breakurl}
+\usepackage{setspace}
 
 % We have long URLs, but Latex decides URLs must not linebreak and should instead wander off the right side of the text. This fixes that according to <http://tex.stackexchange.com/a/10401>
 \expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks%  save the current one
@@ -61,7 +68,11 @@
 % Have a command for vocab words
 \newcommand{\vocab}[1]{\textbf{#1}\xspace}
 
+\doublespacing
+
 \begin{document}
+
+
 
 % All the title page and abstract stuff lives here.
 \input{text/00_frontmatter.tex}
