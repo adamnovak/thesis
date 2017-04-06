@@ -31,7 +31,7 @@
 \usepackage{subfig}
 \usepackage[countmax]{subfloat}
 \usepackage{placeins}
-\usepackage{natbib}
+\usepackage[numbers]{natbib}
 \usepackage{epstopdf}
 \usepackage{algorithmicx}
 \usepackage[noend]{algpseudocode}
@@ -40,6 +40,8 @@
 \usepackage{siunitx}
 \usepackage[hyphenbreaks]{breakurl}
 \usepackage{setspace}
+% Put bibliography in table of contents
+\usepackage[nottoc,numbib]{tocbibind}
 
 % We have long URLs, but Latex decides URLs must not linebreak and should instead wander off the right side of the text. This fixes that according to <http://tex.stackexchange.com/a/10401>
 \expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks%  save the current one
@@ -89,7 +91,8 @@
 % Chapter 3 is the gPBWT paper, with revisions
 \input{text/03_gpbwt.tex}
 
-% Chapter 4 will be the bake-off paper after I manage to convert it from Word/Google Docs into proper TeX
+% Chapter 4 is be the bake-off paper
+\input{text/04_bakeoff.tex}
 
 % Chapter 5 will be a writeup of my HGVM build
 
