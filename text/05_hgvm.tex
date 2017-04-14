@@ -1,0 +1,68 @@
+\chapter{Towards a Human Genome Variation Map}
+
+\newcommand{\vg}{\texttt{vg}\xspace}
+
+\section{Introduction}
+
+In Chapter~\ref{ch:bakeoff}, it was demonstrated that the use of graph-based genomic references can result in improved variant calling performance over traditional linear references, especially with respect to the genotyping of previously-reported insertions and deletions. However, the graph references in that study that produced the most accurate variant calls were derived from the 1000 Genomes Project's main variant call files \cite{10002015global}, and allowed the detection of only relatively short indels, under about 50~bp (Fig.~\ref{fig:bakeoff:refnonref} (C)). Compared to the approximately 300~bp length of a single Alu repeat insertion \cite{weiner1980abundant}, this is inadequate for characterizing genomic variation.
+
+Moreover, when compared not against existing Illumina-based variant calls but against PacBio-based assembly data, variant calling performed with ``Cactus''-based graphs, produced from the alignment of long ``alternative loci'' sequences, was found to be more accurate than variant calling performed against the 1000 Genomes-derived graphs, in terms of how well the resulting view of a pooled ``synthetic diploid'' genome agreed with separate haploid assembly data (Fig.~\ref{fig:bakeoff:calling} (B)). Cactus-based graphs were also shown to allow the detection of longer insertions and deletions than the 1000 Genomes-based graphs (Fig.~\ref{fig:bakeoff:refnonref} (C)). Overall, Cactus-based graphs have some important advantages that 1000 Genomes-based graphs lack.
+
+In order to construct a versatile graph-based reference that will serve as a community resource for read mapping and variant calling, it is desirable to combine the best aspects of these two types of graph. Additionally, as the bake-off project of Chapter~\ref{ch:bakeoff} worked only on regions up to a few megabases in size, it is desirable to demonstrate the effectiveness of graph-based methods at larger scales, where qualities like the ability to resolve mappings between ambiguous regions, and the abbility to effectively use paired-end information, are more critical.
+
+In this chapter, we present a method to create graph references combining the best qualities of 1000 Genomes-based and Cactus-based graphs, and validate these graphs on the scale of a chromosome. We also present a complete whole-genome graph of this type, as an artifact for further evaluation. 
+
+\section{Methods}
+
+In order to combine a Cactus-based graph with a 1000 Genomes-based graph, we implemented a new subcommand in the \vg variation graph toolkit \cite{garrison2016vg}. The new tool, \texttt{vg add}, augments an existing graph by instering variants from a VCF file. It works by extracting local haplotypes around each variant that are locally consistent with the phased samples in the VCF file, and then aligning them to the relevant region of the graph, as determined by tracing an embedded primary reference path in the graph. For particularly large insertions and deletions, where a complete local alignment would be impractical, the ends of the variant are aligned, and the resulting alignments are stitched together to describe the actual variant.
+
+The vg add tool, along with a Toil-based orchestration script \cite{vivian2017toil}, were used to combine variation information from three sources. The base level graph was obtained by using Cactus \cite{paten2011cactus2}, by aligning together the chromosome 22 primary sequence and the chromosome 22 alt and ``random'' sequences from GRCh38.
+% TODO: What patch level did Joel use?
+
+On top of this graph, \texttt{vg add} was used to add in variants from the 1000 Genomes Phase 3 GRCh38 lifted-over VCF files, available from \url{ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/GRCh38_positions/}. Notably, these variant files as distributed by the 1000 Genomes Project are not valid; variants lifted over to the reverse strand of GRCh38 are marked as marked with a \texttt{MATCHED\_REV} tag in the \texttt{INFO} field but left in their GRCh37 orientations, and needed to be reverse-complemented using a script so that the \texttt{REF} field contents will match the actual reference sequence at the variant's location.
+
+% TODO: what source data and processing script did Charlie use?
+The \texttt{vg add} tool was also used to add structural variants. Since the structural variants in GRCh38 coordinates, originally obtained from \url{ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/phase3/integrated_sv_map/supporting/GRCh38_positions/}, were described using a complex combination of \texttt{INFO} tags, additional tables, and references to difficult-to-locate external sequence database records, the files had to be preprocessed in order for \texttt{vg add} to be able to parse them. All variant alt information was moved into a fully realized concrete sequence in each variant record's \texttt{ALT} column, and the reference sequences, even for very long deletions, were placed in each variant record's \texttt{REF} column. All symbolic allele references and target site duplication sequences were resolved. For mobile element insertions, the original VCF specified the presence, but not the exact length, of a poly-A tail; in these cases, several duplicate variant records were created, with poly-A tail lengths of 10, 25, and 50 bases. This approach was selected in hopes of providing a mapping target sufficient to collect reads showing the correct poly-A tail length, which could then potentially be determined through graph-based variant calling.
+
+Once fully constructed, the resulting graph was indexed for alignment using \vg, producing XG and GCSA2 indexes. The graph was subjected to two alignment-based evaluations.
+
+The first evaluation was a variant of the assembly realignment evaluation from Chapter~\ref{ch:bakeoff}. A synthetic diploid sample was created from the CHM1 and CHM13 hyatidiform mole samples aligned to GRCh38 (it was actually the same sample used in Chapter~\ref{ch:bakeoff}). Form this sample, the reads aligned to chromosome 22 were collected. %TODO: need to grab related reads too!
+
+\section{Results}
+
+\section{Conclusion}
+
+\section{Acknowledgements}
+
+The author would like to thank Joel Armstrong for performing Cactus alignments used in this work. The author would also like to thank Charles Markello for preparing flat structural variant VCF files. The author would like to thank Glenn Hickey for preparing the synthetic diploid sample used in the evaluations.
+
+% Towards a Human Genome Variation Map
+    % Intro
+        % So in the bake-off paper, aka last chapter, we showed that it's possible to get improved variant calling performance with a graph reference
+        % But we had these references with only short variants in them that did really well
+        % Can we improve performance by bringing in more info about long variants and alt loci?
+    % Methods
+        % We developed a method to add variants from a VCF into a graph
+            % It's based on all these realignment heuristics to try and get good performance/not crash
+        % We also improve the assembly realignment evaluation from the paper
+            % By not going through VCF and instead infering presence/absence of nodes and edges from nested, ploidy-aware genotype calls
+        % We developed an HGVM building and evaluating tool which is here on Github/pip
+    % Results (still preliminary)
+        % We built a graph for chr22 on 3/23/17
+        
+            % TMPDIR=/hive/users/anovak/tmp time build-hgvm ./tree2 chr22_build --base_vg_url file:`pwd`/sourceGraphs/human22.only.chopped.vg --vcf_contig "chr22" --vcfs_url file:`pwd`/../forward_vcfs --vcfs_url file:/cluster/home/charles/SV_HGVM_research/eighth_draft_GRCh38_bks_only_polALengths_chrs --add_chr --sample_fastq_url file:`pwd`/../mole_bams/syndip-chr22-fastq.R1.fastq --sample_fastq_url file:`pwd`/../mole_bams/syndip-chr22-fastq.R2.fastq --eval_sequences_url file:`pwd`/to_realign.seqs --dump_hgvm ./chr22_build_dump --logInfo --realTimeLogging | tee log.txt
+            
+        % On chr22 (chr21?) we see improved variant calling performance, as measured by the realignment eval, between calling on the graph and calling on a linear control graph
+            % If time permits, we can do a leave-one-out on the data sources and see if they all contribute positively
+        % On chr22 (chr21?) we see improved SV calling performance, as measured by recall against the 1kg VCF for NA12878, relative to calling against a linear control
+            % TODO: implement that linear control
+            % Again, we can try controls from other subsets of the input data (just alts, just 1kg point variants, etc.)
+                % And we can move the "what's an SV" threshold around to exclude the point variants if there's crosstalk
+        % For the whole genome, here is a cool way (IPFS? DAT?) to retrieve a graph build with index
+    % Conclusions
+        % We are indeed barking up the right tree with graph-based references
+        % More work is needed
+            % To validate the whole genome build
+            % To pull in more data
+            % To polish the tools
+            % To establish best practices
