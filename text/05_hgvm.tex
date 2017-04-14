@@ -27,6 +27,9 @@ The \texttt{vg add} tool was also used to add structural variants. Since the str
 Once fully constructed, the resulting graph was indexed for alignment using \vg, producing XG and GCSA2 indexes. The graph was subjected to two alignment-based evaluations.
 
 The first evaluation was a variant of the assembly realignment evaluation from Chapter~\ref{ch:bakeoff}. A synthetic diploid sample was created from the CHM1 and CHM13 hyatidiform mole samples aligned to GRCh38 (it was actually the same sample used in Chapter~\ref{ch:bakeoff}). Form this sample, the reads aligned to chromosome 22 were collected. %TODO: need to grab related reads too!
+These reads were aligned to and used for variant calling against the graph under test. However, instead of calling variants to VCF, we created an improved version of the \texttt{vg call} variant caller capable of outputting variants in the form of Protobuf-serialized \texttt{Locus} objects, which describe a genotype call among a set of arbitrarily-defined alternative paths in an augmented graph. Using this ability, we produced \texttt{Locus} objects with calls for the ultrabubbles in the augmented graph (including both parent and nested child ultrabubbles), and \texttt{Locus} objects asserting the presence of all edges that had sufficient coverage but which were not part of an ultrabubble \cite{paten2017superbubbles}. Finally, as in Chapter~\ref{ch:bakeoff}, the augmented graph was subsetted, this time by eliminating all nodes and edges not called as present in some \texttt{Locus}, to create a sample graph. This sample graph was indexed and used to align 100~bp fragments of the CHM1 and CHM13 assembly contigs that were determined, using BWA's \texttt{bwasw} mode and a threshold score, to align well to chromosome 22 of the GRCh38 reference. The quality of the sample graph as a representation of these aligned assembly fragments was then measured.
+
+% TODO: SV recall evaluation
 
 \section{Results}
 
