@@ -40,7 +40,7 @@ More concretely, our approach is as follows. Within an orientation, we call an i
 \centering
 \includegraphics[width=\linewidth]{figures/03_gpbwt/barray.eps}
 %Maybe change 0 to s or something.
-\caption{An illustration of the $B_{0}[]$ array for a single side numbered $0$. Threads visiting this side may enter their next nodes on sides $1$, $2$, or $3$. The $B_0[]$ array records, for each visit of a thread to side $0$, the side on which it enters its next node. This determines through which of the available edges it should leave the current node. Because threads tend to be similar to each other, they are likely to run in ``ribbons'' of multiple threads that both enter and leave together. These ribbons cause the $B_s[]$ arrays to contain runs of identical values, which may be compressed.}
+\caption{An illustration of the $B_{1}[]$ array for a single side numbered $1$. (Note that a similar, reverse view could be constructed for the $B_2[]$ array and the opposite orientations of all the thread orientations shown here, but it is omitted for clarity.) The central rectangle represents a node, and the pairs of solid lines on either side delimit edges attached to either the left or right side of the node, respectively. These edges connect the node to other parts of the graph, which have been elided for clarity. The dashed lines within the edges represent thread orientations traveling along each edge in a conserved order, while the solid lines with triangles at the ends within the displayed node represent thread orientations as they cross over one another within the node. The triangles themselves represent ``terminals'', which connect to the corresponding dashed lines within the edges, and which are wired together within the node in a configuration determined by the $B_{1}[]$ array. Thread orientations entering this node by visiting side $1$ may enter their next nodes on sides $3$, $5$, or $7$, and these labels are displayed near the edges leaving the right side of the diagram. (Note that we are following a convention where nodes' left sides are assigned odd numbers, and nodes' right sides are assigned even numbers.) The $B_1[]$ array records, for each thread orientation entering through side $1$, the side on which it enters its next node. This determines through which of the available edges it should leave the current node. Because threads tend to be similar to each other, their orientations are likely to run in ``ribbons'' of multiple thread orientations that both enter and leave together. These ribbons cause the $B_s[]$ arrays to contain runs of identical values, which may be compressed.}
 \label{fig:barray}
 \end{figure}
 
@@ -52,42 +52,42 @@ For a given $G$ and $T$, we call the combination of the $c()$ function and the $
 
 \begin{figure}[h!]
 \centering
-\includegraphics[width=\linewidth]{figures/03_gpbwt/highwaydiagram.eps}
-\caption{A diagram of a graph containing two embedded threads. The graph consists of nodes $[1, 2, 3, 4, 5]$, with sides $[1L, 1R, 2L, 2R, \ldots]$, connected by edges $[1R, 3L]$, $[2R, 3L]$, $[3R, 4L]$, $[3R, 5L]$, $[4R, 4R]$, and $[5R, 5L]$. Embedded threads travel on the right-hand side of the nodes they are traveling through. Each thread here corresponds to a pair of ``lanes'' running in opposite directions. Visits are ordered from top to bottom, with ``lanes'' for lesser visits above those for greater ones. the ``lanes'' on the top half of each node are ordered in correspondence with the $B_s[]$ entries for the right side of the node, and those on the bottom half are ordered in correspondence with the $B_s[]$ entries for the left side of the node. The threads shown here are $[1L, 1R, 3L, 3R, 5L, 5R, 5L, 5R]$ and $[2L, 2R, 3L, 3R, 4L, 4R, 4R, 4L]$.}
-\label{fig:highwaydiagram}
+\includegraphics[width=\linewidth]{figures/03_gpbwt/bstylemultinode.eps}
+\caption{A diagram of a graph containing two embedded threads. The graph consists of nodes with sides $\{1, 2, 3, \ldots, 10\}$, connected by edges $\{2, 5\}$, $\{4, 5\}$, $\{6, 7\}$, $\{6, 9\}$, $\{8, 8\}$, and $\{10, 9\}$. Note that, once again, odd numbers are used for left sides and even numbers are used for right sides. As in Figure~\ref{fig:barray}, nodes are represented by rectangles, and thread orientations running from node to node are represented by dashed lines. The actual edges connecting the nodes are omitted for clarity; only the thread orientations are shown. Because each side's $B[]$ array defines a separate permutation, each node is divided into two parts by a central double yellow line (like on a road). The top half of each node shows visits to the node's right side, while the bottom half shows visits to the node's left side. Within the appropriate half of each node, the $B[]$ array entries for the entry side are shown. The special $0$ value is used to indicate that a thread stops and does not continue on to another node. When moving from the entry side to the exit side of a node, threads cross over each other so that they become sorted, stably, by the side of their next visit. Threads' order of arrival at a node is determined by the relative order of the edges incident on the side they arrive at, which is in turn determined by the ordering of the sides on the other ends of the edges. The threads shown here are $[1, 2, 5, 6, 9, 10, 9, 10]$ and $[3, 4, 5, 6, 7, 8, 8, 7]$. See Table~\ref{tbl:barrays} for a tabular representation of this example.}
+\label{fig:bstylemultinode}
 \end{figure}
 
 \begin{table}[h!]
-\caption[gPBWT Arrays]{$B_s[]$ and $c()$ values for the embedding of threads illustrated in Figure~\ref{fig:highwaydiagram}.}
+\caption{$B_s[]$ and $c()$ values for the embedding of threads illustrated in Figure~\ref{fig:bstylemultinode}.}
 \label{tbl:barrays}
 \centering
 \begin{tabular} { c | c }
 Side & $B_s[]$ Array \\
 \hline
-$1L$ & $[3L]$ \\
-$1R$ & $[\mathrm{null}]$ \\
-$2L$ & $[3L]$ \\
-$2R$ & $[\mathrm{null}]$ \\
-$3L$ & $[5L, 4L]$ \\
-$3R$ & $[2R, 1R]$ \\
-$4L$ & $[4R, 4R]$ \\
-$4R$ & $[3R, \mathrm{null}]$ \\
-$5L$ & $[5L, \mathrm{null}]$ \\
-$5R$ & $[5R, 3R]$ \\
+$1$ & $[5]$ \\
+$2$ & $[0]$ \\
+$3$ & $[5]$ \\
+$4$ & $[0]$ \\
+$5$ & $[9, 7]$ \\
+$6$ & $[4, 2]$ \\
+$7$ & $[8, 8]$ \\
+$8$ & $[6, 0]$ \\
+$9$ & $[9, 0]$ \\
+$10$ & $[10, 6]$ \\
 \end{tabular}
 \begin{tabular}{ c | c }
 Edge & $c(s, t)$ count \\
 \hline
-$c(1R, 3L)$ & 0 \\
-$c(2R, 3L)$ & 1 \\
-$c(3R, 4L)$ & 1 \\
-$c(3R, 5L)$ & 0 \\
-$c(4R, 4R)$ & 0 \\
-$c(5R, 5L)$ & 1 \\
-$c(3L, 1R)$ & 0 \\
-$c(3L, 2R)$ & 0 \\
-$c(4L, 3R)$ & 0 \\
-$c(5L, 3R)$ & 1 \\
+$\{2, 5\}$ & 0 \\
+$\{4, 5\}$ & 1 \\
+$\{6, 7\}$ & 1 \\
+$\{6, 9\}$ & 0 \\
+$\{8, 8\}$ & 0 \\
+$\{10, 9\}$ & 1 \\
+$\{5, 2\}$ & 0 \\
+$\{5, 4\}$ & 0 \\
+$\{7, 6\}$ & 0 \\
+$\{9, 6\}$ & 1 \\
 \end{tabular}
 
 \end{table}
@@ -126,7 +126,8 @@ This algorithm works because the thread orientations embedded in the graph run t
 \EndFunction
 
 \Function{where\_to}{$Side$, $Index$, $B[]$, $c()$}
-\State \Comment{For thread visiting $Side$ with $Index$ in the reverse prefix sort order, get the corresponding sort index of the thread for the next side in the thread.}
+\State \Comment{For a thread orientation visiting $Side$ with $Index$ in the reverse prefix sort order, get the corresponding sort index of the next visit in that thread orientation in the side it visits.}
+\State \Comment{Works by accounting for all thread orientations starting at the next side or entering the next side via edges before the edge being traversed, and then accounting for the thread orientation's rank among all thread orientations that similarly go from $Side$ to the same next side.}
 \State \Return $c(\overline{Side}, B_{Side}[Index]) + \Call{Rank}{B_{Side}[], Index, B_{Side}[Index]}$
 \EndFunction
 
@@ -137,15 +138,15 @@ This algorithm works because the thread orientations embedded in the graph run t
     \ForAll{$i$ in $[0, TotalStarting)$}
     	\State $Side \gets s$
         \State $Index \gets i$
-    	\State $Thread \gets [s, \overline{s}]$
+    	\State $Orientation \gets [s, \overline{s}]$
         \State $NextSide \gets B_{Side}[Index]$
-        \While{$NextSide \neq \textrm{null}$}
-          \State $Thread \gets Thread + [NextSide, \overline{NextSide}]$
+        \While{$NextSide \neq 0$}
+          \State $Orientation \gets Orientation + [NextSide, \overline{NextSide}]$
           \State $Index \gets \Call{where\_to}{Side, Index, B[], c()}$
           \State $Side \gets NextSide$
           \State $NextSide \gets B_{Side}[Index]$
         \EndWhile
-        \State \Yield $Thread$
+        \State \Yield $Orientation$
     \EndFor
   \EndFor
 \EndFunction
@@ -176,32 +177,6 @@ As this algorithm proceeds, the $B[]$ arrays are always maintained in the correc
 
 Assuming a dynamic succinct representation, where the $B[]$ array information is both indexed for $O(\log(n))$ rank queries and stored in such a way as to allow $O(\log(n))$ insertion and update (in the length of the array $n$)\footnote{Dynamic data structures at least this good are available as part of the \texttt{DYNAMIC} library, from \url{https://github.com/xxsds/DYNAMIC}.}, this insertion algorithm is $O(N \cdot \log(N + E))$ in the length of the thread to be inserted ($N$) and the total length of existing threads ($E$). Inserting $M$ threads of length $N$ will take $O(M \cdot N \cdot \log(M \cdot N))$ time, and inserting each thread will take $O(N)$ memory in addition to the size of the gPBWT.
 
-\section{Batch Embedding Threads}
-
-The embedding algorithm described above, Algorithm~\ref{alg:embeddingThreads}, requires a dynamic implementation for the succinct data structure holding the $B[]$ array information, which can make it quite slow in practice due to the large constant factors involved. In order to produce a more practical implementation, it may be preferable to use a batch construction algorithm, which handles all threads together, instead of one at a time. For the case of directed acyclic graphs (DAGs), such an algorithm is presented here as Algorithm~\ref{alg:dagEmbed}.
-
-This algorithm works essentially like the na\"{\i}ve trivial algorithm of independently constructing every $B_s[]$ for every side $s$ and every $c(s, s')$ for every oriented edge $(s, s')$ from the definitions. However, because of the directed, acyclic structure of the graph, it is able to save redundant work on the sorting steps. Rather than sorting all the threads at each side, it sorts them where they start, and simply combines pre-sorted lists at each side to produce the $B[]$ array ordering, and then stably buckets threads into new sorted lists to pass along to subsequent nodes. The directed, acyclic structure allows us to impose a full ordering on the sides in the graph, so that the sorted lists required by a side all come from ``previous'' sides and are always available when the side is to be processed. 
-
-Although this algorithm requires that all threads be loaded into memory at once in a difficult-to-compress representation (giving it a memory usage of $O(M \cdot N)$ on $M$ threads of length $N$), and although it requires that the graph be a directed acyclic graph, it allows the $B[]$ arrays to be generated for each side in order, with no need to query or insert into any of them. This means that no dynamic succinct data structure is required. Since the graph is acyclic, each thread can visit a side only once, and so the worst case is that a side is visited by every thread. Assuming a constant maximum degree for the graph, since the algorithm visits each side only once, the worst-case running time is $O(M \cdot S)$ for inserting $M$ threads into a graph with $S$ sides.
-
-This algorithm produces the same gPBWT, in the form of the $B[]$ arrays and the $c()$ function, as the single-thread embedding algorithm would.
-
-\section{Counting Occurrences of Subthreads}
-% Given a new thread, how can we count matching threads? And how can we do it in such a way that extending the query thread is O(1)?
-
-The generalized PBWT data structure presented here preserves some of the original PBWT's efficient haplotype search properties \cite{durbin2014efficient}. The algorithm for counting all occurrences of a new thread orientation $t$ as a subthread of the threads in $T$ runs as follows.
-
-We define $f_i$ and $g_i$ as the first and past-the-last indexes for the range of visits of orientations of threads in $T$ to side $t_{2i}$, ordered as in $B_{t_{2i}}[]$.
-% Removing this clause, unnecessary:, such that $t_0 \ldots t_{2i}$ is a suffix of each visit's thread ending at the visit. 
-
-For the first step of the algorithm, $f_0$ and $g_0$ are initialized to $0$ and the length of $B_{t_0}[]$, respectively, so that they select all visits to node $n(t_0)$, seen as entering through $t_0$. On subsequent steps, $f_{i+1}$ and $g_{i+1}$, are calculated from $f_i$ and $g_i$ merely by applying the $\Call{where\_to}{}$ function (see Alg.~\ref{alg:extractThreads}). We calculate $f_{i+1} = \Call{where\_to}{t_{2i}, f_i}$ and $g_{i+1} = \Call{where\_to}{t_{2i}, g_i}$.
-
-This process can be repeated until either $f_{i+1} \geq g_{i+1}$, in which case we can conclude that the threads in the graph have no matches to $t$ in its entirety, or until $t_{2N}$, the last entry in $t$, has its range $f_N$ and $g_N$ calculated, in which case $g_N - f_N$ gives the number of occurrences of $t$ as a subthread in threads in $T$. Moreover, given the final range from counting the occurrences for a thread $t$, we can count the occurrences of any longer thread that begins (in its forward orientation) with $t$, merely by continuing the algorithm with the additional entries in the longer thread.
-
-This algorithm works because the sorting of the $B[]$ array entries by their history groups entries for thread orientations with identical local histories together into contiguous blocks. On the first step, the block for just the orientations visiting the first side is selected, and on subsequent steps, the selected block is narrowed to just the orientations that visit the current side and which share the sequence of sides we have previously used in their history. The $\Call{where\_to}{}$ function essentially traces where the first and last possible consistent thread orientations would be inserted in the next $B[]$ array, and so produces the new bounds at every step.
-
-Assuming that the $B[]$ arrays have been indexed for $O(1)$ rank queries (which is possible using available succinct data structure libraries such as \cite{gog2014theory}, when insert operations are not required), the algorithm is $O(N)$ in the length of the subthread $t$ to be searched for, and has a runtime independent of the number of occurrences of $t$. It can be performed in a constant amount of memory ($O(1)$) in addition to that used for the gPBWT. Pseudocode is shown in Algorithm~\ref{alg:subthreadSearch}.
-
 \begin{algorithm}[H]
 \begin{algorithmic}
 
@@ -225,18 +200,18 @@ Assuming that the $B[]$ arrays have been indexed for $O(1)$ rank queries (which 
 \EndProcedure
 
 \Procedure{embed}{$t$, $G$, $B[]$, $c()$}
-  \State \Comment{Embed an oriented thread $t$ in graph $G$.}
-  \State \Comment{Call this twice to embed it for search in both directions.}
+  \State \Comment{Embed a thread orientation $t$ in graph $G$.}
+  \State \Comment{Call this twice to embed a thread for search in both directions.}
   \State $k \gets 0$ \Comment{Index we are at in $B_{t_{2i}}[]$}
+  \State \Call{increment\_c}{$0, t_{0}, c()$} \State \Comment{Increment $c()$ for all edges to $t{0}$, to note a thread start.}
   \ForAll{$i$ in $[0, \Call{length}{t}/2)$}
-  	%\State $h(t_{2i})) \gets h(t_{2i}) + 1$
     \If{$2i + 2 < \Call{length}{t}$}
       \State \Comment{The thread has somewhere to go next.}
-      \State \Call{insert}{$B_{t_{2i}}[], k, t_{2i + 2}$}
-      \State \Call{increment\_c}{$t_{2i+1}, t_{2i+2}, c()$}
+      \State \Call{insert}{$B_{t_{2i}}[], k, t_{2i + 2}$} \Comment{Fill in the $B[]$ array slot for this visit.}
+      \State \Call{increment\_c}{$t_{2i+1}, t_{2i+2}, c()$} \Comment{Record the traversal of the edge to the next visit.}
       \State $k \gets \Call{where\_to}{t_{2i}, k, B[], c()}$
     \Else
-      \State \Call{insert}{$B_{t_{2i}}[], k, \mathrm{null}$}
+      \State \Call{insert}{$B_{t_{2i}}[], k, 0$} \Comment{End the thread.}
     \EndIf
   \EndFor
 \EndProcedure
@@ -244,6 +219,77 @@ Assuming that the $B[]$ arrays have been indexed for $O(1)$ rank queries (which 
 \caption{Algorithm for embedding a thread in a graph.}
 \label{alg:embeddingThreads}
 \end{algorithm}
+
+\section{Batch Embedding Threads}
+
+The embedding algorithm described above, Algorithm~\ref{alg:embeddingThreads}, requires a dynamic implementation for the succinct data structure holding the $B[]$ array information, which can make it quite slow in practice due to the large constant factors involved. In order to produce a more practical implementation, it may be preferable to use a batch construction algorithm, which handles all threads together, instead of one at a time. For the case of directed acyclic graphs (DAGs), such an algorithm is presented here as Algorithm~\ref{alg:dagEmbed}.
+
+This algorithm works essentially like the na\"{\i}ve trivial algorithm of independently constructing every $B_s[]$ for every side $s$ and every $c(s, s')$ for every oriented edge $(s, s')$ from the definitions. However, because of the directed, acyclic structure of the graph, it is able to save redundant work on the sorting steps. Rather than sorting all the threads at each side, it sorts them where they start, and simply combines pre-sorted lists at each side to produce the $B[]$ array ordering, and then stably buckets threads into new sorted lists to pass along to subsequent nodes. The directed, acyclic structure allows us to impose a full ordering on the sides in the graph, so that the sorted lists required by a side all come from ``previous'' sides and are always available when the side is to be processed. 
+
+Although this algorithm requires that all threads be loaded into memory at once in a difficult-to-compress representation (giving it a memory usage of $O(M \cdot N)$ on $M$ threads of length $N$), and although it requires that the graph be a directed acyclic graph, it allows the $B[]$ arrays to be generated for each side in order, with no need to query or insert into any of them. This means that no dynamic succinct data structure is required. Since the graph is acyclic, each thread can visit a side only once, and so the worst case is that a side is visited by every thread. Assuming a constant maximum degree for the graph, since the algorithm visits each side only once, the worst-case running time is $O(M \cdot S)$ for inserting $M$ threads into a graph with $S$ sides.
+
+This algorithm produces the same gPBWT, in the form of the $B[]$ arrays and the $c()$ function, as the single-thread embedding algorithm would.
+
+\begin{algorithm}[H]
+\begin{algorithmic}
+\Function{batch\_embed\_into\_dag}{$T$, $G$}
+	\State \Comment{Construct the gPBWT for threads $T$ embedded in directed acyclic graph $G$.}
+    \State \Comment{The forward orientation of each $t$ must flow forwards through the forward orientation of $G$.}
+    \State Create empty $B_s[]$ for each side $s$ in $G$
+    \State Create empty $c()$
+    \ForAll{$o$ in $[\texttt{FORWARD}, \texttt{REVERSE}]$}
+    	\State $Messages \gets []$
+    	\State $ThreadsByStart \gets []$
+        \ForAll{$t$ in $T$}
+        	\State $t' \gets t$ in orientation $o$
+    		\State $ThreadsByStart[t'_{0}] \gets t'$
+            \State \Call{increment\_c}{$0, t'_{0}, c()$} \State \Comment{Increment $c()$ for all edges to $t'_{0}$, to note a thread start.}
+    	\EndFor
+    	\ForAll{leading side $s$ in $G$ traversed in orientation $o$}
+        	\State $ThreadsHere \gets []$
+            \ForAll{$t'$ in $ThreadsByStart[s]$}
+            	\State $ThreadsHere \gets ThreadsHere + [(t', 0)]$
+            \EndFor
+            \ForAll{edge $(s', s)$ in $G$, in order}
+            	\State \Comment{Collect messages coming along edges to $s$.}
+            	\State $ThreadsHere \gets ThreadsHere + Messages[(s', s)]$
+                \State $Messages[(s', s)] \gets []$
+            \EndFor
+            \ForAll{$(t', n)$ at index $i$ in $ThreadsHere$}
+            	\State $n \gets n + 1$
+            	\If{$\Call{length}{t'} > n * 2$}
+                	\State $NextSide \gets t'[n * 2]$
+                    \State $Messages[(\overline{s}, NextSide)] \gets Messages[(\overline{s}, NextSide)] + [(t', n)]$
+                	\State \Call{increment\_c}{$\overline{s}, NextSide, c()$}
+                \Else
+                	\State $NextSide \gets 0$
+                \EndIf
+            	\State $B_s[i] \gets NextSide$
+            \EndFor
+        \EndFor
+    \EndFor
+    \State \Return $B[], c()$
+\EndFunction
+\end{algorithmic}
+\caption{Algorithm for embedding all threads at once into a directed acyclic graph.}
+\label{alg:dagEmbed}
+\end{algorithm}
+
+\section{Counting Occurrences of Subthreads}
+% Given a new thread, how can we count matching threads? And how can we do it in such a way that extending the query thread is O(1)?
+
+The generalized PBWT data structure presented here preserves some of the original PBWT's efficient haplotype search properties \cite{durbin2014efficient}. The algorithm for counting all occurrences of a new thread orientation $t$ as a subthread of the threads in $T$ runs as follows.
+
+We define $f_i$ and $g_i$ as the first and past-the-last indexes for the range of visits of orientations of threads in $T$ to side $t_{2i}$, ordered as in $B_{t_{2i}}[]$.
+% Removing this clause, unnecessary:, such that $t_0 \ldots t_{2i}$ is a suffix of each visit's thread ending at the visit. 
+
+For the first step of the algorithm, $f_0$ and $g_0$ are initialized to $0$ and the length of $B_{t_0}[]$, respectively, so that they select all visits to node $n(t_0)$, seen as entering through $t_0$. On subsequent steps, $f_{i+1}$ and $g_{i+1}$, are calculated from $f_i$ and $g_i$ merely by applying the $\Call{where\_to}{}$ function (see Alg.~\ref{alg:extractThreads}). We calculate $f_{i+1} = \Call{where\_to}{t_{2i}, f_i}$ and $g_{i+1} = \Call{where\_to}{t_{2i}, g_i}$.
+
+This process can be repeated until either $f_{i+1} \geq g_{i+1}$, in which case we can conclude that the threads in the graph have no matches to $t$ in its entirety, or until $t_{2N}$, the last entry in $t$, has its range $f_N$ and $g_N$ calculated, in which case $g_N - f_N$ gives the number of occurrences of $t$ as a subthread in threads in $T$. Moreover, given the final range from counting the occurrences for a thread $t$, we can count the occurrences of any longer thread that begins (in its forward orientation) with $t$, merely by continuing the algorithm with the additional entries in the longer thread.
+
+This algorithm works because the sorting of the $B[]$ array entries by their history groups entries for thread orientations with identical local histories together into contiguous blocks. On the first step, the block for just the orientations visiting the first side is selected, and on subsequent steps, the selected block is narrowed to just the orientations that visit the current side and which share the sequence of sides we have previously used in their history. The $\Call{where\_to}{}$ function essentially traces where the first and last possible consistent thread orientations would be inserted in the next $B[]$ array, and so produces the new bounds at every step.
+
+Assuming that the $B[]$ arrays have been indexed for $O(1)$ rank queries (which is possible using available succinct data structure libraries such as \cite{gog2014theory}, when insert operations are not required), the algorithm is $O(N)$ in the length of the subthread $t$ to be searched for, and has a runtime independent of the number of occurrences of $t$. It can be performed in a constant amount of memory ($O(1)$) in addition to that used for the gPBWT. Pseudocode is shown in Algorithm~\ref{alg:subthreadSearch}.
 
 \begin{algorithm}[H]
 \begin{algorithmic}
@@ -292,7 +338,7 @@ To further evaluate the performance of the query implementation, we evaluated re
 \centering
 \includegraphics[width=\linewidth]{figures/03_gpbwt/histogram.eps}
 \includegraphics[width=\linewidth]{figures/03_gpbwt/cumulative.eps}
-\caption{Distribution (top) and cumulative distribution (bottom) of the number of 1000~Genomes Phase 3 haplotypes consistent with short paths in the chromosome 22 graph. Primary mappings of 101~bp reads with scores of 90 out of 101 or above ($n=1,500,271$) are the solid blue line. Secondary mappings meeting the same score criteria ($n=43,791$) are the dashed green line. Simulated 100~bp random walks in the graph without consecutive \texttt{N} characters ($n=686,590$) are the dotted red line. Consistent haplotypes were counted using the gPBWT support added to \texttt{vg} \cite{garrison2016vg}.}
+\caption{Distribution (top) and cumulative distribution (bottom) of the number of 1000~Genomes Phase 3 haplotypes consistent with short paths in the hg19 chromosome 22 graph. Primary mappings of 101~bp reads with scores of 90 out of 101 or above ($n=1,500,271$) are the solid blue line. Secondary mappings meeting the same score criteria ($n=43,791$) are the dashed green line. Simulated 100~bp random walks in the graph without consecutive \texttt{N} characters ($n=686,590$) are the dotted red line. Consistent haplotypes were counted using the gPBWT support added to \texttt{vg} \cite{garrison2016vg}.}
 \label{fig:consistenthaplotypes}
 \end{figure}
 
