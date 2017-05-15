@@ -40,7 +40,7 @@ More concretely, our approach is as follows. Within an orientation, we call an i
 \centering
 \includegraphics[width=\linewidth]{figures/03_gpbwt/barray.eps}
 %Maybe change 0 to s or something.
-\caption{An illustration of the $B_{1}[]$ array for a single side numbered $1$. (Note that a similar, reverse view could be constructed for the $B_2[]$ array and the opposite orientations of all the thread orientations shown here, but it is omitted for clarity.) The central rectangle represents a node, and the pairs of solid lines on either side delimit edges attached to either the left or right side of the node, respectively. These edges connect the node to other parts of the graph, which have been elided for clarity. The dashed lines within the edges represent thread orientations traveling along each edge in a conserved order, while the solid lines with triangles at the ends within the displayed node represent thread orientations as they cross over one another within the node. The triangles themselves represent ``terminals'', which connect to the corresponding dashed lines within the edges, and which are wired together within the node in a configuration determined by the $B_{1}[]$ array. Thread orientations entering this node by visiting side $1$ may enter their next nodes on sides $3$, $5$, or $7$, and these labels are displayed near the edges leaving the right side of the diagram. (Note that we are following a convention where nodes' left sides are assigned odd numbers, and nodes' right sides are assigned even numbers.) The $B_1[]$ array records, for each thread orientation entering through side $1$, the side on which it enters its next node. This determines through which of the available edges it should leave the current node. Because threads tend to be similar to each other, their orientations are likely to run in ``ribbons'' of multiple thread orientations that both enter and leave together. These ribbons cause the $B_s[]$ arrays to contain runs of identical values, which may be compressed.}
+\caption[An illustration of the {$B_{1}[]$} array]{An illustration of the $B_{1}[]$ array for a single side numbered $1$. (Note that a similar, reverse view could be constructed for the $B_2[]$ array and the opposite orientations of all the thread orientations shown here, but it is omitted for clarity.) The central rectangle represents a node, and the pairs of solid lines on either side delimit edges attached to either the left or right side of the node, respectively. These edges connect the node to other parts of the graph, which have been elided for clarity. The dashed lines within the edges represent thread orientations traveling along each edge in a conserved order, while the solid lines with triangles at the ends within the displayed node represent thread orientations as they cross over one another within the node. The triangles themselves represent ``terminals'', which connect to the corresponding dashed lines within the edges, and which are wired together within the node in a configuration determined by the $B_{1}[]$ array. Thread orientations entering this node by visiting side $1$ may enter their next nodes on sides $3$, $5$, or $7$, and these labels are displayed near the edges leaving the right side of the diagram. (Note that we are following a convention where nodes' left sides are assigned odd numbers, and nodes' right sides are assigned even numbers.) The $B_1[]$ array records, for each thread orientation entering through side $1$, the side on which it enters its next node. This determines through which of the available edges it should leave the current node. Because threads tend to be similar to each other, their orientations are likely to run in ``ribbons'' of multiple thread orientations that both enter and leave together. These ribbons cause the $B_s[]$ arrays to contain runs of identical values, which may be compressed.}
 \label{fig:barray}
 \end{figure}
 
@@ -53,12 +53,12 @@ For a given $G$ and $T$, we call the combination of the $c()$ function and the $
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\linewidth]{figures/03_gpbwt/bstylemultinode.eps}
-\caption{A diagram of a graph containing two embedded threads. The graph consists of nodes with sides $\{1, 2, 3, \ldots, 10\}$, connected by edges $\{2, 5\}$, $\{4, 5\}$, $\{6, 7\}$, $\{6, 9\}$, $\{8, 8\}$, and $\{10, 9\}$. Note that, once again, odd numbers are used for left sides and even numbers are used for right sides. As in Figure~\ref{fig:barray}, nodes are represented by rectangles, and thread orientations running from node to node are represented by dashed lines. The actual edges connecting the nodes are omitted for clarity; only the thread orientations are shown. Because each side's $B[]$ array defines a separate permutation, each node is divided into two parts by a central double yellow line (like on a road). The top half of each node shows visits to the node's right side, while the bottom half shows visits to the node's left side. Within the appropriate half of each node, the $B[]$ array entries for the entry side are shown. The special $0$ value is used to indicate that a thread stops and does not continue on to another node. When moving from the entry side to the exit side of a node, threads cross over each other so that they become sorted, stably, by the side of their next visit. Threads' order of arrival at a node is determined by the relative order of the edges incident on the side they arrive at, which is in turn determined by the ordering of the sides on the other ends of the edges. The threads shown here are $[1, 2, 5, 6, 9, 10, 9, 10]$ and $[3, 4, 5, 6, 7, 8, 8, 7]$. See Table~\ref{tbl:barrays} for a tabular representation of this example.}
+\caption[A diagram of a graph containing two embedded threads]{A diagram of a graph containing two embedded threads. The graph consists of nodes with sides $\{1, 2, 3, \ldots, 10\}$, connected by edges $\{2, 5\}$, $\{4, 5\}$, $\{6, 7\}$, $\{6, 9\}$, $\{8, 8\}$, and $\{10, 9\}$. Note that, once again, odd numbers are used for left sides and even numbers are used for right sides. As in Figure~\ref{fig:barray}, nodes are represented by rectangles, and thread orientations running from node to node are represented by dashed lines. The actual edges connecting the nodes are omitted for clarity; only the thread orientations are shown. Because each side's $B[]$ array defines a separate permutation, each node is divided into two parts by a central double yellow line (like on a road). The top half of each node shows visits to the node's right side, while the bottom half shows visits to the node's left side. Within the appropriate half of each node, the $B[]$ array entries for the entry side are shown. The special $0$ value is used to indicate that a thread stops and does not continue on to another node. When moving from the entry side to the exit side of a node, threads cross over each other so that they become sorted, stably, by the side of their next visit. Threads' order of arrival at a node is determined by the relative order of the edges incident on the side they arrive at, which is in turn determined by the ordering of the sides on the other ends of the edges. The threads shown here are $[1, 2, 5, 6, 9, 10, 9, 10]$ and $[3, 4, 5, 6, 7, 8, 8, 7]$. See Table~\ref{tbl:barrays} for a tabular representation of this example.}
 \label{fig:bstylemultinode}
 \end{figure}
 
 \begin{table}[h!]
-\caption{$B_s[]$ and $c()$ values for the embedding of threads illustrated in Figure~\ref{fig:bstylemultinode}.}
+\caption[{$B_s[]$} and {$c()$} values for Figure~\ref{fig:bstylemultinode}]{$B_s[]$ and $c()$ values for the embedding of threads illustrated in Figure~\ref{fig:bstylemultinode}.}
 \label{tbl:barrays}
 \centering
 \begin{tabular} { c | c }
@@ -151,7 +151,7 @@ This algorithm works because the thread orientations embedded in the graph run t
   \EndFor
 \EndFunction
 \end{algorithmic}
-\caption{Algorithm for extracting threads from a graph.}
+\caption[Algorithm for extracting threads from a graph]{Algorithm for extracting threads from a graph.}
 \label{alg:extractThreads}
 \end{algorithm}
 
@@ -216,7 +216,7 @@ Assuming a dynamic succinct representation, where the $B[]$ array information is
   \EndFor
 \EndProcedure
 \end{algorithmic}
-\caption{Algorithm for embedding a thread in a graph.}
+\caption[Algorithm for embedding a thread in a graph]{Algorithm for embedding a thread in a graph.}
 \label{alg:embeddingThreads}
 \end{algorithm}
 
@@ -271,7 +271,7 @@ This algorithm produces the same gPBWT, in the form of the $B[]$ arrays and the 
     \State \Return $B[], c()$
 \EndFunction
 \end{algorithmic}
-\caption{Algorithm for embedding all threads at once into a directed acyclic graph.}
+\caption[Algorithm for embedding all threads at once into a directed acyclic graph]{Algorithm for embedding all threads at once into a directed acyclic graph.}
 \label{alg:dagEmbed}
 \end{algorithm}
 
@@ -307,7 +307,7 @@ Assuming that the $B[]$ arrays have been indexed for $O(1)$ rank queries (which 
   \State \Return $g - f$
 \EndFunction
 \end{algorithmic}
-\caption{Algorithm for searching for a subthread in the graph.}
+\caption[Algorithm for searching for a subthread in the graph]{Algorithm for searching for a subthread in the graph.}
 \label{alg:subthreadSearch}
 \end{algorithm}
 
@@ -338,7 +338,7 @@ To further evaluate the performance of the query implementation, we evaluated re
 \centering
 \includegraphics[width=\linewidth]{figures/03_gpbwt/histogram.eps}
 \includegraphics[width=\linewidth]{figures/03_gpbwt/cumulative.eps}
-\caption{Distribution (top) and cumulative distribution (bottom) of the number of 1000~Genomes Phase 3 haplotypes consistent with short paths in the hg19 chromosome 22 graph. Primary mappings of 101~bp reads with scores of 90 out of 101 or above ($n=1,500,271$) are the solid blue line. Secondary mappings meeting the same score criteria ($n=43,791$) are the dashed green line. Simulated 100~bp random walks in the graph without consecutive \texttt{N} characters ($n=686,590$) are the dotted red line. Consistent haplotypes were counted using the gPBWT support added to \texttt{vg} \cite{garrison2016vg}.}
+\caption[Consistent haplotypes]{Distribution (top) and cumulative distribution (bottom) of the number of 1000~Genomes Phase 3 haplotypes consistent with short paths in the hg19 chromosome 22 graph. Primary mappings of 101~bp reads with scores of 90 out of 101 or above ($n=1,500,271$) are the solid blue line. Secondary mappings meeting the same score criteria ($n=43,791$) are the dashed green line. Simulated 100~bp random walks in the graph without consecutive \texttt{N} characters ($n=686,590$) are the dotted red line. Consistent haplotypes were counted using the gPBWT support added to \texttt{vg} \cite{garrison2016vg}.}
 \label{fig:consistenthaplotypes}
 \end{figure}
 
@@ -356,7 +356,7 @@ To evaluate the empirical space usage scaling characteristics of our gPBWT imple
 \begin{figure}[h!]
 \centering
 \includegraphics[width=\linewidth]{figures/03_gpbwt/scaling.eps}
-\caption{Disk space usage for the gPBWT versus sample count for GRCh38 chromosome~22. Points are sampled at powers of two up to 128, and intervals of 128 thereafter up to 1024. The trend line shown corresponds to the function $y(x) = \num{3.16E6}~\mathrm{bytes} \cdot \ln(x / \mathrm{samples}) + \num{5.12E4}~\frac{\mathrm{bytes}}{\mathrm{sample}} \cdot x + \num{1.84E8}~\mathrm{bytes}$.}
+\caption[Disk space usage for the gPBWT]{Disk space usage for the gPBWT versus sample count for GRCh38 chromosome~22. Points are sampled at powers of two up to 128, and intervals of 128 thereafter up to 1024. The trend line shown corresponds to the function $y(x) = \num{3.16E6}~\mathrm{bytes} \cdot \ln(x / \mathrm{samples}) + \num{5.12E4}~\frac{\mathrm{bytes}}{\mathrm{sample}} \cdot x + \num{1.84E8}~\mathrm{bytes}$.}
 \label{fig:scaling}
 \end{figure}
 
