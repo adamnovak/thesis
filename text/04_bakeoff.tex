@@ -61,7 +61,7 @@ substring indexes (which are often thought of in terms of suffix trees
 or similar data structures) \cite{Li2009-tj,Simpson2010-of}, and
 transcript splice graphs \cite{Heber2002-pw}. Recently the notion of
 graphs for representing genomes has been considered explicitly
-\cite{Dilthey2015-cn,Paten2014-ga,Maciuca2016-ol}, and work has been
+\cite{dilthey2015improved,Paten2014-ga,maciuca2016natural}, and work has been
 done towards using these graphs as references \cite{Limasset2016-by}.
 The alternate loci currently used are just one way to extend the linear
 reference genome into a genome graph; many other ways are possible. In
@@ -184,7 +184,7 @@ a sampling of both typical and challenging genomic regions.}
   of input data with k=63, then converts to a sequence graph.
   \\
   Population Reference Graph & Oxford & PRG & Creates a graph from a
-  K-mer-based HMM description of a region \cite{Dilthey2015-cn}.
+  K-mer-based HMM description of a region \cite{dilthey2015improved}.
   \\
   Seven Bridges & Seven Bridges & 7BG & Multiple genome alignment.
   \\
@@ -597,7 +597,7 @@ is likely that, as demonstrated by the 1KG Haplo 50 and (at the logical
 extreme) Unmerged graphs, the resulting long, equivalent sequence paths
 would create too much multi-mapping ambiguity. Perhaps a better solution
 may be the use of haplotype information embedded within the sequence
-graph\cite{Novak2016-ek}, making it a \emph{variation graph}. This would
+graph\cite{novak2016graph}, making it a \emph{variation graph}. This would
 allow algorithms to map to a common graph coordinate system while
 accounting for variants, read errors, and recombinations within the
 mapping process itself. This approach would eliminate the need for

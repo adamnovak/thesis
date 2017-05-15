@@ -270,15 +270,6 @@ howpublished={\url{https://groups.google.com/a/soe.ucsc.edu/d/msg/genome-announc
   organization={Springer}
 }
 
-@article{dilthey2014improved,
-  title={Improved genome inference in the {MHC} using a population reference graph},
-  author={Dilthey, Alexander and Cox, Charles J and Iqbal, Zamin and Nelson, Matthew R and McVean, Gil},
-  journal={bioRxiv},
-  pages={006973},
-  year={2014},
-  publisher={Cold Spring Harbor Labs Journals}
-}
-
 @article{thanakornworakij2013reliability,
   title={Reliability model of a system of k nodes with simultaneous failures for high-performance computing applications},
   author={Thanakornworakij, Thanadech and Nassar, Raja and Leangsuksun, Chokchai Box and Paun, Mihaela},
@@ -566,13 +557,14 @@ howpublished={\url{https://groups.google.com/a/soe.ucsc.edu/d/msg/genome-announc
 }
 
 
-@incollection{medvedev2007computability,
+@inproceedings{medvedev2007computability,
   title={Computability of models for sequence assembly},
   author={Medvedev, Paul and Georgiou, Konstantinos and Myers, Gene and Brudno, Michael},
   booktitle={Algorithms in Bioinformatics},
   pages={289--301},
   year={2007},
-  publisher={Springer}
+  publisher= {Springer International Publishing},
+  address= {Cham}
 }
 
 @article{paten2011cactus,
@@ -774,11 +766,11 @@ archivePrefix = "arXiv",
   URL={https://www.nih.gov/sites/default/files/research-training/initiatives/pmi/pmi-working-group-report-20150917-2.pdf}
 }
 
-@Inbook{novak2016graph,
-author= {Novak, Adam M. and Garrison, Erik and Paten, Benedict},
+@inproceedings{novak2016graph,
+author= {Novak, Adam M and Garrison, Erik and Paten, Benedict},
 editor= {Frith, Martin and Storm Pedersen, Christian N{\o}rgaard},
 title= {A Graph Extension of the Positional Burrows-Wheeler Transform and Its Applications},
-bookTitle= {Algorithms in Bioinformatics: 16th International Workshop, WABI 2016, Aarhus, Denmark, August 22-24, 2016. Proceedings},
+booktitle= {Algorithms in Bioinformatics},
 year= {2016},
 publisher= {Springer International Publishing},
 address= {Cham}, 
@@ -928,20 +920,6 @@ isbn= {978-3-319-43681-4}
   month       =  may,
   year        =  2015,
   keywords    = "1000 Genomes; HLA; NGS; mapping bias"
-}
-
-@INPROCEEDINGS{Maciuca2016-ol,
-  title      = "A Natural Encoding of Genetic Variation in a {Burrows-Wheeler}
-                Transform to Enable Mapping and Genome Inference",
-  booktitle  = "Algorithms in Bioinformatics",
-  author     = "Maciuca, Sorina and del Ojo Elias, Carlos and McVean, Gil and
-                Iqbal, Zamin",
-  publisher  = "Springer International Publishing",
-  pages      = "222--233",
-  month      =  "22~" # aug,
-  year       =  2016,
-  language   = "en",
-  conference = "International Workshop on Algorithms in Bioinformatics"
 }
 
 @ARTICLE{Kent2002-wo,
@@ -1122,19 +1100,6 @@ isbn= {978-3-319-43681-4}
   pages       = "e1001091",
   month       =  jul,
   year        =  2011
-}
-
-@ARTICLE{Dilthey2015-cn,
-  title       = "Improved genome inference in the {MHC} using a population
-                 reference graph",
-  author      = "Dilthey, Alexander and Cox, Charles and Iqbal, Zamin and
-                 Nelson, Matthew R and McVean, Gil",
-  journal     = "Nat. Genet.",
-  volume      =  47,
-  number      =  6,
-  pages       = "682--688",
-  month       =  jun,
-  year        =  2015
 }
 
 @TECHREPORT{Eberle2016-zc,
@@ -1383,15 +1348,6 @@ isbn= {978-3-319-43681-4}
   year        =  2015
 }
 
-@INPROCEEDINGS{Novak2016-ek,
-  title     = "A Graph Extension of the Positional {Burrows-Wheeler} Transform
-               and Its Applications",
-  booktitle = "{WABI} 2016: Algorithms in Bioinformatics",
-  author    = "Novak, Adam M and Erik, Garrison and Benedict, Paten",
-  pages     = "246--256",
-  year      =  2016
-}
-
 @ARTICLE{1000_Genomes_Project_Consortium2010-ky,
   title    = "A map of human genome variation from population-scale sequencing",
   author   = "{1000 Genomes Project Consortium} and Abecasis, Gon{\c c}alo R
@@ -1477,7 +1433,103 @@ isbn= {978-3-319-43681-4}
   publisher={Cold Spring Harbor Lab}
 }
 
+% More gPBWT paper references from the revision
+@article{li2015bgt,
+  title={{BGT}: efficient and flexible genotype query across many samples},
+  author={Li, Heng},
+  journal={Bioinformatics},
+  pages={btv613},
+  year={2015},
+  publisher={Oxford Univ Press}
+}
 
+@article{mccarthy2016reference,
+  title={A reference panel of 64,976 haplotypes for genotype imputation},
+  author={McCarthy, Shane and Das, Sayantan and Kretzschmar, Warren and Delaneau, Olivier and Wood, Andrew R and Teumer, Alexander and Kang, Hyun Min and Fuchsberger, Christian and Danecek, Petr and Sharp, Kevin and others},
+  journal={Nature genetics},
+  year={2016},
+  publisher={Nature Research}
+}
+
+@article{loh2016reference,
+  title={Reference-based phasing using the {H}aplotype {R}eference {C}onsortium panel},
+  author={Loh, Po-Ru and Danecek, Petr and Palamara, Pier Francesco and Fuchsberger, Christian and Reshef, Yakir A and Finucane, Hilary K and Schoenherr, Sebastian and Forer, Lukas and McCarthy, Shane and Abecasis, Goncalo R and others},
+  journal={Nature genetics},
+  volume={48},
+  number={11},
+  pages={1443--1448},
+  year={2016},
+  publisher={Nature Research}
+}
+
+@article{dilthey2015improved,
+  title={Improved genome inference in the {MHC} using a population reference graph},
+  author={Dilthey, Alexander and Cox, Charles and Iqbal, Zamin and Nelson, Matthew R and McVean, Gil},
+  journal={Nature genetics},
+  volume={47},
+  number={6},
+  pages={682--688},
+  year={2015},
+  publisher={Nature Research}
+}
+
+@article{novak2017genome,
+  title={Genome Graphs},
+  author={Novak, Adam M and Hickey, Glenn and Garrison, Erik and Blum, Sean and Connelly, Abram and Dilthey, Alexander and Eizenga, Jordan and Elmohamed, MA Saleh and Guthrie, Sally and Kahles, Andr{\'e} and others},
+  journal={bioRxiv},
+  pages={101378},
+  year={2017},
+  publisher={Cold Spring Harbor Labs Journals}
+}
+
+@inproceedings{siren2017indexing,
+  title={Indexing Variation Graphs},
+  author={Sir{\'e}n, Jouni},
+  booktitle={2017 Proceedings of the Ninteenth Workshop on Algorithm Engineering and Experiments (ALENEX)},
+  pages={13--27},
+  year={2017},
+  organization={SIAM}
+}
+
+@inproceedings{maciuca2016natural,
+  title={A natural encoding of genetic variation in a {B}urrows-{W}heeler transform to enable mapping and genome inference},
+  editor= {Frith, Martin and Storm Pedersen, Christian N{\o}rgaard},
+  author={Maciuca, Sorina and {d}el {O}jo Elias, Carlos and McVean, Gil and Iqbal, Zamin},
+  booktitle={Algorithms in Bioinformatics},
+  pages={222--233},
+  year={2016},
+  publisher= {Springer International Publishing},
+  address= {Cham}
+}
+
+@article{huang2013short,
+  title={Short read alignment with populations of genomes},
+  author={Huang, Lin and Popic, Victoria and Batzoglou, Serafim},
+  journal={Bioinformatics},
+  volume={29},
+  number={13},
+  pages={i361--i370},
+  year={2013},
+  publisher={Oxford Univ Press}
+}
+
+@inproceedings{grossi2003high,
+  title={High-order entropy-compressed text indexes},
+  author={Grossi, Roberto and Gupta, Ankur and Vitter, Jeffrey Scott},
+  booktitle={Proceedings of the fourteenth annual {ACM-SIAM} symposium on Discrete algorithms},
+  pages={841--850},
+  year={2003},
+  organization={Society for Industrial and Applied Mathematics}
+}
+
+@inproceedings{gog2014theory,
+  title     = {From Theory to Practice: Plug and Play with Succinct Data Structures},
+  author    = {Gog, Simon and Beller, Timo and Moffat, Alistair and Petri, Matthias},
+  booktitle = {13th International Symposium on Experimental Algorithms, (SEA 2014)},
+  year      = {2014},
+  pages     = {326-337},
+  ee        = {http://dx.doi.org/10.1007/978-3-319-07959-2_28}
+}
 
 
 
