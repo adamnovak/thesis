@@ -67,29 +67,47 @@ The best-performing condition across all metrics (although by a trivial margin o
 
 \subsection{Structural Variant Evaluation}
 
-For the second, VCF-based evaluation, the precision statistics for NA12878 are visible in Table~\ref{tbl:svprecision}, while the recall results for all samples are visible in Table~\ref{tbl:svrecall}. %TODO: replace old NA12878 stats with stats for everyone.
-In NA12878, a precision of 8 out of 10, or 0.8, was observed, while, summing possible and recalled variants across all samples, an overall recall of 106 of 151, or 0.702, was observed. Together, these produce an F1 score of 0.75.
+For the second, VCF-based evaluation, the precision statistics for the five samples analyzed (HG00513, HG00732, NA12878, NA12887, and NA12890) are visible in Table~\ref{tbl:svprecision}, while the recall results for the samples are visible in Table~\ref{tbl:svrecall}.
+Summing across samples, the overall precision was~18~out of~25, or 0.72, while the overall recall was~106~of~151, or~0.702, was observed. Together, these produce an F1 score of 0.71.
+
+\newcommand{\true}{\textbullet}
+\newcommand{\false}{}
 
 % TODO: This is before the vg add fix and needs to be replaced with the run from 2017-05-09
-\begin{table}[p]
+\begin{sidewaystable}[p]
 \centering
-\begin{tabular} {l|c|c|c|c|c}
-\textbf{Position} & \textbf{Type} & \textbf{Length (bp)} & \textbf{In 1KG} & \textbf{In Reads} & \textbf{Verdict} \\
+\begin{tabular} {l|c|c|c|c|c|c|c}
+\textbf{Sample} & \textbf{Position} & \textbf{Type} & \textbf{Length (bp)} & \textbf{1KG SV Call} & \textbf{In dbSNP} & \textbf{In Reads} & \textbf{Verdict} \\
 \hline
-19798198 & Insertion & 29 & & & False \\
-49435233 & Deletion & 28 & & \textbullet & True \\
-17616766 & Deletion & 310 & \textbullet & \textbullet & True \\
-49713384 & Deletion & 39 & & \textbullet & True \\
-42990018 & Deletion & 38 & & \textbullet & True \\
-41378674 & Deletion & 1684 & & & False \\
-39195776 & Deletion & 28 & & \textbullet & True \\
-17289460 & Deletion & 8758 & \textbullet & \textbullet & True \\
-42219368 & Insertion & 29 & & \textbullet & True \\
-48948505 & Insertion & 33 & & \textbullet & True
+HG00513 & 17224418 & Insertion & 310 & \true & \false & \true & \true \\
+HG00513 & 41552580 & Insertion & 40 & \false & \true & \true & \true \\
+HG00513 & 42119316 & Deletion & 28 & \false & \true & \true & \true \\
+HG00513 & 19175892 & Insertion & 34 & \false & \true & \true & \true \\
+HG00513 & 48754372 & Deletion & 28 & \false & \true & \true & \true \\
+HG00732 & 17801132 & Deletion & 322 & \true & \false & \true & \true \\
+HG00732 & 40652370 & Insertion & 37 & \false & \true & \true & \true \\
+HG00732 & 20360593 & Deletion & 27 & \false & \false & \false & \false \\
+HG00732 & 24194512 & Deletion & 5944 & \false & \false & \false & \false \\
+HG00732 & 16487502 & Deletion & 35 & \false & \false & \true & \true \\
+NA12878 & 43469479 & Insertion & 32 & \false & \true & \true & \true \\
+NA12878 & 33391076 & Deletion & 938 & \false & \false & \false & \false \\
+NA12878 & 44127743 & Deletion & 48 & \false & \true & \true & \true \\
+NA12878 & 17419709 & Insertion & 25 & \false & \true & \true & \true \\
+NA12878 & 30430840 & Deletion & 10963 & \false & \false & \false & \false \\
+NA12889 & 50234341 & Insertion & 27 & \false & \true & \true & \true \\
+NA12889 & 49313687 & Deletion & 3557 & \false & \false & \false & \false \\
+NA12887 & 49274738 & Deletion & 26 & \false & \true & \true & \true \\
+NA12887 & 43108693 & Deletion & 5907 & \false & \false & \false & \false \\
+NA12887 & 49713385 & Deletion & 39 & \false & \true & \true & \true \\
+NA12890 & 40398221 & Deletion & 1019 & \true & \false & \true & \true \\
+NA12890 & 26495553 & Deletion & 136 & \true & \false & \true & \true \\
+NA12890 & 44140033 & Insertion & 31 & \false & \true & \true & \true \\
+NA12890 & 26998126 & Deletion & 25 & \false & \true & \true & \true \\
+NA12890 & 35628100 & Deletion & 2800 & \false & \false & \false & \false \\ % There are some nearby softclips and what might be a drop in coverage, but not at quite the right places
 \end{tabular}
-\caption[Structural variant precision]{Precision estimation from 10 randomly-sampled calls of variants inducing length changes of 25~bp or more in NA12878 on chromosome~22. Variants called by VG agains the chromosome 22 HGVM prototype were manually assessed for corespondence to 1000 Genomes structural variant set variants, and for support in the Illumina Platinum Pedigree reads for the appropriate sample, using the UCSC Genome Browser. Variants supported either by the 1000 Genomes set or by the reads were designated as true variants, while other variants were designated as false variants. Overall, 8~of 10~variants examined were designated as true, producing a precision estimate of 0.8.}
+\caption[Structural variant precision]{Precision estimation from 25 randomly-sampled calls of variants inducing length changes of 25~bp or more on chromosome~22. From each sample, five called variants were selected randomly. Variants were manually assessed for corespondence to calls for their sample from the 1000 Genomes structural variant set, correspondence to variants in dbSNP 147, and support in the original GRCh38-aligned input reads, using the UCSC Genome Browser. Variants supported either by the 1000 Genomes truth set or by the reads were designated as true variants, while other variants were designated as false variants. Overall, 18~of 25~variants examined were designated as true, producing a precision estimate of 0.72.}
 \label{tbl:svprecision}
-\end{table}
+\end{sidewaystable}
 
 \begin{table}[p]
 \centering
@@ -102,11 +120,13 @@ NA12878 & 30 & 21 & 0.70 \\
 NA12889 & 29 & 21 & 0.72 \\
 NA12890 & 32 & 25 & 0.78
 \end{tabular}
-\caption[Structural variant recall]{Recall statistics for structural variants called by \texttt{vg} in five samples, with the structural variant VCF used to construct the graph used as the truth set.}
+\caption[Structural variant recall]{Recall statistics for structural variants called by \texttt{vg} in five samples, with the structural variant VCF used to construct the graph used as the truth set. Overall recall was~106~of~151~variants, or~0.702.}
 \label{tbl:svrecall}
 \end{table}
 
-\section{Conclusion}
+\section{Conclusions}
+
+One shortcoming of the structural variant analysis is that, of the broad diversity available in the 1000 Genomes data set, the five samples analyzed here consistyed of three CEU individuals, one CHS individual, and one PUR individual. These individuals were selected because they were included in the 1000 Genomes structural variation study, and also had high-coverage short-read data aligned to GRCh38 readily available for download. Additional individuals also meeting these criteria likely could have been added to the analysis. To truly evaluate the graph reference constructed in this study, a broader panel of test subjects is needed.
 
 \section{Acknowledgements}
 
