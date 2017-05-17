@@ -14,6 +14,8 @@ In this chapter, we present a method to create graph references combining the be
 
 \section{Methods}
 
+\subsection{Graph Construction}
+
 In order to combine a Cactus-based graph with a 1000 Genomes-based graph, we implemented a new subcommand in the \vg variation graph toolkit \cite{garrison2016vg}. The new tool, \texttt{vg add}, augments an existing graph by instering variants from a VCF file. It works by extracting local haplotypes around each variant that are locally consistent with the phased samples in the VCF file, and then aligning them to the relevant region of the graph, as determined by tracing an embedded primary reference path in the graph. For particularly large insertions and deletions, where a complete local alignment would be impractical, the ends of the variant are aligned, and the resulting alignments are stitched together to describe the actual variant.
 
 The vg add tool, along with a Toil-based orchestration script \cite{vivian2017toil}, were used to combine variation information from three sources. The base level graph was obtained by using Cactus \cite{paten2011cactus2}, by aligning together the chromosome 22 primary sequence and the chromosome 22 alt and ``random'' sequences from GRCh38.
@@ -26,36 +28,50 @@ The \texttt{vg add} tool was also used to add structural variants. Since the str
 
 Once fully constructed, the resulting graph was indexed for alignment using \vg, producing XG and GCSA2 indexes. The graph was subjected to two alignment-based evaluations.
 
+\subsection{Assembly Realignment Evaluation}
+
 The first evaluation was a variant of the assembly realignment evaluation from Chapter~\ref{ch:bakeoff}. A synthetic diploid sample was created from the CHM1 and CHM13 hyatidiform mole samples aligned to GRCh38 (it was actually the same sample used in Chapter~\ref{ch:bakeoff}). From this sample, read pairs where either member mapped to chromosome 22 or any of its ``random'' or ``alt'' contigs were collected. 
 
-These reads were aligned to and used for variant calling against the graph under test. However, instead of calling variants to VCF, we created an improved version of the \texttt{vg call} variant caller capable of outputting variants in the form of Protobuf-serialized \texttt{Locus} objects, which describe a genotype call among a set of arbitrarily-defined alternative paths in an augmented graph. Using this ability, we produced \texttt{Locus} objects with calls for the ultrabubbles in the augmented graph (including both parent and nested child ultrabubbles), and \texttt{Locus} objects asserting the presence of all edges that had sufficient coverage but which were not part of an ultrabubble \cite{paten2017superbubbles}. Finally, as in Chapter~\ref{ch:bakeoff}, the augmented graph was subsetted, this time by eliminating all nodes and edges not called as present in some \texttt{Locus}, to create a sample graph.
+These reads were aligned to and used for variant calling against the graph under test. However, instead of calling variants to VCF, we created an improved version of the \texttt{vg call} variant caller capable of outputting variants in the form of Protobuf-serialized \texttt{Locus} objects, which describe a genotype call among a set of arbitrarily-defined alternative paths in an augmented graph. Using this ability, we produced \texttt{Locus} objects with calls for the ultrabubbles in the augmented graph (including both parent and nested child ultrabubbles), and \texttt{Locus} objects asserting the presence of all edges that had sufficient coverage but which were not part of an ultrabubble \cite{paten2017superbubbles}. Finally, as in Chapter~\ref{ch:bakeoff}, the augmented graph was subsetted, this time by eliminating all nodes and edges not called as present in some \texttt{Locus}, to create a sample graph. Each graph under test was also evaluated as if it were a sample graph, without the variant calling and subsetting steps, in order to provide a control.
 
-To evaluate the sample graph, the contigs from the CHM1 and CHM13 assemblies relevant to chromosome 22 were determined using a script which aligned 10~kb chunks of each contig every 100,000~kb to the 24 primary GRCh38 chromosome contigs, until a hit scoring 95\% of the maximum possible score was obtained. Contigs for which that first sufficiently good hit was to chromosome 22 were taken and chopped into pieces every 1000~bp to produce a set of assembly fragments. (The exception was contig \texttt{LBHZ02000095.1} from CHM13, which was manually found to consist of sequence mapping primarily to chromosome 13, and consequently excluded.) Overall, 37,931,872~bp of sequence from CHM1 and 36,306,973~bp of sequence from CHM13 was used. The assembly fragments were realigned against each indexed sample graph, and the quality of each sample graph as a representation of the assembly fragments was then measured. This was accomplished by going over the alignments and tabulating the total number of inserted, deleted, substituted, and softclipped bases, and dividing that total by the size of the control graph (which consisted of chromosome 22 and the associated ``random'' sequences), to get a number of affected bases per primary reference base in each category.
+We evaluated two graphs in this way: the ``HGVM'' graph, created using Cactus and \texttt{vg add}, as described above, and a ``Control'' graph, consisting of just the chromosome 22 GRCh38 scaffiold and associated ``random'' scaffolds, with no variants added. Each of these gave rise to one actual sample graph, produced by the variant caller, and one control sample graph, produced by passing through the entire graph under test as if it were the sample graph.
+
+To evaluate each sample graph, the contigs from the CHM1 and CHM13 assemblies relevant to chromosome 22 were determined using a script which aligned 10~kb chunks of each contig every 100,000~kb to the 24 primary GRCh38 chromosome contigs, until a hit scoring 95\% of the maximum possible score was obtained. Contigs for which that first sufficiently good hit was to chromosome 22 were taken and chopped into pieces every 1000~bp to produce a set of assembly fragments. (The exception was contig \texttt{LBHZ02000095.1} from CHM13, which was manually found to consist of sequence mapping primarily to chromosome 13, and consequently excluded.) Overall, 37,931,872~bp of sequence from CHM1 and 36,306,973~bp of sequence from CHM13 was used. The assembly fragments were realigned against each indexed sample graph, and the quality of each sample graph as a representation of the assembly fragments was then measured. This was accomplished by going over the alignments and tabulating the total number of inserted, deleted, substituted, and softclipped bases, and dividing that total by the size of the control graph (which consisted of chromosome 22 and the associated ``random'' sequences), to get a number of affected bases per primary reference base in each category.
+
+\subsection{Structural Variant Evaluation}
 
 The second evaluation, by contrast, was a truth set VCF-based measurement of the accuracy of structural variant calls. Reads aligned to GRCh38 were obtained for five samples: NA12878, NA12889, and NA12890 from the Illumina Platinum Genomes dataset, and HG00513 and HG00732 from the 1000 Genomes High Coverage dataset. From each file of aligned reads, read pairs where either member mapped to chromosome 22 or any of its ``random'' or ``alt'' contigs were collected. These reads were then mapped to the graph under test, and variant calling for each sample was performed, using the default \texttt{vg call} parameters and an additonal \texttt{--max-dp-multiple 2.5} setting. Variant calls in VCF format were obtained. For each sample, the called VCF was compared against the GRCh38 structural variant files that were used for preparing the graph. Recall was computed by considering each unique variant position in the truth VCF for which an alternate allele was specified in an unfiltered variant for the sample in question, and treating it as recalled if the variant calls for the sample in question contained an unfiltered variant with a length change of 25~bp or more with a position within 25~bp of the truth variant for which an alternate allele was called. Because the truth set VCF used was not believed or warranted to be complete, precision was computed manually, by randomly sampling a certain number of calls for variants with length changes of 25~bp or more with calls of alternate alleles, and manually classifying each selected positive call as true or false, by looking at the original input reads and the truth VCF at the variant's location on the UCSC genome browser.
 
 \section{Results}
 
+\subsection{Graph Construction}
+
 The final chromosome 22 graph contained 3,630,636 nodes and 4,736,762 edges, with a total length (summed over all nodes) of 57,097,951~bp. The initial input data consisted of 51,857,516~bp of primary reference and ``random'' contig sequence, and 1,625,159~bp of alternate locus sequence (much of which should have aligned to and been merged with the primary reference and ``random'' sequences), meaning that at least 3,615,276~bp of material, or 6.97\%, came from the VCF files used to add known variation to the graph. % TODO: does that mean that we failed to align some of the big variants' alts right? I don't think the VCFs were that big...
 
-For the first evaluation, based on realignment of the mole reads, results are visible in Figure \ref{fig:molerealignment}.
+\subsection{Assembly Realignment Evaluation}
 
-\begin{figure}[h!]
+For the first evaluation, based on realignment of the mole reads, results are visible in Figure \ref{fig:molerealignment}. Two graphs were used in the evaluation: the final chromosome 22 ``HGVM'' graph, and the ``Control'' graph constructed only from chromosome 22 and the associated ``random'' sequences in GRCh38, without any alignment or additional variants. Each of these graphs was used as a reference for read alignment and variant calling, and the resulting sample graphs are the ``HGVM'' and ``Control'' conditions in the figure. Each of the graphs was also evaluated as if it were a sample graph, producing the ``No Call'' and ``All Ref'' conditions, respectively.
+
+The best-performing condition across all metrics (although by a trivial margin on the Softclips metric) was the ``HGVM'' condition. Calling variants based on the graph reference, with its included known variation, resulted in needing to delete fewer bases, insert fewer bases, and substitute fewer bases to explain the assembly fragment truth set than were needed when variant calling was done using the ``Control'' graph, which contained no embedded variation. Additionally, the variant calling step itself reduced the number of bases that needed to be deleted by a large factor, and the number of bases that needed to be inserted or substituted by smaller factors, as can be seen by comparing the ``HGVM'' condition to the ``No Call'' condition (Fig.~\ref{fig:molerealignment}). This suggests that the variant caller is successful in incorporating information from aligned reads into the sample graph. Finally, note that, for deletions, substitutions, and insertions, the decrease in required base modifications attributable to the variant caller operating on the variation-containing graph (i.e. the drop from ``No Call'' to ``HGVM'') was greater than the decrease attributable to the variant caller operating on the no-variation graph (i.e. the drop from ``All Ref'' to ``Control''). This suggests that including variation in the reference can make variant callers more effective.
+
+\begin{figure}[p]
 \centering
 \includegraphics[width=0.4\linewidth]{figures/05_hgvm/mole-insertions.eps}
 \includegraphics[width=0.4\linewidth]{figures/05_hgvm/mole-deletions.eps}
 \includegraphics[width=0.4\linewidth]{figures/05_hgvm/mole-substitutions.eps}
 \includegraphics[width=0.4\linewidth]{figures/05_hgvm/mole-softclips.eps}
-\caption[Mole realignment evaluation]{Bases involved in events required to align fragments of the CHM1 and CHM13 haploid assemblies to the sample graph created with the \texttt{vg} variant caller for the combined synthetic diploid sample. Quantities are expressed as bases involved in each type of event per primary path base in the control graph.}
+\caption[Mole realignment evaluation]{Bases involved in events required to align fragments of the CHM1 and CHM13 haploid assemblies to the sample graph created with the \texttt{vg} variant caller for the combined synthetic diploid sample. Quantities are expressed as bases involved in each type of event per primary path base in the control graph. For the ``All Ref'' condition (blue), the performance of the primary-reference-only control graph as a sample graph was evaluated. For the ``Control'' condition (green), that reference-only graph was used as a reference for variant calling, and the resulting sample graph was evaluated. For the ``HGVM'' condition (red), the Human Genome Variation Map graph under test was used as a reference for variant calling, and the resulting sample graph was evaluated. Finally, for the ``No Call'' condition (black), the Human Genome Variation Map graph was evaluated directly as a sample graph, with no calling step, to serve as a positive control.}
 \label{fig:molerealignment}
 \end{figure}
+% TODO: make a table of this?
 
+\subsection{Structural Variant Evaluation}
 
 For the second, VCF-based evaluation, the precision statistics for NA12878 are visible in Table~\ref{tbl:svprecision}, while the recall results for all samples are visible in Table~\ref{tbl:svrecall}. %TODO: replace old NA12878 stats with stats for everyone.
 In NA12878, a precision of 8 out of 10, or 0.8, was observed, while, summing possible and recalled variants across all samples, an overall recall of 106 of 151, or 0.702, was observed. Together, these produce an F1 score of 0.75.
 
 % TODO: This is before the vg add fix and needs to be replaced with the run from 2017-05-09
-\begin{table}
+\begin{table}[p]
 \centering
 \begin{tabular} {l|c|c|c|c|c}
 \textbf{Position} & \textbf{Type} & \textbf{Length (bp)} & \textbf{In 1KG} & \textbf{In Reads} & \textbf{Verdict} \\
@@ -75,7 +91,7 @@ In NA12878, a precision of 8 out of 10, or 0.8, was observed, while, summing pos
 \label{tbl:svprecision}
 \end{table}
 
-\begin{table}
+\begin{table}[p]
 \centering
 \begin{tabular} {l|c|c|c|c|c}
 \textbf{Sample} & \textbf{Total SVs} & \textbf{Called SVs} & \textbf{Recall} \\
