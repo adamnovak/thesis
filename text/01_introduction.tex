@@ -2,113 +2,22 @@
 
 \section{Introduction}
 
-The human body is the product of a four-billion-year-old pileing-up of nanotechnological hacks, which exists because, for that four billion years, none of its ancestors died without issue; we have hijacked it and are now attempting to use it to carry us around while we compose symphonies, build telescopes, write Ph.D. theses, and generally attempt to be people as opposed to just humans. We don't really know how it works, we don't have access to the proper servicing equipment to fix it properly when it breaks, and the thing just wans't really meant to do what we're trying to do with it. The goal of human genomics is to figure out how these things we call our bodies actually work, so that we can do more than just change the nanotechnological oil and hope for the best.
+The human body is the product of a four-billion-year-old pileing-up of nanotechnological hacks, which exists because, for that four billion years, none of its ancestors died without issue; we have hijacked it and are now attempting to use it to carry us around while we compose symphonies, build telescopes, write Ph.D. theses, and generally attempt to be people as opposed to just humans. We don't really know how it works, we don't have access to the proper servicing equipment to fix it properly when it breaks, and the thing just wasn't really meant to do what we're trying to do with it. The goal of human genomics is to figure out how these things we call our bodies actually work, so that we can do more than just change the nanotechnological oil and hope for the best.
 
-% This problem is hard because of the scale of the thing
+Achieving this goal is relatively difficult, because of the scale of the problem. Each human genome is about 3.2~billion base pairs, and each human has two genomes (one from each gamete). %Each of those base pairs has four possible values (\texttt{A}, \texttt{C}, \texttt{G}, \textt{T}), providing a truly untennable $3.16 \times 10^{3853183944}$ combinations.
+Human brains struggle to think about a even a single billion of anything, a number so large that a one-in-a-million chance occurs on average a thousand times. Add to this the already-difficult-to-comprehend non-designed-ness of the entire system, where no part is really ``for'' anything, and you can begin to get a sense of the difficulty of the problem.
 
-% And it's compounded by the fundamental not-designed-ness of the thing
-    % It's not a problem in the class of problems that our minds are the right shape to solve, really.
+Fortunately, despite the limitations of our tiny meat brains, we are beginning to develop techniques and guiding principles for working with problems at these scales. One of those principles is that large problems can be effectively addressed by integrating across large data sets \cite{halevy2009unreasonable}. With a population now exceeding 7.5~billion individuals, humans may constitute a sufficiently large data set to begin to approach this problem \cite{talton2017economics}. However, effective tools to integrate genomic information at the scale of the human population will be required.
 
-% So we need to integrate basically everything we've got...
+One of these tools will be a new type of genomic reference. Human genomics as it exists today is organized around something referred to as ``the human genome'', obtained through great effort and at great expense through the Human Genome Project \cite{powledge2003human}. There is a clear distinction in the field between the human genome, embodied by the reference genome assembly builds produced by the Genome Reference Consortium (GRC) \cite{schneider2013genome}, and differences from that reference, or genomic variation, embodied by the variant sets produced by efforts like the 1000 Genomes Project \cite{10002015global} or the Simons Genome diversity Project \cite{simons2014simons}. Even when efforts like this claim to produce genomes, they release Variant Call Format (VCF) files, or the equivalent, specifying their genomes with reference to and in the space induced by a reference genome assembly.
 
+Unfortunately, this approach will not scale. Different projects have different notions of variable sites, and this makes combining variation data from multiple data sets difficult. Moreover, the most recent release of the GRC's human reference genome assembly, GRCh38, contains sequences for 261 ``alternative loci'', which are sequences intended to provide alternative versions of parts of other sequences in the assembly, in order to be more representative of large-scale and structural variation in the human population \cite{karolchik2014new}. These alternative loci are intended to essentially replace portions of the primary assembly for the purpose of analyzing certain genomes. The number of genomes for which this replacement ought to be performed is relatively large; the eight alternative loci for the Major Histocompatibility Complex (MHC) region, for example, were chosen to be representative of people of European ancestry \cite{horton2008variation}, so many of such people's genomes might be better represented by using one of those alternative loci than using what is in the primary assembly. Indeed, a recent study \cite{jager2016alternate} found that some alternative loci are likely to be present in 90\% or more of the individuals in some populations. However, most available variation data sets, variant calling tools, and indeed the VCF format itself, do not account for this, and instead cram all individuals into the space of the primary assembly, regardless of its appropriateness for the individuals or populations under study.
 
-% The science of human genomics consists, roughly, of writing the service manual for a nuclear aircraft carrier while using it to fight a war. Only the aircraft carrier was designed by aliens with no sense of elegance.
-
-%In her paper, \textit{Is Having Children Always Wrong?}, Professor Rivka Weinberg reluctantly concludes that it is not necessarily always wrong to cause people to exist. 
-
-%To be human is to fall heir to a human genome: six billion letters of genetic code, the latest results of a four-billion-year winnowing process that has killed most things that have ever lived. 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-% Something cooler than the scale intro because it turns out I have to graduate and I still have no scale
-
-% Ditch all this scale stuff and talk about things I actually did and give sort of a document map and tie it together.
-
-Biology happens at scale. Scale, in population and in time, gives evolution the raw material it needs to shape biological systems worth studying. Scale enables bacteria to become resistant to antibiotics. Scale allows cancer to arise with alarming regularity in healthy people. Scale powers the adaptive immune system, and simultaneously enables pathogens to evade it. To really understand biological systems, we need to be able to match their scale.
-
-In recent years, the scale of biological data collection has dramatically increased (in part due to a precipitous drop in the cost of DNA sequencing) \cite{wetterstrand2014dna}. Unfortunately, data collection has scaled up disproportionately along the ``number of features'' axis, and only moderately along the ``number of samples'' axis. The Cancer Genome Atlas (TCGA), for example, has collected many types of data, including genomic DNA sequences, DNA methylation data, and mRNA expression levels, amounting to millions of features per sample \cite{tcga2014sample}. However, TCGA has looked at a number of individual people and cancers only on the order of thousands \cite{tcga2014sample}. Similarly, while the 1000 Genomes Project found millions of unique genomic variants, it sampled only on the order of a thousand individuals \cite{10002010map}. While such sample sizes may sound large to those who remember the years of effort and multi-billion-dollar expenditure required by the original Human Genome Project, they are woefully small compared to the numbers of features per sample. From a machine learning perspective, this limits the amount of useful knowledge that can be extracted from all of that data \cite{hua2005optimal}. If a theory is to be expected to generalize to new data (that is, if it is to actually reflect the biological processes at work), it generally ought to be based on more data points than features \cite{hua2005optimal}.
-
-For now, it is still possible to use such small sample sizes to do meaningful biology \cite{weinstein2013cancer}. However, at some point in the future, we will exhaust what we can learn by combining our prior knowledge of genetics and biochemistry with a few thousand high-throughput sequencing samples, and we will need to scale up enrollment.
-
-Unfortunately, to scale sample sizes by even a few orders of magnitude, basic bioinformatics practices will need to change. As it is, working on huge datasets like the sequencing reads from TCGA is an enormous technical challenge, with thousands of gigabytes of data to transfer, store, and protect from unauthorized access. At some point, as we increase the number of samples, we will have to abandon the idea that every lab that wants to analyze these enormous community data sets ought to have its own local copy.
-
-Additionally, when we start to scale up to large numbers of samples, our data sets are more likely to contain individuals who are in some way out of the ordinary, and consequently our engineering standards need to be tightened. For example, if a bioinformatics analysis pipeline assumes that a certain run of genes occur in a certain order and orientation, an increased number of samples pushed through this pipeline translates into an increased chance of encountering an individual who has a rearrangement contradicting that assumption. This will at best result in a run-time error and an unhappy bioinformaticist, and at worst a subtly incorrect result in a published paper. All the corner cases---the pathological combinations of variants that we assume won't co-occur, or the genomic regions that we would rather not talk about---need to be found and addressed if we are to scale up bioinformatics analyses to truly useful sizes.
-
-This means that in order to scale up bioinformatics, we will need to solve a software quality problem. Software needs to be more robust to handle a million samples than to handle a thousand samples. One way to achieve this level of reliability would be to make every bioinformaticist a good software engineer. A more practical approach would be to provide bioinformaticists with good software libraries, which contain abstractions that can safely be applied to large numbers of samples, and which consistently expose the now-relatively-frequent edge cases which bioinformaticists will need to deal with at these scales. This latter approach is the one that I will take.
-
-One of the abstractions which cannot be safely applied at these scales is the idea of a universal human reference genome and its associated linear coordinate space. Unfortunately, this idea is central to current bioinformatics practice. When you have only one sequenced genome, it's perfectly reasonable to, say, extract a 2 kilobase window of sequence centered on an arbitrary position. However, we now have thousands of sequenced genomes---enough to get a sense of what common variants exist in the human population, although not enough to understand the significance of many of them \cite{10002010map}---and it is growing increasingly clear that operations like windowing in the reference don't always make sense. For example, in the latest release of the human reference genome, GRCh38, there are 261 ``alt loci''---pieces of sequence which are not on the main reference chromosomes, but which model common alternative arrangements of genes and other genomic elements \cite{karolchik2014new}. In genomic regions where these alt loci apply, the traditional linear coordinate system, which refers to locations in peoples' genomes by the chromosome and base index in the reference genome, begins to break down. To properly reason about such genomic regions, we need to abandon either the idea that bases in peoples' genomes correspond to bases in a reference, or the idea that references are linear.
+In genomic regions where these alternative loci apply, the traditional linear coordinate system, which refers to locations in peoples' genomes by the chromosome and base index in the primary assembly, begins to break down. To properly reason about such genomic regions, we need to abandon either the idea that bases in peoples' genomes correspond to bases in a reference, or the idea that references are linear.
 
 The linear organization of the reference genome also frustrates attempts to study regions of the genome which are difficult to assemble, or which, due to sequence similarity, are very difficult to distinguish from similar regions at other locations in the genome. To facilitate analysis of the centromeres, for example, GRCh38 includes plausible synthetic linear centromere sequences \cite{karolchik2014new}. We have more precise, graph-based models of what we actually know about the centromeres, but these models cannot be indexed by linear sequence coordinates or processed by tools that expect a linear reference sequence \cite{miga2014centromere}.
 
-I propose a nonlinear, graph-based ``reference structure'' for human genomes. A graph-based reference structure can capture in a first-class way the sequence information which is currently relegated to alt loci, as well as additional variant information from other sources. Combined with a rigorous definition of mapping sequencing reads to paths in the graph, a reference structure could potentially combat allele-specific mapping bias, an effect in which alleles that match the single linear reference are easier to detect than those which do not \cite{degner2009effect}. Furthermore, a hierarchy of reference structures could eventually allow for ``collapsing'' ambiguous regions together, with variable stringency, permitting the inclusion of a more accurate representation of our knowledge of centromeres and other repetitive or ambiguous regions of the genome.
-
-For my thesis project, I will formalize the mathematics of constructing and mapping to a graph-based reference, build scalable software tools and API infrastructure for creating and working with reference structures and hierarchies, and use a constructed reference of this form to reach new, biologically relevant conclusions.
+I propose a nonlinear, graph-based ``Human Genome Variation Map'', or HGVM. This new type of genomic reference will eliminate the artificial distinction between the reference genome assembly---``the human genome''---and what we know about variation among the genomes of the human population. A graph-based reference can capture in a first-class way the sequence information which is currently relegated to alt loci, as well as additional variant information from sources like the 1000 Genomes Project \cite{10002015global}. A human genome variation map not giving preference to one version of a region with alternative loci over another could potentially combat allele-specific mapping bias, an effect in which alleles that match the single linear reference are easier to detect than those which do not \cite{degner2009effect}. The adoption of a unified representation of genomes will allow genomic analysis software to scale to much larger cross-dataset analyses, with a more represerntative view of individuals' genomes, allowing progress to be made in the unraveling of human biology.
 
 \section{Background}
 
