@@ -28,7 +28,9 @@ The \texttt{vg add} tool was also used to add structural variants. Since the str
 
 Once fully constructed, the resulting graph was indexed for alignment using \vg, producing XG and GCSA2 indexes. The graph was subjected to two alignment-based evaluations.
 
-The graph construction and evaluation was performed on a Microsoft Azure cluster using five \texttt{Standard\_G5} worker nodes and one \texttt{Standard\_A5} master, managed using the Toil workflow engine~\cite{vivian2017toil}. The \texttt{quay.io/vgteam/vg:graph-bakeoff-0.1-3068-g851d5ceb-t58-run} Docker container provided the \vg used for the initial graph construction and structural variant evaluation. The assembly realignment evaluation from the initial run was discarded due to a software bug, and was rerun with an improved manager codebase, the additional ``No Call'' control, and the \texttt{quay.io/vgteam/vg:v1.5.0-299-g90586729-t59-run} Docker container, and it is those results that are presented here.
+\begin{sloppypar}
+The graph construction and evaluation was performed on a Microsoft Azure cluster using five \texttt{Standard\_G5} worker nodes and one \texttt{Standard\_A5} master, managed using the Toil workflow engine~\cite{vivian2017toil}. The \path{quay.io/vgteam/vg:graph-bakeoff-0.1-3068-g851d5ceb-t58-run} Docker container provided the \vg used for the initial graph construction and structural variant evaluation. The assembly realignment evaluation from the initial run was discarded due to a software bug, and was rerun with an improved manager codebase, the additional ``No Call'' control, and the \path{quay.io/vgteam/vg:v1.5.0-299-g90586729-t59-run} Docker container, and it is those results that are presented here.
+\end{sloppypar}
 
 \subsection{Variant Calling}
 

@@ -161,7 +161,7 @@ By the argument above, some context-driven mapping schemes are only weakly stabl
   \end{tabular}
   \end{minipage}
 
-  \caption{Example of two nonredundant context sets. Substitutions relative to the first context in each set are in bold. If the context $(L, B, R) = \texttt{C}, \texttt{C}, \texttt{C}$ were added to either set, it would make the context assignment redundant, as it is more general than contexts that already occur in both sets.}
+  \caption[Example of two nonredundant context sets]{Example of two nonredundant context sets. Substitutions relative to the first context in each set are in bold. If the context $(L, B, R) = \texttt{C}, \texttt{C}, \texttt{C}$ were added to either set, it would make the context assignment redundant, as it is more general than contexts that already occur in both sets.}
   \label{fig:contextSets}
 \end{figure}
 
@@ -245,7 +245,7 @@ This heuristic algorithm, as demonstrated in Supplementary Section~S1, finds con
 \begin{figure}
 \centering
   \includegraphics[width=1.0\columnwidth]{figures/02_contextschemes/MUMs.eps}
-  \caption{Diagram of a $\beta^\prime$-synteny block for the $\alpha^\prime$-$\beta^\prime$-natural context scheme, composed of two MUMs.}
+  \caption[Diagram of a {$\beta^\prime$}-synteny block]{Diagram of a $\beta^\prime$-synteny block for the $\alpha^\prime$-$\beta^\prime$-natural context scheme, composed of two MUMs.}
   \label{fig:model}
 \end{figure}
 
@@ -288,7 +288,7 @@ Each mapping scheme under test took the MHC alt loci (GI568335879, GI568335954, 
   	\label{fig:mhccoverage}
     \includegraphics[width=0.5\textwidth]{figures/02_contextschemes/mhcCoverageBar.eps}
   }
-  \caption{Results of MHC alignment. Points shown in \ref{fig:mhcprecisionrecall} are averages of alt-loci alignments. Lines connect different $\beta^\prime$ levels for a given $\alpha^\prime$. The red dashed line in \ref{fig:mhccoverage} is the average coverage of the GRC reference alignments.}
+  \caption[Results of MHC alignment]{Results of MHC alignment. Points shown in \ref{fig:mhcprecisionrecall} are averages of alt-loci alignments. Lines connect different $\beta^\prime$ levels for a given $\alpha^\prime$. The red dashed line in \ref{fig:mhccoverage} is the average coverage of the GRC reference alignments.}
   \label{fig:mhc}
 \end{figure*}
 
@@ -306,7 +306,7 @@ Two additional configuration options were available for the schemes under test: 
 \begin{figure}[t]
 	\centering
     \includegraphics[width=0.3\textwidth]{figures/02_contextschemes/mhcRearrangements.eps}
-  \caption{Frequency of rearrangements of different levels of complexity implied by the alignment of MHC alt loci to the primary path, under the $\alpha^\prime = 5$, $\beta^\prime = 4$ natural scheme, which was selected to give the best balance between precision and recall. The X axis shows the number of nodes involved in the rearrangement, while the Y axis shows the number of rearrangements of that size. The red bar shows the number of 4-node rearrangements that are automatically identifiable as tandem duplications.}
+  \caption[MHC alignment rearrangements]{Frequency of rearrangements of different levels of complexity implied by the alignment of MHC alt loci to the primary path, under the $\alpha^\prime = 5$, $\beta^\prime = 4$ natural scheme, which was selected to give the best balance between precision and recall. The X axis shows the number of nodes involved in the rearrangement, while the Y axis shows the number of rearrangements of that size. The red bar shows the number of 4-node rearrangements that are automatically identifiable as tandem duplications.}
   \label{fig:rearrangements}
 \end{figure}
 
@@ -352,7 +352,7 @@ Mapping accuracy was assessed in two ways. First, the number of reads that each 
   	\label{fig:readwrongness}
     \includegraphics[width=0.5\columnwidth]{figures/02_contextschemes/readWrongness.eps}
   }
-  \caption{Results of read alignments. Reads were generated from MHC alt loci by taking tiling 200bp windows at 100bp intervals, and randomly introducing substitution errors at a frequency of $1\%$. Reads were aligned to the GRCh38 primary path MHC region.}
+  \caption[Results of read alignments]{Results of read alignments. Reads were generated from MHC alt loci by taking tiling 200bp windows at 100bp intervals, and randomly introducing substitution errors at a frequency of $1\%$. Reads were aligned to the GRCh38 primary path MHC region.}
   \label{fig:read}
 \end{figure}
 
@@ -376,7 +376,7 @@ A final experiment characterized the minimum context lengths with which it was p
   	\label{fig:contextcumulative}
     \includegraphics[width=0.5\columnwidth]{figures/02_contextschemes/contextcumulative.eps}
   }
-  \caption{Minimum $\beta^\prime = 0$ context lengths required to map uniquely in a reference derived from the GRCh38 primary path MHC, for different $\alpha^\prime$ values. At an $\alpha^\prime$ of $1$, $1.16\%$ of minimal contexts are longer than 100bp, and $0.97\%$ are longer than 200bp. At an $\alpha^\prime$ of $5$, $8.85\%$ of minimal contexts are longer than 100bp, and $1.74\%$ are longer than 200bp}
+  \caption[Minimum $\beta^\prime = 0$ context lengths]{Minimum $\beta^\prime = 0$ context lengths required to map uniquely in a reference derived from the GRCh38 primary path MHC, for different $\alpha^\prime$ values. At an $\alpha^\prime$ of $1$, $1.16\%$ of minimal contexts are longer than 100bp, and $0.97\%$ are longer than 200bp. At an $\alpha^\prime$ of $5$, $8.85\%$ of minimal contexts are longer than 100bp, and $1.74\%$ are longer than 200bp}
   \label{fig:contexts}
 \end{figure}
 
