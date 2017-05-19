@@ -21,6 +21,11 @@
 
 \usepackage{url}
 \usepackage{listings}
+\lstset{
+    breaklines=true,
+    % Grabbed from <https://tex.stackexchange.com/a/116572>
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookrightarrow\space}}
+}
 \usepackage{graphicx}
 \usepackage{xspace}
 \usepackage{amsmath}
@@ -38,7 +43,7 @@
 \usepackage[chapter]{algorithm}
 \usepackage{marvosym}
 \usepackage{siunitx}
-\usepackage[hyphenbreaks]{breakurl}
+%\usepackage[hyphenbreaks]{breakurl}
 \usepackage{setspace}
 \usepackage{rotating}
 \usepackage{epigraph}
@@ -53,7 +58,7 @@
       \do\u\do\v\do\w\do\x\do\y\do\z\do\A\do\B\do\C\do\D%
       \do\E\do\F\do\G\do\H\do\I\do\J\do\K\do\L\do\M\do\N%
       \do\O\do\P\do\Q\do\R\do\S\do\T\do\U\do\V\do\W\do\X%
-      \do\Y\do\Z}
+      \do\Y\do\Z\do\1\do\2\do\3\do\4\do\5\do\6\do\7\do\8\do\9\do\0\do\_\do\.}
       
   % Add Yield as a pseudocode command
 \algnewcommand\algorithmicyield{\textbf{yield}}
@@ -73,7 +78,11 @@
 % Have a command for vocab words
 \newcommand{\vocab}[1]{\textbf{#1}\xspace}
 
+% have a command for talking about vg
 \newcommand{\vg}{\texttt{vg}\xspace}
+
+% Try and make captions not run together with the text
+\captionsetup{belowskip=12pt}
 
 \doublespacing
 

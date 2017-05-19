@@ -1,6 +1,8 @@
 \chapter{A Graph Extension of the Positional Burrows-Wheeler Transform and its Applications}
 \label{ch:gpbwt}
 
+This chapter has been adapted from the article \citet{novak2016graph}, and contains material attributable to all authors of that work.
+
 \section{Abstract}
 WWe present a generalization of the Positional Burrows-Wheeler Transform, or PBWT, to genome graphs, which we call the gPBWT. A genome graph is a collapsed representation of a set of genomes described as a graph. In a genome graph, a haplotype corresponds to a restricted form of walk. The gPBWT is a compressible representation of a set of these graph-encoded haplotypes that allows for efficient subhaplotype match queries. We give efficient algorithms for gPBWT construction and query operations.
 As a demonstration, we use the gPBWT to quickly count the number of haplotypes consistent with random walks in a genome graph, and with the paths taken by mapped reads; results suggest that haplotype consistency information can be practically incorporated into graph-based read mappers. We estimate that with the gPBWT of the order of 100,000 diploid genomes, including all forms structural variation, could be stored and made searchable for haplotype queries using a single large compute node.
@@ -397,7 +399,9 @@ All human data used in this study comes from already published, fully public sou
 Not applicable
 
 \subsection{Availability of data and material}
+\begin{sloppypar}
 The datasets analyzed during the current study are available in the 1000 Genomes repository, at \url{ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz} (md5 \texttt{ad7d6e0c05edafd7faed7601f7f3eaba}), \url{ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/ALL.chr22.phase3_shapeit2_mvncall_integrated_v5a.20130502.genotypes.vcf.gz.tbi} (md5 4202e9a481aa8103b471531a96665047), \url{ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/technical/reference/phase2_reference_assembly_sequence/hs37d5.fa.gz} (md5 \texttt{a07c7647c4f2e78977068e9a4a31af15}), and \url{ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/GRCh38_positions/ALL.chr22.phase3_shapeit2_mvncall_integrated_v3plus_nounphased.rsID.genotypes.GRCh38_dbSNP_no_SVs.vcf.gz} (md5 \texttt{cf7254ef5bb6f850e3ae0b48741268b0}), and in the GRCh38 assembly repository, at \url{ftp://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/000/001/405/GCA_000001405.15_GRCh38/GCA_000001405.15_GRCh38_assembly_structure/Primary_Assembly/assembled_chromosomes/FASTA/chr22.fna.gz} (md5 \texttt{915610f5fb9edfcc9ce477726b9e72c6}).
+\end{sloppypar}
 
 \section{Competing interests}
 The authors declare that they have no competing interests.
