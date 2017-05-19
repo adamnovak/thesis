@@ -1,7 +1,5 @@
 \chapter{Towards a Human Genome Variation Map}
 
-\newcommand{\vg}{\texttt{vg}\xspace}
-
 \section{Introduction}
 
 In Chapter~\ref{ch:bakeoff}, it was demonstrated that the use of graph-based genomic references can result in improved variant calling performance over traditional linear references, especially with respect to the genotyping of previously-reported insertions and deletions. However, the graph references in that study that produced the most accurate variant calls were derived from the 1000 Genomes Project's main variant call files \cite{10002015global}, and allowed the detection of only relatively short indels, under about 50~bp (Fig.~\ref{fig:bakeoff:refnonref} (C)). Compared to the approximately 300~bp length of a single Alu repeat insertion \cite{weiner1980abundant}, this is inadequate for characterizing genomic variation.
@@ -20,6 +18,7 @@ In order to combine a Cactus-based graph with a 1000 Genomes-based graph, we imp
 
 The vg add tool, along with a Toil-based orchestration script \cite{vivian2017toil}, were used to combine variation information from three sources. The base level graph was obtained by using Cactus \cite{paten2011cactus2}, by aligning together the chromosome 22 primary sequence and the chromosome 22 alt and ``random'' sequences from GRCh38.
 % TODO: What patch level did Joel use?
+% TODO: What kind of chopping was done to the Cactus graph?
 
 On top of this graph, \texttt{vg add} was used to add in variants from the 1000 Genomes Phase 3 GRCh38 lifted-over VCF files, available from \url{ftp://ftp.1000genomes.ebi.ac.uk/vol1/ftp/release/20130502/supporting/GRCh38_positions/}. Notably, these variant files as distributed by the 1000 Genomes Project are not valid; variants lifted over to the reverse strand of GRCh38 are marked as marked with a \texttt{MATCHED\_REV} tag in the \texttt{INFO} field but left in their GRCh37 orientations, and needed to be reverse-complemented using a script so that the \texttt{REF} field contents will match the actual reference sequence at the variant's location.
 
@@ -59,7 +58,7 @@ The second evaluation, by contrast, was a truth set VCF-based measurement of the
 \subsection{Graph Construction}
 
 The final chromosome 22 graph contained 3,630,636 nodes and 4,736,762 edges, with a total length (summed over all nodes) of 57,097,951~bp. The initial input data consisted of 51,857,516~bp of primary reference and ``random'' contig sequence, and 1,625,159~bp of alternate locus sequence (much of which should have aligned to and been merged with the primary reference and ``random'' sequences), meaning that at least 3,615,276~bp of material, or 6.97\%, came from the VCF files used to add known variation to the graph. % TODO: does that mean that we failed to align some of the big variants' alts right? I don't think the VCFs were that big...
-The two initial cluster runs required to construct and evaluate the graph took a total of 21 hours and 33 minutes on the Microsoft Azure cluster (which consisted of five \texttt{Standard\_G5} worker nodes and one \texttt{Standard\_A5} master). The rerun of the assembly realignment evaluation, which used a different code version and included an additional control, took 6 hours and 9 minutes, and it is the results of this run that are presented for that evaluation. No attempt was made to fit the size or resource allocations of the cluster to the requirements of the workflow; the analysis succeeded on the smallest (and only) cluster on which it was tried.
+The two initial cluster runs required to construct and evaluate the graph, starting from a \vg format version of the Cactus alignment, took a total of 21 hours and 33 minutes on the Microsoft Azure cluster (which consisted of five \texttt{Standard\_G5} worker nodes and one \texttt{Standard\_A5} master). The rerun of the assembly realignment evaluation, which used a different code version and included an additional control, took 6 hours and 9 minutes, and it is the results of this run that are presented for that evaluation. No attempt was made to fit the size or resource allocations of the cluster to the requirements of the workflow; the analysis succeeded on the smallest (and only) cluster on which it was tried.
 
 \subsection{Assembly Realignment Evaluation}
 

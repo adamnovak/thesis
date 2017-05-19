@@ -126,6 +126,14 @@ Another, slightly newer approach uses the concept of a ``population reference gr
 
 % Maybe hit the vBWT as well
 
+\subsection{Sequence Graphs}
+
+There are many possible representations of a genomic reference as a graph \cite{computational2016computational}, but one particularly useful model is a bidirected graph, or, when used to represent genomic data, a \vocab{sequence graph} \cite{paten2017genome}. In the sequence graph model, nodes in the graph are nucleic acid \vocab{sequences}, and each sequence has two \vocab{sides}: a ``left'' or ``start'' side and a ``right'' or ``end'' side. The sequences are connected together by \vocab{edges}, each of which has two ends that are attached to sides of nodes. The model is called ``bidirected'' because, unlike in a directed graph where each edge consists of a set of nodes and a direction (from one node to another), in a bidirected graph each edge consists of a set of nodes and two directions. The edge can still be from one node to another (in which case it connects the end side of one node to the start side of the other), but it can also be ``to`` both nodes (in which case it connects their start sides together), or ``from'' both nodes (in which case it connects their end sides together).
+
+In a graph such as this, traversals, walks, and other graph-theoretic concepts generalize from visiting just the nodes to visiting nodes in one of two orientations: \vocab{forward} (i.e. start side to end side) or \vocab{reverse} (i.e. end side to start side). A visit to a node in the forward orientation corresponsd to the node's sequence, whereas a visit to the node in the reverse orientation corresponds to the reverse complement of its sequence. When visiting multiple nodes, it is important that the visits' orientations be consistent: if two nodes are connected by an edge from the first to the second, and you visit the first node in its forward orientation, you may next visit the second node in its forward orientation (by leaving the first node's end and arriving at the second node's start), but you may not, traversing that edge, visit the second node in its reverse orientation. In other words, the forward orientation corresponds to arriving at the start side and leaving via the end side, whereas the reverse orientation corresponds to arriving at the end side and leaving via the start side, and other combinations (such as both arriving and leaving via the start side) are not permitted.
+
+% TODO: a figure might be nice here.
+
 \subsection{Data Models with Protobuf}
 
 Representing human genomic variation as a graph reference requires a data model in which to represent that graph in software. Moreover, producing an effective Human Genome Variation Map that can actually be used by other researchers requires selecting a data model that can itself be easily communicated, that can have broad software support, and that people can be persuaded to agree on.
@@ -142,15 +150,35 @@ message Node {
     int64 id = 3;     // Each Node has a unique positive nonzero ID within its Graph.
 }
 \end{lstlisting}
+% TODO: Word wrap this
 
 Each kind of item in the data model is referred to as a ``message'', and each field is manually assigned a unique identifying number to allow its name to be changed later while retaining backward compatibility.
 
 Using a Protobuf-based data format for genome graphs allows for broad accessibility, without some of the disadvantages (such as large size and the necessity to write correct parsers in various languages) of bespoke text formats.
 
+\subsection{\vg, the Variation Graph Toolkit}
+
+% I should talk about vg, at least as it existed before I started working on it.
+
+One collection of Probuf data models for genome graphs comes from \vg, a software suite created by Erik Garrison for working with genome graphs \cite{garrison2016vg}. In \vg, graphs are represented by a collection of nodes, each of which has an ID and a sequence, and a collection of edges, each of which connects one side (the start or end) of one node to one side of another node (which may actually be the same node, because the \vg model allows for cycles and self-loops). Each graph can also have a series of named paths associated with it, to represent how interesting things, such as the primary path of a genome assembly, or the reference version of a particular gene, fit into the graph.
+
+The \vg suite is structured as a command-line \vg command with a variety of subcommands (\texttt{vg construct}, \texttt{vg map}, \texttt{vg view}, etc.), which are designed to be chainable into pipelines and communicate using streams of Protobuf-serialized graph data. The toolkit, The combination of the Protobuf-based serialization format, the modular architecture as a collection of subcommands, and the relatively comprehensive internal graph manipulation API make \vg and attractive option as a framework in which new genome graph algorithms can be implemented, and a useful toolkit for performing graph-based analyses.
+
+At the time when \vg was selected as a basis for further development, it provided a data model supporting bidirected graphs, subcommand implementations for constructing, indexing, and mapping to directed acyclic graphs, and a succinct graph storage format. In part as a result of software development work undertaken as part of the present work, \vg now includes full support for working with bidirected graphs, a variant calling implementation, and a suite of unit tests.
+
+\subsection{Whole-Genome Alignments with Cactus}
+
 \subsection{Reliable, Portable Cloud Computing with Toil}
 
 % Talk about how great Toil is and how it let me do lots of the analyses in here
 
+In order to produce a graph reference on the scale of the proposed Human Genome Variation Map, using tools like \vg that are architected as small components performing relatively simple tasks, some sort of orchestration or workflow system is necessary. This is especially true if one desires to use more than one computer in the build process; tasks need to be scheduled and code and data moved around the cluster of systems in order to perform the build. Moreover, a build process like this might require more computing resources than are required to work with the final product, and so it is desirable to be able to source those resources from on-demand cloud providers, rather than being forced to purchase them in-house.
+
+One potential solution to this problem is Toil, a Python-based workflow development library and execution engine which is capable of composing smaller tasks into larger workflows, and of executing those workflows either on a single computer or on a cloud-based virtual cluster \cite{vivian2017toil}. Toil workflows can be written as Python scripts, which, together with Python virtual environments housing their dependencies, can be distributed to worker machines in a cloud environment. Toil nodes comunicate amongst themselves using a \vocab{job store}, which can be located on a shared filesystem or within a cloud-based distributed storage system such as Amazon's S3 or Microsoft's Azure Storage. The job store is used to keep track of which parts of the workflow have successfuly completed, and which parts have not yet executed or have failed, as well as to store files, arguments, and return values that are communicated from job to job.
+
+Toil jobs can dynamically create and connect additional jobs in a directed acyclic dependency graph, meaning that workflows can dynamically adapt their shape to the shape of the data they are working with. Moreover, because the information required to execute each job is stored in the job store, failed jobs can be retried, and jobs suffering from bugs can be restarted with a corrected version of the workflow code, allowing problems with a large workflow to be corrected without losing all of the work done so far.
+
+To make running on cloud providers easier, Toil provides a system to control workflow input and output, by importing data from URLs at the beginnig nof the workflow, and exporting data to URLs at the end, to eliminate the need to manually copy data to and from ephemeral cloud instances. Additionally, Toil provides a Python API for running commands through the Docker container system, allowing workflows to call command-line tools without the user having to figure out a way to get them installed on large numbers of ephemeral cloud instances. Finally, Toil integrates with Amazon Web Services to allow clusters to be automatically scaled up and down as the resource requirements of a workflow change, or as the spot market price of computing-hours rises and falls, while for Microsoft Azure Toil provides a cluster template for easy deployment in a few clicks.
 
 \section{Research Overview}
 
