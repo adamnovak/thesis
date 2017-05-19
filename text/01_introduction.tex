@@ -21,23 +21,9 @@ I propose a nonlinear, graph-based ``Human Genome Variation Map'', or HGVM. This
 
 \section{Background}
 
-\subsection{How Bioinformatics Works}
-
-% Say something about how we need to use more than one dude's worth of genomes to understand genomes, because more data is more better.
-
-% But we can't use all umpteen jillion BAMs at once, so we need to reduce them down to something manageable, which is a graph reference.
-
-\subsection{Reliable, Portable Cloud Computing with Toil}
-
-% Talk about how great Toil is and how it let me do lots of the analyses in here
-
-\subsection{Data Models with Protobuf}
-
-% Talk about data models and protobuf
-
 \subsection{How Genomics Works}
 
-One piece of shared infrastructure that bioinformatics already uses is the human reference genome, which was built at great expense at the turn of the millennium and is maintained by the Genome Reference Consortium (GRC) \cite{church2011modernizing}. This reference genome assembly was originally created by stitching together actual observed pieces of DNA sequence into a single-copy haploid \vocab{golden path} representing a complete genome \cite{church2011modernizing}. Under this model, a hypothetical perfect assembly would have a single \vocab{contig}, or contiguous linear string of DNA bases, per chromosome. This naturally suggests a coordinate system: bases can be referred to by the contig they are on and their offset from the beginning of that contig.
+The human reference genome assembly was built at great expense at the turn of the millennium and is maintained by the Genome Reference Consortium (GRC) \cite{church2011modernizing}. This reference genome assembly was originally created by stitching together actual observed pieces of DNA sequence into a single-copy haploid \vocab{golden path} representing a complete genome \cite{church2011modernizing}. Under this model, a hypothetical perfect assembly would have a single \vocab{contig}, or contiguous linear string of DNA bases, per chromosome. This naturally suggests a coordinate system: bases can be referred to by the contig they are on and their offset from the beginning of that contig.
 
 This coordinate system is a critical piece of genomics infrastructure. It allows the reference genome to be annotated with genes and other elements. It provides the backbone to which descriptions of genomic variation are anchored. It defines the space in which genome sequencing happens, as short reads from sequencing machines are \vocab{mapped} to positions in this space. The entire field depends on this coordinate system.
 
@@ -65,16 +51,14 @@ Another potential problem with the VCF format, at least from the point of view o
 
 Furthermore, there are no fewer than three distinct syntaxes for specifying variants in VCF: the original syntax, in which alternate alleles are short stretches of sequence; a symbolic format, in which alternate alleles are mere specifications of inversion or duplication, or even references to named alleles defined elsewhere; and a breakend-based format, in which structural variants (and related sequence changes) are defined as a series of possibly-paired breakend records describing how the reference would have had to have been cut and spliced to produce the sample \cite{marshall2013variant}. Available VCF parsers do not help with integrating across or converting between these different internal formats, and some don't even support all of them. Tools written to directly extract information from VCFs without a parser library often support only one or maybe two of these formats. Furthermore, between the three different formats and the fact that different alignment parameters can induce variant callers to describe the same observed sequence as different variants, it is very difficult to compare two VCF files.
 
-Finally, the VCF format is tightly coupled to the linearity of the reference genome. While VCF's breakend system allows the specification of complex rearrangement graphs for samples, there is no explicit support for even the alt loci of the current GRCh38 reference. For example, if one were to specify variant records on one of the MHC alt loci, there would be no way to specify phasing with variants on the main chr6, because VCF specifies records with different chromosome names to be unphased relative to each other \cite{marshall2013variant}. Furthermore, there is no way to explicitly specify that a sample uses a certain alt locus; it would be necessary to infer this from the existence of called genotypes in the coordinates of that alt. It would certainly be possible to adopt certain conventions within the existing VCF format to work around this problem---for example, we could wire the alt loci into their parent chromosomes with breakends whenever they are present. However, no such conventions are standardized for data interchange.
+Finally, the VCF format is tightly coupled to the linearity of the reference genome assembly. While VCF's breakend system allows the specification of complex rearrangement graphs for samples, there is no explicit support for even the alt loci of the current GRCh38 reference. For example, if one were to specify variant records on one of the MHC alt loci, there would be no way to specify phasing with variants on the main chr6, because VCF specifies records with different chromosome names to be unphased relative to each other \cite{marshall2013variant}. Furthermore, there is no way to explicitly specify that a sample uses a certain alt locus; it would be necessary to infer this from the existence of called genotypes in the coordinates of that alt. It would certainly be possible to adopt certain conventions within the existing VCF format to work around this problem---for example, we could wire the alt loci into their parent chromosomes with breakends whenever they are present. However, no such conventions are standardized for data interchange.
 
-A graph-based approach to the description of genomic variants could alleviate several of these problems, defining explicitly when an individual matches the primary path of the reference, and expressing clearly and concisely the alt loci that an individual carries, and any variations on top of them, in a single sufficiently general syntax.
+A graph-based approach to the description of genomic variants could alleviate several of these problems, defining explicitly when an individual matches the primary assembly, and expressing clearly and concisely the alt loci that an individual carries, and any variations on top of them, in a single sufficiently general syntax.
 
 \subsection{String Compression with the Burrows-Wheeler Transform}
 \label{subsec:bwt}
 
-In part because of the shortcomings of VCF and its linear reference, I propose moving to an entirely graph-based conception of variants that incorporates them into a ``reference structure''. I propose a method for creating and mapping to graph-based reference structures, based primarily on string operations on a large collection of individual haplotypes. A single individual has several gigabases of DNA sequence; in order to combine many such haplotypes into a useful reference data structure, they need to be compressed. Thankfully, collections of haplotypes are likely to be highly compressible, since individual genomes are generally very similar to each other.
-
-One particularly useful algorithm in string compression is the \vocab{Burrows-Wheeler Transform (BWT)}. The BWT takes strings and rearranges them for increased compressibility, by putting characters from similar contexts near each other \cite{burrows1994block}. (It is interesting to think of the BWT as defining a new, context-based coordinate system.)
+Human genomes, being extremely similar to each other and relatively similar to themselves in different places, lend themselves to compression. One particularly useful algorithm in string compression is the \vocab{Burrows-Wheeler Transform (BWT)}. The BWT takes strings and rearranges them for increased compressibility, by putting characters from similar contexts near each other \cite{burrows1994block}. (It is interesting to think of the BWT as defining a new, context-based coordinate system.)
 
 The BWT operates by taking the string to be compressed (with a sentinel value ``\$'' lexicographically smaller than all other characters appended to it) and imagining all possible rotations of it \cite{burrows1994block, ferragina2000opportunistic}. Each rotation is derived from the previous one by taking the first character and moving it to the end \cite{burrows1994block}. The rotations are then sorted lexicographically, and the last characters of all the rotations become the transformed string \cite{burrows1994block}.
 
@@ -127,18 +111,46 @@ The FMD-index provides for double-ended search; that is, an intermediate search 
 
 The FMD-index search algorithm works as follows: When the query string is extended on the left, the forward range is updated as normal. The reverse range takes on the new interval length derived from the forward range, and a small dynamic programming problem is done over the alphabet to find its new start position. The dynamic programming problem is fairly simple because the reverse range can be partitioned into the ranges that would be selected upon left-extension with any character, ordered in lexicographic order by the reverse complement of the character. The dynamic programming simply consists of looping through the alphabet in lexicographic order by reverse complement, considering extending on each character up to the one actually being used, calculating how long the result set would be on the forward strand, and adding that in to the start of the reverse strand interval \cite{li2012exploring}. To extend a string on the right, the forward and reverse ranges are temporarily swapped, and the reverse complement of the query string is extended on its left with the reverse complement of the new base \cite{li2012exploring}.
 
+% TODO: what if this BWT stuff can I cut, given that I'm no longer trying to use my own FMD index implementation to represent a merged-from-sequences graph?
+
 \subsection{Previous Graph Indices}
 
 % Improve this paragraph to actually say what is actually happening
-The work that I am proposing involves implementing efficient search over graphs of genomic sequence data. This is not a new idea. Many of the current approaches to this problem come at it from the perspective of trying to index a multiple sequence alignment \cite{siren2014indexing}. Two such approaches are described below.
+A graph-based Human Genome Variation Map requires an efficient substring search algorithm, in order to allow sequencing reads to be efficiently aligned to the graph. Substring search in graphs is not a new idea. Many of the current approaches to this problem come at it from the perspective of trying to index a multiple sequence alignment \cite{siren2014indexing}. Two such approaches are described below.
 
 One approach, the Generalized Compressed Suffix Array (GCSA), extends the XBW transform (itself a generalization of the BWT to trees) to ``prefix-range-sorted automata'', which include de Bruijn graphs but not general directed labeled graphs \cite{siren2014indexing}. However, the authors of that approach present only an implementation for acyclic multiple sequence alignments. The existence of nonlinear structures like polymorphic inversions, where a genomic region is forwards in some individuals but backwards in others, is not addressed, and no implementation for de Bruijn graphs is provided \cite{siren2014indexing}. Moreover, the approach presented there provides search over all possible paths through the graph in question, which is a reasonable choice for indices derived from multiple alignments, but which might backfire for graphs with short cyclic structures that could provide pathological productions for many query strings \cite{siren2014indexing}.
 
 Another, slightly newer approach uses the concept of a ``population reference graph'', also derived from a multiple sequence alignment \cite{dilthey2015improved}. In contrast to the BWT-based indexing methods described above, the population reference graph method turns its graph representation of genomes into a Hidden Markov Model (HMM), and identifies the most likely paths through it to match the k-mer spectrum of any particular sample \cite{dilthey2015improved}. Under this method, a pair of haploid genomes are then synthesized as sample-specific references, and existing read-to-genome mapping tools are used to map sequencing reads to these references \cite{dilthey2015improved}. Unfortunately, because of the way that k-mer counts from a sample are divided up to provide input for the HMM model in different genomic regions, this method is forced to divide its HMM states into ``levels'' that it proceeds through in a fixed, sequential order. The resulting graph model is constrained to closely resemble the multiple sequence alignment it was derived from. While this method can effectively model a wide range of alternative sequences in a region, it does not appear to be able to effectively model inversions, duplications, or other more complex structures \cite{dilthey2015improved}.
 
-% Talk about and cite GCSA2 which actually gets used
+% TODO: Talk about and cite GCSA2 which actually gets used
 
 % Maybe hit the vBWT as well
+
+\subsection{Data Models with Protobuf}
+
+Representing human genomic variation as a graph reference requires a data model in which to represent that graph in software. Moreover, producing an effective Human Genome Variation Map that can actually be used by other researchers requires selecting a data model that can itself be easily communicated, that can have broad software support, and that people can be persuaded to agree on.
+
+A simple way to describe a data model and get code generated in various languages for free is to use Google's Protocol Buffers (or ``Protobuf'') library \cite{varda2008protocol}. The system provides a simple language to describe data structures, and a serialization system to allow multiple languages to read and write those data structures. The availability of libraries such as \texttt{json2pb} allows easy interoperation with any languages or tools that can consume or produce JSON. Additionally, the relative sparsity of features forces data models to be relatively simple, and the backing by a large, rich technology company helps convince people to agree on the format. Finally, the extensibility of the system allows new fields to be added to provide new features without invalidating older data sets.
+
+Here is an example Protobuf description of a graph node in a genome graph. 
+
+\begin{lstlisting}
+// *Nodes* store sequence data.
+message Node {
+    string sequence = 1;   // Sequence of DNA bases represented by the Node.
+    string name = 2;  // A name provides an identifier.
+    int64 id = 3;     // Each Node has a unique positive nonzero ID within its Graph.
+}
+\end{lstlisting}
+
+Each kind of item in the data model is referred to as a ``message'', and each field is manually assigned a unique identifying number to allow its name to be changed later while retaining backward compatibility.
+
+Using a Protobuf-based data format for genome graphs allows for broad accessibility, without some of the disadvantages (such as large size and the necessity to write correct parsers in various languages) of bespoke text formats.
+
+\subsection{Reliable, Portable Cloud Computing with Toil}
+
+% Talk about how great Toil is and how it let me do lots of the analyses in here
+
 
 \section{Research Overview}
 
