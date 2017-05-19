@@ -166,7 +166,11 @@ The \vg suite is structured as a command-line \vg command with a variety of subc
 
 At the time when \vg was selected as a basis for further development, it provided a data model supporting bidirected graphs, subcommand implementations for constructing, indexing, and mapping to directed acyclic graphs, and a succinct graph storage format. In part as a result of software development work undertaken as part of the present work, \vg now includes full support for working with bidirected graphs, a variant calling implementation, and a suite of unit tests.
 
-\subsection{Whole-Genome Alignments with Cactus}
+\subsection{Copy-Number-Variable Alignments with Cactus}
+
+When building a Human Genome Variation Map, it would be desirable to be able to incorporate variation data in the form of observed sequences, such as the European-representative MHC sequences obtained in \citet{horton2008variation}, or the many alt loci sequences provided with GRCh38 \cite{karolchik2014new}. Thus, it is necessary to have a mechanism to go from a collection of related sequences to a graph representation describing their commonalities. The \vg suite includes a tool designed to do this, \texttt{vg msga} (which stands for ``multiple sequence graph alignment''), but this tool remains under active development.
+
+An alternative approach is to use a more mature multiple aligner tool called Cactus \cite{paten2011cactus2}. The Cactus aligner, which has been deployed in production for the production of community alignment resources \cite{howe2015wormbase}, was designed for alignment problems involving large numbers of whole genomes, and consequently understands the sorts of structural changes between genomes, such as large-scale deletions, duplications, and rearrangements, that need to be dealt with when working at those evolutionary time scales. Cactus output typically takes the form of a Hierarchical Alignment Format (HAL) file \cite{hickey2013hal,howe2015wormbase}, which uses a phylogenetic tree with internal ancestor nodes to structure information about how blocks of different genomes relate to each other. The structure formed by relationships between corresponding blocks in different genomes is quite similar to a sequence graph, with the genomes being embedded in it as paths, and so Cactus-based alignments have a natural conversion to sequence graphs.
 
 \subsection{Reliable, Portable Cloud Computing with Toil}
 
