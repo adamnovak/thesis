@@ -121,9 +121,11 @@ The FMD-index search algorithm works as follows: When the query string is extend
 
 \subsection{Sequence Graphs}
 
-There are many possible representations of a genomic reference as a graph~\cite{computational2016computational}, but one particularly useful model is a bidirected graph, or, when used to represent genomic data, a \vocab{sequence graph}~\cite{paten2017genome}. In the sequence graph model, nodes in the graph are nucleic acid \vocab{sequences}, and each sequence has two \vocab{sides}: a ``left'' or ``start'' side and a ``right'' or ``end'' side. The sequences are connected together by \vocab{edges}, each of which has two ends that are attached to sides of nodes. The model is called ``bidirected'' because, unlike in a directed graph where each edge consists of a set of nodes and a direction (from one node to another), in a bidirected graph each edge consists of a set of nodes and two directions. The edge can still be from one node to another (in which case it connects the end side of one node to the start side of the other), but it can also be ``to`` both nodes (in which case it connects their start sides together), or ``from'' both nodes (in which case it connects their end sides together).
+There are many possible representations of a genomic reference as a graph~\cite{computational2016computational}, but one particularly useful model is a \vocab{bidirected graph}, or, when used to represent genomic data, a \vocab{sequence graph}~\cite{paten2017genome}. In the sequence graph model, nodes in the graph are nucleic acid \vocab{sequences}, and each sequence has two \vocab{sides}: a ``left'' or ``start'' side and a ``right'' or ``end'' side. The two sides of a sequence are \vocab{opposites} of each other, and can be written as $s$ and $\overline{s}$. The sequences are connected together by \vocab{edges}, each of which has two ends that are attached to sides of nodes. The model is called ``bidirected'' because, unlike in a directed graph where each edge consists of a set of nodes and a direction (from one node to another), in a bidirected graph each edge consists of a set of nodes and two directions. The edge can still be from one node to another (in which case it connects the end side of one node to the start side of the other), but it can also be ``to`` both nodes (in which case it connects their start sides together), or ``from'' both nodes (in which case it connects their end sides together).
 
 In a graph such as this, traversals, walks, and other graph-theoretic concepts generalize from visiting just the nodes to visiting nodes in one of two orientations: \vocab{forward} (i.e. start side to end side) or \vocab{reverse} (i.e. end side to start side). A visit to a node in the forward orientation correspond to the node's sequence, whereas a visit to the node in the reverse orientation corresponds to the reverse complement of its sequence. When visiting multiple nodes, it is important that the visits' orientations be consistent: if two nodes are connected by an edge from the first to the second, and you visit the first node in its forward orientation, you may next visit the second node in its forward orientation (by leaving the first node's end and arriving at the second node's start), but you may not, traversing that edge, visit the second node in its reverse orientation. In other words, the forward orientation corresponds to arriving at the start side and leaving via the end side, whereas the reverse orientation corresponds to arriving at the end side and leaving via the start side, and other combinations (such as both arriving and leaving via the start side) are not permitted \cite{bodily2016scaffoldscaffolder}.
+
+In addition to the bidirected graph formulation, there exists an equivalent \vocab{biedged graph} formulation~\cite{paten2017superbubbles}. A sequence graph can be modeled as a graph with two types of edges: \vocab{sequence}, or ``black'', edges, and \vocab{join}, or ``grey'', edges. In this formulation, each side becomes a node, connected by a sequence edge labeled with the sequence that the side belongs to. When traversing the sequence edge in one direction, the sequence is read forward, while when traversing the sequence edge in the other direction, the sequence is read in reverse. Every node has exactly one sequence edge attached to it. The join edges connect nodes, just as the edges in the bidirected graph model connect sides; join edges are undirected.
 
 % TODO: a figure might be nice here.
 
@@ -180,6 +182,25 @@ An alternative approach is to use a more mature multiple aligner tool called Cac
 
 Cactus output typically takes the form of a Hierarchical Alignment Format (HAL) file~\cite{hickey2013hal,howe2015wormbase}, which uses a phylogenetic tree with internal ancestor nodes to structure information about how blocks of different genomes relate to each other. The structure formed by relationships between corresponding blocks in different genomes is quite similar to a sequence graph, with the genomes being embedded in it as paths, and so Cactus-based alignments have a natural conversion to sequence graphs.
 
+\subsection{Finding Variable Sites in Graphs}
+
+The VCF format, at least in two of its three syntaxes, reifies the idea of a \vocab{variant}, which is a potential replacement of part of the linear reference genome assembly with alternate alleles form a collection of options \cite{marshall2013variant}. A well-defined notion of a \vocab{variable site}, like the VCF variant, is a useful abstraction, but unfortunately it is difficult to carry over to the graph context. Sequence graphs intended to provide natural representations for nested variation---such as SNPs within potentially-deleted regions---but those structures are awkward to describe as single monolithic variable sites. Moreover, in a graph, it does not necessarily make sense to restrict the model to only accomodating differences from the path taken by the reference genome assembly; novel material not present in the reference assembly's primary path also ought to be able to host variable sites.
+
+One notion of a variablke site in a graph context is the \vocab{ultrabubble}~\cite{paten2017superbubbles}. In terms of the biedged graph representation, an ultrabubble is a subgraph defined by two distinct \vocab{boundary sides} in it, such that:
+\begin{enumerate}
+    \item The opposites of the boundary sides are not in the subgraph.
+    \item Removing the sequence edges of the boundary sides disconnects the subgraph from the rest of the graph, but leaves the subgraph connected.
+    \item Neither one of the boundary sides could be replaced with another side in the subgraph while still meeting the above conditions.
+    \item The subgraph is acyclic (i.e. when following valid walks, the same side cannot be reached twice).
+    \item Every side in the subgraph has an incident join edge.
+\end{enumerate}
+
+These conditions define a subgraph, bounded at both ends by a single node, which can be traversed from one end to the other in one or more ways. Such a structure can be used to provide a graph-based notion of a variable site, with the boundaries giving its ``location'' in the graph, and the potential traversals from one boundary to the other replacing the VCF variant's reference and alternate alleles.
+
+Note that ultrabubble can nest: both of the boundary sides can be replaced at once to define a smaller \vocab{child} ultrabubble~\cite{paten2017superbubbles}. If you consider child ultrabubbles to be opaque (i.e. equivalent to sequences) when working with their parents, they can produce a hierarchical model of nested variable sites that can accommodate things like SNPs within deletions.
+
+Note also that not all graph structures are decomposable into ultrabubbles. Some graph-based descriptions of variable genomic regions (for example, descriptions of inversions or duplications that use cycles or reversing edges) do not form ultrabubbles. Some of these more complex regions can be divided into \vocab{snarls}, which are a generalization of ultrabubbles lacking the last two conditions, but general snarls are more challenging to work with~\cite{paten2017superbubbles}.
+
 \subsection{Reliable, Portable Cloud Computing with Toil}
 
 % Talk about how great Toil is and how it let me do lots of the analyses in here
@@ -195,7 +216,7 @@ To make running on cloud providers easier, Toil provides a system to control wor
 % TODO: additional material
     % vBWT
     % GCSA2
-    % Ultrabubbles (as derived from Cactus)
+    % Ultrabubbles (as derived from Cactus) [DONE]
     % The GRC assembly model and the notion of a primary assembly and a primary path (and how they are different)
         % And random scaffolds
     % The 1kg data set and its populations (CEU, CHS, PUR used in chapter 5) and superpopulations
