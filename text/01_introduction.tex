@@ -77,6 +77,52 @@ Finally, the VCF format is tightly coupled to the linearity of the reference gen
 
 A graph-based approach to the description of genomic variants could alleviate several of these problems, defining explicitly when an individual matches the primary assembly, and expressing clearly and concisely the alt loci that an individual carries, and any variations on top of them, in a single sufficiently general syntax.
 
+\subsection{The 1000 Genomes Project}
+
+Besides the development of the VCF standard, the 1000~Genomes Project has also conducted one of the most useful publically available surveys of human genomic variation to date~\cite{10002015global}. The 1000 Genomes Project data set is more consistently collected and analyzed than data from the Personal Genome Project (PGP)~\cite{church2005personal}. It is also easier to download than the Simons Genome Diversity Project dataset~\cite{simons2017simons}, requiring neither special software nor manual approval. For these reasons, the 1000 Genomes Project dataset is the standard human variation dataset to use in analyses.
+
+The dataset cointains genomes from 2,504~people across five \vocab{superpopulations} and 26 populations~\cite{10002015global}, as shown in Table~\ref{tbl:populations}. Sample collection goals and informed consent practices were broadly similar to those developed for the HapMap project, from which some of the initial samples were obtained~\cite{international2004integrating}. In particular, the seductiveness of the three-letter-code abstraction notwithstanding, the goal is not to build a system or hierarchy of racial or ethnic categories for dividing up the human population~\cite{international2004integrating}. Rather, the avowed intention is to describe where and from whom sample DNA was collected, although this necessarily relies on an implicit system of racial and ethnic categories.
+
+\begin{table}
+\centering
+\begin{tabular}{llp{6cm}}
+\textbf{Superpopulation} & \textbf{Population} & \textbf{Provided Description} \\
+\hline
+AFR & ESN & ``Esan in Nigeria'' \\
+& GWD & ``Gambian in Western Division, Mandinka'' \\
+& LWK & ``Luhya in Webuye, Kenya'' \\
+& MSL & ``Mende in Sierra Leone'' \\
+& YRI & ``Yoruba in Ibadan, Nigeria'' \\
+& ACB & ``African Caribbean in Barbados'' \\
+& ASW & ``People with African Ancestry in Southwest USA'' \\
+\hline
+AMR & CLM & Colombians in Medellin, Colombia'' \\
+& MXL & ``People with Mexican Ancestry in Los Angeles, CA, USA'' \\
+& PEL & ``Peruvians in Lima, Peru'' \\
+& PUR & ``Puerto Ricans in Puerto Rico'' \\
+\hline
+EAS & CDX & Chinese Dai in Xishuangbanna, China'' \\
+& CHB & ``Han Chinese in Beijing, China'' \\
+& CHS & ``Southern Han Chinese'' \\
+& JPT & ``Japanese in Tokyo, Japan'' \\
+& KHV & ``Kinh in Ho Chi Minh City, Vietnam'' \\
+\hline
+EUR & CEU & Utah residents (CEPH) with Northern and Western European ancestry'' \\
+& GBR & ``British in England and Scotland'' \\
+& FIN & ``Finnish in Finland'' \\
+& IBS & ``Iberian Populations in Spain'' \\
+& TSI & ``Toscani in Italia'' \\
+\hline
+SAS & BEB & Bengali in Bangladesh'' \\
+& GIH & ``Gujarati Indians in Houston, TX, USA'' \\
+& ITU & ``Indian Telugu in the UK'' \\
+& PJL & ``Punjabi in Lahore, Pakistan'' \\
+& STU & ``Sri Lankan Tamil in the UK'' \\
+\hline
+\end{tabular}
+\caption[Populations and superpopulations from the 1000 Genomes Project]{Populations and superpopulations from the 1000 Genomes Project~\cite{10002015global}.}
+\end{table}
+
 \subsection{Substring Search with the Suffix Array}
 
 The \vocab{suffix array} of a string is an array of indices into the string, sorted in the lexicographical order of the suffixes that they point to~\cite{manber1993suffix}. For example, the string ``dog'' has suffixes ``dog'' at index 0, ``og'' at index 1, and ``g'' at index 2, so its suffix array would be $[0, 2, 1]$, corresponding to the suffix sort order $[\textrm{``dog''}, \textrm{``g''}, \textrm{``og''}]$. Another example suffix array for the string ``GATTACA'' is visible in the leftmost column of Figure~\ref{fig:bwt}.
@@ -233,8 +279,8 @@ To make running on cloud providers easier, Toil provides a system to control wor
     % vBWT
     % GCSA2
     % Ultrabubbles (as derived from Cactus) [DONE]
-    % The GRC assembly model and the notion of a primary assembly and a primary path (and how they are different)
-        % And random scaffolds
+    % The GRC assembly model and the notion of a primary assembly and a primary path (and how they are different) [DONE]
+        % And random scaffolds [DONE]
     % The 1kg data set and its populations (CEU, CHS, PUR used in chapter 5) and superpopulations
         % Link to http://www.internationalgenome.org/faq/which-populations-are-part-your-study/
     
