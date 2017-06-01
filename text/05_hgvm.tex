@@ -106,33 +106,40 @@ Summing across samples, the overall precision was~18~out of~25, or 0.72, while t
 \begin{tabular} {l|c|c|c|c|c|c|c}
 \textbf{Sample} & \textbf{Position} & \textbf{Type} & \textbf{Length (bp)} & \textbf{1KG SV Call} & \textbf{In dbSNP} & \textbf{In Reads} & \textbf{True} \\
 \hline
-HG00513 & 17224418 & Insertion & 310 & \true & \false & \true & \true \\
-HG00513 & 41552580 & Insertion & 40 & \false & \true & \true & \true \\
-HG00513 & 42119316 & Deletion & 28 & \false & \true & \true & \true \\
-HG00513 & 19175892 & Insertion & 34 & \false & \true & \true & \true \\
-HG00513 & 48754372 & Deletion & 28 & \false & \true & \true & \true \\
-HG00732 & 17801132 & Deletion & 322 & \true & \false & \true & \true \\
-HG00732 & 40652370 & Insertion & 37 & \false & \true & \true & \true \\
+HG00513 & 37661330 & Deletion & 28 & \false & \true & \true & \true \\
+HG00513 & 45210755 & Insertion & 36 & \false & \true & \true & \true \\
+HG00513 & 49354907 & Deletion & 57 & \true & \true & \true & \true \\ % The dbSNP variant here si slightly offset from where we want it to be
+HG00513 & 49343564 & Deletion & 28 & \false & \true & \true & \true \\
+HG00513 & 44246856 & Insertion & 33 & \false & \true & \true & \true \\
+
+HG00732 & 36731029 & Deletion & 172 & \true & \true & \true & \true \\
+HG00732 & 41552577 & Insertion & 40 & \false & \true & \true & \true \\
+
 HG00732 & 39195778 & Deletion & 28 & \false & \true & \true & \true \\
-HG00732 & 24194512 & Deletion & 5944 & \false & \false & \false & \false \\
+
+HG00732 & 22955032 & Deletion & 38 & \false & \false & \true & \true \\
+
 HG00732 & 23946708 & Insertion & 1164 & \false & \false & \true & \true \\
-NA12878 & 43469479 & Insertion & 32 & \false & \true & \true & \true \\
-NA12878 & 33391076 & Deletion & 938 & \false & \false & \false & \false \\
-NA12878 & 44127743 & Deletion & 48 & \false & \true & \true & \true \\
-NA12878 & 17419709 & Insertion & 25 & \false & \true & \true & \true \\
-NA12878 & 30430840 & Deletion & 10963 & \false & \false & \false & \false \\
-NA12889 & 50234341 & Insertion & 27 & \false & \true & \true & \true \\
-NA12889 & 49313687 & Deletion & 3557 & \false & \false & \false & \false \\
-NA12887 & 49274738 & Deletion & 26 & \false & \true & \true & \true \\
-NA12887 & 43108693 & Deletion & 5907 & \false & \false & \false & \false \\
-NA12887 & 49713385 & Deletion & 39 & \false & \true & \true & \true \\
-NA12890 & 40398221 & Deletion & 1019 & \true & \false & \true & \true \\
-NA12890 & 26495553 & Deletion & 136 & \true & \false & \true & \true \\
-NA12890 & 44140033 & Insertion & 31 & \false & \true & \true & \true \\
-NA12890 & 26998126 & Deletion & 25 & \false & \true & \true & \true \\
-NA12890 & 35628100 & Deletion & 2800 & \false & \false & \false & \false \\ % There are some nearby softclips and what might be a drop in coverage, but not at quite the right places
+
+NA12878 & 44246856 & Insertion & 33 & \false & \true & \true & \true \\
+NA12878 & 24005821 & Deletion & 52 & \false & \false & \false & \false \\ % This is one of those 90 depth ones...
+NA12878 & 17801142 & Deletion & 322 & \false & \false & \false & \false \\ % Other samples have this deletion called in the 1kg SVs but not NA12878
+NA12878 & 47920718 & Deletion & 25 & \false & \true & \true & \true \\
+NA12878 & 25232595 & Deletion & 42 & \false & \true & \true & \true \\
+
+NA12889 & 17717386 & Insertion & 33 & \false & \true & \true & \true \\
+NA12889 & 42119330 & Deletion & 28 & \false & \true & \true & \true \\ % Two identical units, one of which is deleted
+NA12887 & 23506174 & Insertion & 1095 & \false & \false & \false & \false \\
+NA12887 & 20224942 & Insertion & 29 & \false & \true & \true & \true \\
+NA12887 & 40148663 & Insertion & 30 & \false & \true & \true & \true \\
+
+NA12890 & 27258892 & Deletion & 3150 & \false & \false & \false & \false \\
+NA12890 & 43678002 & Deletion & 6979 & \false & \false & \false & \false \\
+NA12890 & 20354675 & Deletion & 27 & \false & \true & \true & \true \\
+NA12890 & 17224418 & Insertion & 300 & \true & \false & \true & \true \\
+NA12890 & 40652380 & Insertion & 37 & \false & \true & \true & \true \\ % Looks like exact position may be ambiguous. Or ew could just have it wrong.
 \end{tabular}
-\caption[Structural variant precision]{Precision estimation from 25 randomly-sampled calls of variants inducing length changes of 25~bp or more on chromosome~22. From each sample, five called variants were selected randomly. Variants were manually assessed for corespondence to calls for their sample from the 1000 Genomes structural variant set, correspondence to variants in dbSNP 147, and support in the original GRCh38-aligned input reads, using the UCSC Genome Browser. Variants supported either by the 1000 Genomes truth set or by the reads were designated as true variants, while other variants were designated as false variants. Overall, 19~of 25~variants examined were designated as true, producing a precision estimate of 0.76.}
+\caption[Structural variant precision]{Precision estimation from 25 randomly-sampled calls of variants inducing length changes of 25~bp or more on chromosome~22. From each sample, five called variants were selected randomly. Variants were manually assessed for corespondence to calls for their sample from the 1000 Genomes structural variant set, correspondence to variants in dbSNP 147, and support in the original GRCh38-aligned input reads, using the UCSC Genome Browser. Variants supported either by the 1000 Genomes truth set or by the reads were designated as true variants, while other variants were designated as false variants. Overall, 20~of 25~variants examined were designated as true, producing a precision estimate of 0.80.}
 \label{tbl:svprecision}
 \end{sidewaystable}
 
