@@ -26,8 +26,9 @@
     % Grabbed from <https://tex.stackexchange.com/a/116572>
     postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\hookrightarrow\space}}
 }
-\usepackage{graphicx}
+
 \usepackage{xspace}
+\usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{authblk}
@@ -55,6 +56,12 @@
 
 % Last package: get some non-break-at-able hyphens
 \usepackage[shortcuts]{extdash}
+
+% Configure EPS to PDF conversion to strip all fonts in figures and use only paths
+% Depends on having ghostscript 9.15+
+\epstopdfDeclareGraphicsRule{.eps}{pdf}{.pdf}{%
+epstopdf --gsopt=-dNoOutputFonts #1 --outfile=\OutputFile
+}
 
 % We have long URLs, but Latex decides URLs must not linebreak and should instead wander off the right side of the text. This fixes that according to <http://tex.stackexchange.com/a/10401>
 \expandafter\def\expandafter\UrlBreaks\expandafter{\UrlBreaks%  save the current one
