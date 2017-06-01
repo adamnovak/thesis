@@ -107,37 +107,34 @@ Summing across samples, the overall precision was~18~out of~25, or 0.72, while t
 \textbf{Sample} & \textbf{Position} & \textbf{Type} & \textbf{Length (bp)} & \textbf{1KG SV Call} & \textbf{In dbSNP} & \textbf{In Reads} & \textbf{True} \\
 \hline
 HG00513 & 37661330 & Deletion & 28 & \false & \true & \true & \true \\
-HG00513 & 45210755 & Insertion & 36 & \false & \true & \true & \true \\
-HG00513 & 49354907 & Deletion & 57 & \true & \true & \true & \true \\ % The dbSNP variant here si slightly offset from where we want it to be
-HG00513 & 49343564 & Deletion & 28 & \false & \true & \true & \true \\
 HG00513 & 44246856 & Insertion & 33 & \false & \true & \true & \true \\
-
-HG00732 & 36731029 & Deletion & 172 & \true & \true & \true & \true \\
-HG00732 & 41552577 & Insertion & 40 & \false & \true & \true & \true \\
-
-HG00732 & 39195778 & Deletion & 28 & \false & \true & \true & \true \\
-
-HG00732 & 22955032 & Deletion & 38 & \false & \false & \true & \true \\
+HG00513 & 45210755 & Insertion & 36 & \false & \true & \true & \true \\
+HG00513 & 49343564 & Deletion & 28 & \false & \true & \true & \true \\
+HG00513 & 49354907 & Deletion & 57 & \true & \true & \true & \true \\ % The dbSNP variant here si slightly offset from where we want it to be
 
 HG00732 & 23946708 & Insertion & 1164 & \false & \false & \true & \true \\
+HG00732 & 22955032 & Deletion & 38 & \false & \false & \true & \true \\
+HG00732 & 36731029 & Deletion & 172 & \true & \true & \true & \true \\
+HG00732 & 39195778 & Deletion & 28 & \false & \true & \true & \true \\
+HG00732 & 41552577 & Insertion & 40 & \false & \true & \true & \true \\
 
-NA12878 & 44246856 & Insertion & 33 & \false & \true & \true & \true \\
-NA12878 & 24005821 & Deletion & 52 & \false & \false & \false & \false \\ % This is one of those 90 depth ones...
 NA12878 & 17801142 & Deletion & 322 & \false & \false & \false & \false \\ % Other samples have this deletion called in the 1kg SVs but not NA12878
-NA12878 & 47920718 & Deletion & 25 & \false & \true & \true & \true \\
+NA12878 & 24005821 & Deletion & 52 & \false & \false & \false & \false \\ % This is one of those 90 depth ones...
 NA12878 & 25232595 & Deletion & 42 & \false & \true & \true & \true \\
+NA12878 & 44246856 & Insertion & 33 & \false & \true & \true & \true \\
+NA12878 & 47920718 & Deletion & 25 & \false & \true & \true & \true \\
 
 NA12889 & 17717386 & Insertion & 33 & \false & \true & \true & \true \\
-NA12889 & 42119330 & Deletion & 28 & \false & \true & \true & \true \\ % Two identical units, one of which is deleted
-NA12887 & 23506174 & Insertion & 1095 & \false & \false & \false & \false \\
 NA12887 & 20224942 & Insertion & 29 & \false & \true & \true & \true \\
+NA12887 & 23506174 & Insertion & 1095 & \false & \false & \false & \false \\
 NA12887 & 40148663 & Insertion & 30 & \false & \true & \true & \true \\
+NA12889 & 42119330 & Deletion & 28 & \false & \true & \true & \true \\ % Two identical units, one of which is deleted
 
-NA12890 & 27258892 & Deletion & 3150 & \false & \false & \false & \false \\
-NA12890 & 43678002 & Deletion & 6979 & \false & \false & \false & \false \\
-NA12890 & 20354675 & Deletion & 27 & \false & \true & \true & \true \\
 NA12890 & 17224418 & Insertion & 300 & \true & \false & \true & \true \\
+NA12890 & 20354675 & Deletion & 27 & \false & \true & \true & \true \\
+NA12890 & 27258892 & Deletion & 3150 & \false & \false & \false & \false \\
 NA12890 & 40652380 & Insertion & 37 & \false & \true & \true & \true \\ % Looks like exact position may be ambiguous. Or ew could just have it wrong.
+NA12890 & 43678002 & Deletion & 6979 & \false & \false & \false & \false \\
 \end{tabular}
 \caption[Structural variant precision]{Precision estimation from 25 randomly-sampled calls of variants inducing length changes of 25~bp or more on chromosome~22. From each sample, five called variants were selected randomly. Variants were manually assessed for corespondence to calls for their sample from the 1000 Genomes structural variant set, correspondence to variants in dbSNP 147, and support in the original GRCh38-aligned input reads, using the UCSC Genome Browser. Variants supported either by the 1000 Genomes truth set or by the reads were designated as true variants, while other variants were designated as false variants. Overall, 20~of 25~variants examined were designated as true, producing a precision estimate of 0.80.}
 \label{tbl:svprecision}
