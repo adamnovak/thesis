@@ -106,10 +106,9 @@ Summing across samples, the overall precision was~20~out of~25, or 0.80, while t
 \newcommand{\true}{\textbullet}
 \newcommand{\false}{}
 
-% TODO: This is before the vg add fix and needs to be replaced with the run from 2017-05-09
-\begin{sidewaystable}[h]
+\begin{FPsidewaystable}
 \centering
-\begin{tabular} {l|c|c|c|c|c|c|c}
+\begin{tabular} {l|c|c|r|c|c|c|c}
 \textbf{Sample} & \textbf{Position} & \textbf{Type} & \textbf{Length (bp)} & \textbf{1KG SV Call} & \textbf{In dbSNP} & \textbf{In Reads} & \textbf{True} \\
 \hline
 HG00513 & 37661330 & Deletion & 28 & \false & \true & \true & \true \\
@@ -144,7 +143,7 @@ NA12890 & 43678002 & Deletion & 6979 & \false & \false & \false & \false \\
 \end{tabular}
 \caption[Structural variant precision]{Precision estimation from 25 randomly-sampled calls of variants inducing length changes of 25~bp or more on chromosome~22. From each sample, five called variants were selected randomly. Variants were manually assessed for corespondence to calls for their sample from the 1000 Genomes structural variant set, correspondence to variants in dbSNP 147, and support in the original GRCh38-aligned input reads, using the UCSC Genome Browser. Variants supported either by the 1000 Genomes truth set or by the reads were designated as true variants, while other variants were designated as false variants. Overall, 20~of 25~variants examined were designated as true, producing a precision estimate of 0.80.}
 \label{tbl:svprecision}
-\end{sidewaystable}
+\end{FPsidewaystable}
 
 \begin{table}[H]
 \centering

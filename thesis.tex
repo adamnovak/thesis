@@ -117,6 +117,121 @@ So that we have a line to end
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Ditto for FPtable
+\newsavebox{\FPactualtable}
+
+\NewEnviron{FPtable}{%
+\begin{table}[p]
+\begin{leftfullpage}
+% Set the margins to be opposite of normal for just this page. But do it at
+% global scope and not local float scope
+\global\let\FPsavedCaptionCommand\caption%
+\global\let\FPsavedLabelCommand\label%
+\let\FPLabelText\empty%
+\let\FPCaptionText\empty%
+\let\FPoptionalCaptionText\empty%
+\renewcommand\label[1]{\gdef\FPLabelText{##1}}%
+\renewcommand\caption[2][]{\gdef\FPoptionalCaptionText{##1}\gdef\FPCaptionText{##2}}%
+% Render the table contents first in a box, to extract the caption
+\begin{lrbox}{\FPactualtable}
+\parbox{\textwidth}{
+% Strip subfloats when making the box
+\renewcommand\subfloat[2][]{}
+Add some real text
+\BODY
+So that we have a line to end
+}
+\end{lrbox}
+% Discard the box
+% Do the caption and label (inside caption)
+% Make sure to adjust margins so the wider margin is on the right as per the thesis spec
+\begin{adjustwidth}{-0.25in}{0.25in}
+\ifthenelse{\equal{\FPoptionalCaptionText}{\empty}}%
+{\FPsavedCaptionCommand{\expandafter\protect\FPCaptionText%
+\ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
+}}%
+{\FPsavedCaptionCommand[\expandafter\protect\FPoptionalCaptionText]{\expandafter\protect\FPCaptionText%
+\ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
+}}%
+\end{adjustwidth}
+\end{leftfullpage}
+\end{table}
+\begin{table}[p]
+\begin{fullpage}
+% Now render the whole table again on the facing page
+\global\let\FPsavedSubfloatCommand\subfloat%
+% Every time a caption happens, kill \label since we already did it.
+\renewcommand\caption[2][]{\renewcommand\label[2][]{}}%
+\renewcommand\label[2][]{}%
+% Every time a subfloat happens, bring label back and do the subfloat
+\def\subfloat{\let\label\FPsavedLabelCommand\FPsavedSubfloatCommand}
+\addtocounter{table}{-1}% There might be labels on subfigs
+\BODY
+\addtocounter{table}{1}
+\end{fullpage}
+\end{table}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% We also have an FPsidewaystable that does the table sideways and the caption
+% normal
+\newsavebox{\FPactualsidewaystable}
+
+\NewEnviron{FPsidewaystable}{%
+\begin{table}[p]
+\begin{leftfullpage}
+% Set the margins to be opposite of normal for just this page. But do it at
+% global scope and not local float scope
+\global\let\FPsavedCaptionCommand\caption%
+\global\let\FPsavedLabelCommand\label%
+\let\FPLabelText\empty%
+\let\FPCaptionText\empty%
+\let\FPoptionalCaptionText\empty%
+\renewcommand\label[1]{\gdef\FPLabelText{##1}}%
+\renewcommand\caption[2][]{\gdef\FPoptionalCaptionText{##1}\gdef\FPCaptionText{##2}}%
+% Render the table contents first in a box, to extract the caption
+\begin{lrbox}{\FPactualsidewaystable}
+\parbox{\textwidth}{
+% Strip subfloats when making the box
+\renewcommand\subfloat[2][]{}
+Add some real text
+\BODY
+So that we have a line to end
+}
+\end{lrbox}
+% Discard the box
+% Do the caption and label (inside caption)
+% Make sure to adjust margins so the wider margin is on the right as per the thesis spec
+\begin{adjustwidth}{-0.25in}{0.25in}
+\ifthenelse{\equal{\FPoptionalCaptionText}{\empty}}%
+{\FPsavedCaptionCommand{\expandafter\protect\FPCaptionText%
+\ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
+}}%
+{\FPsavedCaptionCommand[\expandafter\protect\FPoptionalCaptionText]{\expandafter\protect\FPCaptionText%
+\ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
+}}%
+\end{adjustwidth}
+\end{leftfullpage}
+\end{table}
+\begin{sidewaystable}[p]
+\begin{fullpage}
+% Now render the whole table again on the facing page
+\global\let\FPsavedSubfloatCommand\subfloat%
+% Every time a caption happens, kill \label since we already did it.
+\renewcommand\caption[2][]{\renewcommand\label[2][]{}}%
+\renewcommand\label[2][]{}%
+% Every time a subfloat happens, bring label back and do the subfloat
+\def\subfloat{\let\label\FPsavedLabelCommand\FPsavedSubfloatCommand}
+\addtocounter{table}{-1}% There might be labels on subfigs
+\BODY
+\addtocounter{table}{1}
+\end{fullpage}
+\end{sidewaystable}
+}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
 % Last package: get some non-break-at-able hyphens
 \usepackage[shortcuts]{extdash}
 
