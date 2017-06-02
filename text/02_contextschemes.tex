@@ -305,7 +305,7 @@ Two additional configuration options were available for the schemes under test: 
 
 \begin{figure}[t]
 	\centering
-    \includegraphics[width=0.3\textwidth]{figures/02_contextschemes/mhcRearrangements.eps}
+    \includegraphics[width=0.5\columnwidth]{figures/02_contextschemes/mhcRearrangements.eps}
   \caption[MHC alignment rearrangements]{Frequency of rearrangements of different levels of complexity implied by the alignment of MHC alt loci to the primary path, under the $\alpha^\prime = 5$, $\beta^\prime = 4$ natural scheme, which was selected to give the best balance between precision and recall. The X axis shows the number of nodes involved in the rearrangement, while the Y axis shows the number of rearrangements of that size. The red bar shows the number of 4-node rearrangements that are automatically identifiable as tandem duplications.}
   \label{fig:rearrangements}
 \end{figure}
@@ -333,7 +333,7 @@ Mapping accuracy was assessed in two ways. First, the number of reads that each 
 %-- error corrected reads
 %-- non-error corrected reads
 
-\begin{figure}[t]
+\begin{FPfigure}
   \centering
   \subfloat[]{
   	\label{fig:readmappability}
@@ -354,7 +354,7 @@ Mapping accuracy was assessed in two ways. First, the number of reads that each 
   }
   \caption[Results of read alignments]{Results of read alignments. Reads were generated from MHC alt loci by taking tiling 200bp windows at 100bp intervals, and randomly introducing substitution errors at a frequency of $1\%$. Reads were aligned to the GRCh38 primary path MHC region.}
   \label{fig:read}
-\end{figure}
+\end{FPfigure}
 
 %It would be good to look at BWA positions that uniquely map (with no secondary alignments). 
 BWA and LASTZ both mapped more of the reads and covered more of the read bases than the context-driven mapping schemes, though the difference was relatively small: less than 10\% in terms of mapped reads and, for the weakly stable context schemes, less than 15\% in terms of coverage. These results were unsurprising, given that a context-driven mapping scheme is a function that can not multi-map any position, while the other two aligners freely produced multi-mappings.
