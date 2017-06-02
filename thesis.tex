@@ -87,22 +87,28 @@ So that we have a line to end
 }
 \end{lrbox}
 % Discard the box
-% Do the caption and label
+% Do the caption and label (inside caption)
 % Make sure to adjust margins so the wider margin is on the right as per the thesis spec
 \begin{adjustwidth}{-0.25in}{0.25in}
 \ifthenelse{\equal{\FPoptionalCaptionText}{\empty}}%
-{\FPsavedCaptionCommand{\expandafter\protect\FPCaptionText}}%
-{\FPsavedCaptionCommand[\expandafter\protect\FPoptionalCaptionText]{\expandafter\protect\FPCaptionText}}%
-\ifthenelse{\equal{\FPLabelText}{\empty}}%
-{}%
-{\FPsavedLabelCommand{\FPLabelText}}%
+{\FPsavedCaptionCommand{\expandafter\protect\FPCaptionText%
+\ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
+}}%
+{\FPsavedCaptionCommand[\expandafter\protect\FPoptionalCaptionText]{\expandafter\protect\FPCaptionText%
+\ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
+}}%
 \end{adjustwidth}
 \end{leftfullpage}
 \end{figure}
 \begin{figure}[p]
 \begin{fullpage}
 % Now render the whole figure again on the facing page
-\renewcommand\caption[2][]{}%
+\global\let\FPsavedSubfloatCommand\subfloat%
+% Every time a caption happens, kill \label since we already did it.
+\renewcommand\caption[2][]{\renewcommand\label[2][]{}}%
+\renewcommand\label[2][]{}%
+% Every time a subfloat happens, bring label back and do the subfloat
+\def\subfloat{\let\label\FPsavedLabelCommand\FPsavedSubfloatCommand}
 \addtocounter{figure}{-1}% There might be labels on subfigs
 \BODY
 \addtocounter{figure}{1}

@@ -24,6 +24,8 @@
 \tableofcontents
 \listoffigures
 \listoftables
+\listofalgorithms
+\addcontentsline{toc}{chapter}{List of Algorithms}
 
 \begin{abstract}
 The scale of the promlems which human genomics is asked to solve necessitates that the field develop an ability to integrate and synthesize information across the entire human population. The abstraction of a single-copy human reference genome assembly, and the linear coordinate space that it induces, are more of a hinderance than a help at these scales, because they can only ever represent one sample at any given place, and because they make combining information about human variation across multiple studies and modalities difficult. To rectify these problems, I propose the construction and adoption of a graph-based alternative to the human reference genome assembly: a Human Genome Variation Map. In the four research projects presented here, I present a theory of mapping to references that is extensible to graphs, describe a novel data structure for embedding individual haplotype sequences into a graph reference, survey graph construction techniques to discover methods that produce graphs yielding read mapping and variant calling results superior to those obtained with linear, variation-free references, and extend these improvement results to chromosome-scale graphs constructed from multiple sources and modalities of variation data. These four projects describe a research program aimed towards the eventual release of an official Human Genome Variation Map build, providing a piece of vital infrastructure for the analysis of human genomic variation at population scale.
