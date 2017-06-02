@@ -215,7 +215,7 @@ a sampling of both typical and challenging genomic regions.}
   \label{tbl:bakeoff:graphs}
 \end{table}
 
-\begin{figure}[htbp]
+\begin{FPfigure}
 \centering
 \includegraphics[width=\textwidth]{figures/04_bakeoff/figure02.png}
 \caption[Mapping reads to sequence graphs]{Mapping reads to sequence graphs. Results for the 1000 Genomes
@@ -232,7 +232,7 @@ marks graphs generated using additional data beyond the provided
 reference and alternate sequences. The unmerged graphs are excluded
 because very few reads mapped uniquely to them.}
 \label{fig:bakeoff:mapping}
-\end{figure}
+\end{FPfigure}
 
 \subsection{Graph Read Mapping}
 
@@ -307,7 +307,7 @@ are used to emit a set of genotypes with sufficient read support, one
 for each site, expressed in the coordinates of the GRCh38 primary
 reference path as embedded in the graph (see Online Methods).
 
-\begin{figure}[htbp]
+\begin{FPfigure}
 \centering
 \includegraphics[width=\textwidth]{figures/04_bakeoff/figure03.png}
 \caption[Variant calling with genome graphs]{Variant Calling with Genome Graphs. (A) Read pileup on a base
@@ -321,7 +321,7 @@ were present in the base graph, whereas the third (a heterozygous
 combination of a SNP and a deletion) is non-reference because it was
 novel to the augmented graph.}
 \label{fig:bakeoff:calling}
-\end{figure}
+\end{FPfigure}
 
 We compared the results from the graph variant calling pipeline with the
 Platinum Genomes benchmark data for samples NA12877 and
@@ -390,7 +390,7 @@ agree closely with those from the VCF-comparison-based evaluation,
 considering that the two techniques use different sources of truth and
 different evaluation metrics.
 
-\begin{figure}[htbp]
+\begin{FPfigure}
 \centering
 \includegraphics[width=\textwidth]{figures/04_bakeoff/figure04.png}
 \caption[Variant calling evaluation]{Variant Calling Evaluation. (A) Precision (portion of called
@@ -407,11 +407,11 @@ thresholds that fall within a radius of 0.1 around the maximum F1. Full
 results featuring F1-scores for all graphs are in Supplementary Section
 7.}
 \label{fig:bakeoff:callingeval}
-\end{figure}
+\end{FPfigure}
 
-\begin{figure}[htbp]
+\begin{FPfigure}
 \centering
-\includegraphics[width=\textwidth]{figures/04_bakeoff/figure05.png}
+\includegraphics[width=2in]{figures/04_bakeoff/figure05.png}
 \caption[Reference versus non-reference calls]{Reference versus Non-reference Calls. (A) Total number of
 reference and non-reference calls across all samples and regions. (B)
 Precision of reference and non-reference calls. (C) Indel lengths of
@@ -420,7 +420,7 @@ represented by positive and negative lengths, respectively. In all cases
 we ignore calls of GRCh38 reference alleles, as these numbers are
 reported from GRCh38-based output VCFs.}
 \label{fig:bakeoff:refnonref}
-\end{figure}
+\end{FPfigure}
 
 \subsection{Short Path Accuracy}
 
@@ -491,14 +491,14 @@ accuracy. These correlations suggest that uncompressed and highly
 rearranged graphs do not work effectively with our current read mapping
 and variant calling process.
 
-\begin{figure}[htbp]
+\begin{FPfigure}
 \centering
 \includegraphics[width=0.9\textwidth]{figures/04_bakeoff/figure07.png}
 \caption[Empirical graph statistics]{Empirical graph statistics. In each panel the result for each
 region is shown by a dot, in the following order: BRCA1, BRCA2,
 LRC\_KIR, MHC, and SMA.}
 \label{fig:bakeoff:graphstats}
-\end{figure}
+\end{FPfigure}
 
 \section{Discussion}
 

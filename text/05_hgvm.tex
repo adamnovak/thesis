@@ -86,7 +86,7 @@ On the Deletions, Insertions, and Substitutions metrics (although by a very smal
 
 On the softclips metric, on the other hand, the ``No Call'' condition outperformed the ``HGVM'' condition by a small margin, meaning that the graph reference with no variant call performed on it was a better match for the assembly fragments being realigned than was the sample graph produced by variant calling, in terms of the number of softclipped bases required in the assembly fragments' alignments.
 
-\begin{figure}[H]
+\begin{FPfigure}
 \centering
 \includegraphics[width=0.4\linewidth]{figures/05_hgvm/mole-insertions.eps}
 \includegraphics[width=0.4\linewidth]{figures/05_hgvm/mole-deletions.eps}
@@ -94,7 +94,7 @@ On the softclips metric, on the other hand, the ``No Call'' condition outperform
 \includegraphics[width=0.4\linewidth]{figures/05_hgvm/mole-softclips.eps}
 \caption[Mole realignment evaluation]{Bases involved in events required to align fragments of the CHM1 and CHM13 haploid assemblies to the sample graph created with the \vg variant caller for the combined synthetic diploid sample. Quantities are expressed as bases involved in each type of event per base in the control graph. For the All Ref condition (blue), the performance of the primary-reference-only control graph as a sample graph was evaluated. For the Control condition (green), that reference-only graph was used as a reference for variant calling, and the resulting sample graph was evaluated. For the HGVM condition (red), the Human Genome Variation Map graph under test was used as a reference for variant calling, and the resulting sample graph was evaluated. Finally, for the No Call condition (black), the HGVM graph was evaluated directly as a sample graph, with no calling step, to serve as a positive control.}
 \label{fig:molerealignment}
-\end{figure}
+\end{FPfigure}
 % TODO: make a table of this?
 
 \subsection{Structural Variant Evaluation}
