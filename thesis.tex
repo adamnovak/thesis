@@ -70,22 +70,28 @@
 \renewcommand\label[1]{\gdef\FPLabelText{##1}}%
 \renewcommand\caption[2][]{\gdef\FPoptionalCaptionText{##1}\gdef\FPCaptionText{##2}}%
 \begin{lrbox}{\FPactualfigure}
+\parbox{\textwidth}{
 % Strip subfloats when making the box
 \renewcommand\subfloat[2][]{}
+Add some real text
 \BODY
+So that we have a line to end
+}
 \end{lrbox}
 \ifthenelse{\equal{\FPoptionalCaptionText}{\empty}}%
 {\FPsavedCaptionCommand{\expandafter\protect\FPCaptionText}}%
 {\FPsavedCaptionCommand[\expandafter\protect\FPoptionalCaptionText]{\expandafter\protect\FPCaptionText}}%
 \ifthenelse{\equal{\FPLabelText}{\empty}}%
 {}%
-{\FPLabelText \FPsavedLabelCommand{\FPLabelText}}%
+{\FPsavedLabelCommand{\FPLabelText}}%
 \end{leftfullpage}
 \end{figure}
 \begin{figure}[p]
 \begin{fullpage}
 \renewcommand\caption[2][]{}%
+\addtocounter{figure}{-1}% There might be labels on subfigs
 \BODY
+\addtocounter{figure}{1}
 \end{fullpage}
 \end{figure}
 }

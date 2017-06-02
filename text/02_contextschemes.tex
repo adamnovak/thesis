@@ -334,26 +334,27 @@ Mapping accuracy was assessed in two ways. First, the number of reads that each 
 %-- non-error corrected reads
 
 \begin{FPfigure}
-  %\centering
+  \centering
   \subfloat[]{
-  %	\label{fig:readmappability}
+  	\label{fig:readmappability}
     \includegraphics[width=0.5\columnwidth]{figures/02_contextschemes/readMappability.eps}
   }
   \subfloat[]{
-  %	\label{fig:readcoverage}
+  	\label{fig:readcoverage}
     \includegraphics[width=0.5\columnwidth]{figures/02_contextschemes/readCoverage.eps}
   }
   \\
   \subfloat[]{
-  %	\label{fig:readgenes}
+  	\label{fig:readgenes}
     \includegraphics[width=0.5\columnwidth]{figures/02_contextschemes/readGenes.eps}
   }
   \subfloat[]{
-  %	\label{fig:readwrongness}
+  	\label{fig:readwrongness}
     \includegraphics[width=0.5\columnwidth]{figures/02_contextschemes/readWrongness.eps}
   }
   \caption[Results of read alignments]{Results of read alignments. Reads were generated from MHC alt loci by taking tiling 200bp windows at 100bp intervals, and randomly introducing substitution errors at a frequency of $1\%$. Reads were aligned to the GRCh38 primary path MHC region.}
   \label{fig:read}
+  
 \end{FPfigure}
 
 %It would be good to look at BWA positions that uniquely map (with no secondary alignments). 
