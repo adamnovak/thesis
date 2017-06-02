@@ -54,8 +54,41 @@
 % Put bibliography in table of contents
 \usepackage[nottoc,numbib]{tocbibind}
 
-% For facing page captions
-\usepackage[rightFloats]{fltpage}
+\usepackage{dpfloat}
+\usepackage{environ}
+
+\newsavebox{\FPactualfigure}
+
+\NewEnviron{FPfigure}{%
+\begin{figure}[p]
+\begin{leftfullpage}
+\global\let\FPsavedCaptionCommand\caption%
+\global\let\FPsavedLabelCommand\label%
+\let\FPLabelText\empty%
+\let\FPCaptionText\empty%
+\let\FPoptionalCaptionText\empty%
+\renewcommand\label[1]{\gdef\FPLabelText{##1}}%
+\renewcommand\caption[2][]{\gdef\FPoptionalCaptionText{##1}\gdef\FPCaptionText{##2}}%
+\begin{lrbox}{\FPactualfigure}
+% Strip subfloats when making the box
+\renewcommand\subfloat[2][]{}
+\BODY
+\end{lrbox}
+\ifthenelse{\equal{\FPoptionalCaptionText}{\empty}}%
+{\FPsavedCaptionCommand{\expandafter\protect\FPCaptionText}}%
+{\FPsavedCaptionCommand[\expandafter\protect\FPoptionalCaptionText]{\expandafter\protect\FPCaptionText}}%
+\ifthenelse{\equal{\FPLabelText}{\empty}}%
+{}%
+{\FPLabelText \FPsavedLabelCommand{\FPLabelText}}%
+\end{leftfullpage}
+\end{figure}
+\begin{figure}[p]
+\begin{fullpage}
+\renewcommand\caption[2][]{}%
+\BODY
+\end{fullpage}
+\end{figure}
+}
 
 % Last package: get some non-break-at-able hyphens
 \usepackage[shortcuts]{extdash}
@@ -95,6 +128,7 @@ epstopdf --gsopt=-dNoOutputFonts #1 --outfile=\OutputFile
 
 % have a command for talking about vg
 \newcommand{\vg}{\texttt{vg}\xspace}
+
 
 % Try and make captions not run together with the text
 \captionsetup{belowskip=12pt}
