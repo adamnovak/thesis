@@ -60,9 +60,14 @@
 \usepackage{changepage}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% fltpage terrible reimplementation to obey UCSC thesis guidelines
+\DeclareCaptionLabelFormat{blank}{}
+\newsavebox{\FPdiscard}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Now define the FPfigure float from fltpage, but implement it using dpfloat to
 % get facing whole pages
-\newsavebox{\FPactualfigure}
+
 
 \NewEnviron{FPfigure}{%
 \begin{figure}[p]
@@ -77,7 +82,7 @@
 \renewcommand\label[1]{\gdef\FPLabelText{##1}}%
 \renewcommand\caption[2][]{\gdef\FPoptionalCaptionText{##1}\gdef\FPCaptionText{##2}}%
 % Render the figure contents first in a box, to extract the caption
-\begin{lrbox}{\FPactualfigure}
+\begin{lrbox}{\FPdiscard}
 \parbox{\textwidth}{
 % Strip subfloats when making the box
 \renewcommand\subfloat[2][]{}
@@ -90,13 +95,11 @@ So that we have a line to end
 % Do the caption and label (inside caption)
 % Make sure to adjust margins so the wider margin is on the right as per the thesis spec
 \begin{adjustwidth}{-0.25in}{0.25in}
-\ifthenelse{\equal{\FPoptionalCaptionText}{\empty}}%
-{\FPsavedCaptionCommand{\expandafter\protect\FPCaptionText%
+% Put the caption, but give it an empty optional first argument to hide it from the list of figures
+\FPsavedCaptionCommand[]{\expandafter\protect\FPCaptionText%
+% Put the label in the caption
 \ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
-}}%
-{\FPsavedCaptionCommand[\expandafter\protect\FPoptionalCaptionText]{\expandafter\protect\FPCaptionText%
-\ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
-}}%
+}
 \end{adjustwidth}
 \end{leftfullpage}
 \end{figure}
@@ -104,14 +107,17 @@ So that we have a line to end
 \begin{fullpage}
 % Now render the whole figure again on the facing page
 \global\let\FPsavedSubfloatCommand\subfloat%
-% Every time a caption happens, kill \label since we already did it.
-\renewcommand\caption[2][]{\renewcommand\label[2][]{}}%
+% Captions are present but have nothing actually in them
+\captionsetup{textformat=empty,labelformat=blank}
+% Every time a caption happens, kill \label since we already did it. But
+% continue with the caption.
+\def\caption{\renewcommand\label[2][]{}\FPsavedCaptionCommand}%
 \renewcommand\label[2][]{}%
 % Every time a subfloat happens, bring label back and do the subfloat
 \def\subfloat{\let\label\FPsavedLabelCommand\FPsavedSubfloatCommand}
 \addtocounter{figure}{-1}% There might be labels on subfigs
 \BODY
-\addtocounter{figure}{1}
+% Don't reincrement the counter because the second caption did
 \end{fullpage}
 \end{figure}
 }
@@ -119,7 +125,6 @@ So that we have a line to end
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Ditto for FPtable
-\newsavebox{\FPactualtable}
 
 \NewEnviron{FPtable}{%
 \begin{table}[p]
@@ -134,7 +139,7 @@ So that we have a line to end
 \renewcommand\label[1]{\gdef\FPLabelText{##1}}%
 \renewcommand\caption[2][]{\gdef\FPoptionalCaptionText{##1}\gdef\FPCaptionText{##2}}%
 % Render the table contents first in a box, to extract the caption
-\begin{lrbox}{\FPactualtable}
+\begin{lrbox}{\FPdiscard}
 \parbox{\textwidth}{
 % Strip subfloats when making the box
 \renewcommand\subfloat[2][]{}
@@ -147,13 +152,11 @@ So that we have a line to end
 % Do the caption and label (inside caption)
 % Make sure to adjust margins so the wider margin is on the right as per the thesis spec
 \begin{adjustwidth}{-0.25in}{0.25in}
-\ifthenelse{\equal{\FPoptionalCaptionText}{\empty}}%
-{\FPsavedCaptionCommand{\expandafter\protect\FPCaptionText%
+% Put the caption, but give it an empty optional first argument to hide it from the list of tables
+\FPsavedCaptionCommand[]{\expandafter\protect\FPCaptionText%
+% Put the label in the caption
 \ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
-}}%
-{\FPsavedCaptionCommand[\expandafter\protect\FPoptionalCaptionText]{\expandafter\protect\FPCaptionText%
-\ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
-}}%
+}
 \end{adjustwidth}
 \end{leftfullpage}
 \end{table}
@@ -161,14 +164,17 @@ So that we have a line to end
 \begin{fullpage}
 % Now render the whole table again on the facing page
 \global\let\FPsavedSubfloatCommand\subfloat%
-% Every time a caption happens, kill \label since we already did it.
-\renewcommand\caption[2][]{\renewcommand\label[2][]{}}%
+% Captions are present but have nothing actually in them
+\captionsetup{textformat=empty,labelformat=blank}
+% Every time a caption happens, kill \label since we already did it. But
+% continue with the caption.
+\def\caption{\renewcommand\label[2][]{}\FPsavedCaptionCommand}%
 \renewcommand\label[2][]{}%
 % Every time a subfloat happens, bring label back and do the subfloat
 \def\subfloat{\let\label\FPsavedLabelCommand\FPsavedSubfloatCommand}
 \addtocounter{table}{-1}% There might be labels on subfigs
 \BODY
-\addtocounter{table}{1}
+% Don't reincrement the counter because the second caption did
 \end{fullpage}
 \end{table}
 }
@@ -177,7 +183,6 @@ So that we have a line to end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % We also have an FPsidewaystable that does the table sideways and the caption
 % normal
-\newsavebox{\FPactualsidewaystable}
 
 \NewEnviron{FPsidewaystable}{%
 \begin{table}[p]
@@ -192,7 +197,7 @@ So that we have a line to end
 \renewcommand\label[1]{\gdef\FPLabelText{##1}}%
 \renewcommand\caption[2][]{\gdef\FPoptionalCaptionText{##1}\gdef\FPCaptionText{##2}}%
 % Render the table contents first in a box, to extract the caption
-\begin{lrbox}{\FPactualsidewaystable}
+\begin{lrbox}{\FPdiscard}
 \parbox{\textwidth}{
 % Strip subfloats when making the box
 \renewcommand\subfloat[2][]{}
@@ -205,13 +210,11 @@ So that we have a line to end
 % Do the caption and label (inside caption)
 % Make sure to adjust margins so the wider margin is on the right as per the thesis spec
 \begin{adjustwidth}{-0.25in}{0.25in}
-\ifthenelse{\equal{\FPoptionalCaptionText}{\empty}}%
-{\FPsavedCaptionCommand{\expandafter\protect\FPCaptionText%
+% Put the caption, but give it an empty optional first argument to hide it from the list of tables
+\FPsavedCaptionCommand[]{\expandafter\protect\FPCaptionText%
+% Put the label in the caption
 \ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
-}}%
-{\FPsavedCaptionCommand[\expandafter\protect\FPoptionalCaptionText]{\expandafter\protect\FPCaptionText%
-\ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
-}}%
+}
 \end{adjustwidth}
 \end{leftfullpage}
 \end{table}
@@ -219,14 +222,17 @@ So that we have a line to end
 \begin{fullpage}
 % Now render the whole table again on the facing page
 \global\let\FPsavedSubfloatCommand\subfloat%
-% Every time a caption happens, kill \label since we already did it.
-\renewcommand\caption[2][]{\renewcommand\label[2][]{}}%
+% Captions are present but have nothing actually in them
+\captionsetup{textformat=empty,labelformat=blank}
+% Every time a caption happens, kill \label since we already did it. But
+% continue with the caption.
+\def\caption{\renewcommand\label[2][]{}\FPsavedCaptionCommand}%
 \renewcommand\label[2][]{}%
 % Every time a subfloat happens, bring label back and do the subfloat
 \def\subfloat{\let\label\FPsavedLabelCommand\FPsavedSubfloatCommand}
 \addtocounter{table}{-1}% There might be labels on subfigs
 \BODY
-\addtocounter{table}{1}
+% Don't reincrement the counter because the second caption did
 \end{fullpage}
 \end{sidewaystable}
 }
