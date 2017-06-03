@@ -28,14 +28,14 @@ individuals are available.
 \section{Introduction}
 
 The human reference genome, completed in draft form in 2001 and revised
-several times subsequently \cite{Lander2001-gm,Church2011-ob}, is the
+several times subsequently \cite{Lander2001-gm,church2011modernizing}, is the
 single most important resource used in human genetics today. It acts as
 a universal coordinate system and as such is the space in which
 annotations (genes, promoters, etc.) and genetic variants are described
-\cite{Harrow2012-ei,ENCODE_Project_Consortium2012-rx,1000_Genomes_Project_Consortium2015-mp}.
+\cite{Harrow2012-ei,ENCODE_Project_Consortium2012-rx,10002015global}.
 It is also the target for read mapping, and, downstream of this mapping,
 is used for functional assays and variant calling pipelines
-\cite{Li2009-tj,depristo2011framework}.
+\cite{li2009fast,depristo2011framework}.
 
 The contemporary definition of a reference genome is completely linear:
 a single monoploid assembly of the genome of a species. A key limitation
@@ -55,14 +55,14 @@ to be highly polymorphic, anchored at their ends to locations within the
 contains multiple partially-overlapping sequence paths, can be
 considered a form of mathematical graph. The explicit use of graphs in
 biological sequence analysis has a long history, notably for sequence
-alignment \cite{Paten2014-ga}, sequence assembly
+alignment \cite{paten2014mapping}, sequence assembly
 \cite{Pevzner2001-lm,Myers2005-oi}, assembly representation (as in FASTG
 and now GFA)\cite{fastg2016fastg,GFA-spec_contributors_undated-tg},
 substring indexes (which are often thought of in terms of suffix trees
-or similar data structures) \cite{Li2009-tj,Simpson2010-of}, and
+or similar data structures) \cite{li2009fast,Simpson2010-of}, and
 transcript splice graphs \cite{Heber2002-pw}. Recently the notion of
 graphs for representing genomes has been considered explicitly
-\cite{dilthey2015improved,Paten2014-ga,maciuca2016natural}, and work has been
+\cite{dilthey2015improved,paten2014mapping,maciuca2016natural}, and work has been
 done towards using these graphs as references \cite{Limasset2016-by}.
 The alternate loci currently used are just one way to extend the linear
 reference genome into a genome graph; many other ways are possible. In
@@ -86,7 +86,7 @@ node. Each edge in the graph is an unordered pair of sides, representing
 a (potential) bond between two sides of a pair of nodes. This is a
 bidirected graph representation, because features of the edge indicate
 to which side of a node (sequence), 5' or 3', each end of the edge
-connects (Fig. \ref{fig:bakeoff:example})\cite{Medvedev2009-hy}. Other representations of genome
+connects (Fig. \ref{fig:bakeoff:example})\cite{medvedev2009maximum}. Other representations of genome
 graphs, such as the directed acyclic representation, can be useful; see
 Supplementary Section 1. A longer DNA sequence can be represented as a
 \emph{thread} within a sequence graph, beginning in one oriented node,
@@ -130,7 +130,7 @@ quality input sequences from which to construct graphs (Table \ref{tbl:bakeoff:r
 also encouraged the creation of graphs using additional data of the
 builder's choice. Some graphs were built based upon existing variant
 calls, such as the 1000 Genomes calls used to construct the 1KG graph
-\cite{1000_Genomes_Project_Consortium2015-mp}. Graphs were also built
+\cite{10002015global}. Graphs were also built
 with a wide variety of different algorithmic approaches (Table \ref{tbl:bakeoff:graphs}). Three
 control graphs were constructed for each region as points of comparison.
 The Primary graphs contain just the single, linear reference path from
@@ -263,7 +263,7 @@ experimental graphs was observed to decrease, relative to the rate
 between the reads and the Primary control graph. In the
 highest-performing graphs the decline is slightly below the bounds of
 previous read substitution error rate estimates of 0.7-1.6\%
-\cite{Minoche2011-il,1000_Genomes_Project_Consortium2010-ky,1000_Genomes_Project_Consortium2012-gr,1000_Genomes_Project_Consortium2015-mp}
+\cite{Minoche2011-il,1000_Genomes_Project_Consortium2010-ky,1000_Genomes_Project_Consortium2012-gr,10002015global}
 (Fig. \ref{fig:bakeoff:mapping} second row; see Supplementary Section 4 and Supplementary Fig.
 4). The decrease in indel rate (Fig. \ref{fig:bakeoff:mapping} third row) moving from the
 Primary graph to the 1KG graph is comparable to estimates of the human
@@ -329,7 +329,7 @@ NA12878\cite{Eberle2016-zc} using vcfeval, which corrects for VCF
 representation ambiguity by comparing at the haplotype level
 \cite{Cleary2015-oy} \cite{Zook2014-tl}. To provide additional controls,
 Freebayes \cite{garrison2012haplotype}, Platypus \cite{Rimmer2014-zj} and
-Samtools \cite{Li2009-je} were run on BWA-MEM \cite{Li2009-tj}
+Samtools \cite{Li2009-je} were run on BWA-MEM \cite{li2009fast}
 alignments of the same input data to GRCh38 with their default options
 in order to produce positive control variant calls. Figure \ref{fig:bakeoff:callingeval} (A) shows
 the precision and recall of each method aggregated across both samples
@@ -653,7 +653,7 @@ detailed in Supplementary Section 10.
 
 The submitted graphs were used to align reads from 2,691 low-coverage
 samples from the 1000 Genomes project, which had been aligned to GRCh38
-with BWA-MEM \cite{Li2009-tj}. Alignments to the primary reference and,
+with BWA-MEM \cite{li2009fast}. Alignments to the primary reference and,
 where available, the GRCh38 alt loci for a region were downloaded using
 Samtools \cite{Li2009-je}. The process took advantage of the tool's
 ability to subset indexed files over FTP in order to obtain just reads
@@ -738,7 +738,7 @@ sample, GRCh38-aligned low-coverage Illumina reads and relatively
 complete PacBio-derived assemblies were obtained. The CHM1 and CHM13
 reads were obtained by combining both runs from NCBI SRA SRX1391727 and
 SRX1082031, respectively, and mapping to GRCh38 using
-BWA-MEM\cite{Li2009-tj}. The CHM1 assembly used was GenBank accession
+BWA-MEM\cite{li2009fast}. The CHM1 assembly used was GenBank accession
 number GCA\_001297185.1, while the CHM13 assembly was GCA\_000983455.2.
 For each region, a pooled collection of the relevant Illumina reads
 across both CHM1 and CHM13 was created. Next, the reads were subsampled
@@ -768,7 +768,7 @@ due to an apparent lack of representation in the CHM13 assembly.
 Reads aligning to the test regions were obtained from 2,691 low-coverage
 samples in the 1000 Genomes Project, and each sample's reads were used
 to generate a collection of K-mers (K=20) using Jellyfish
-\cite{Marcais2011-ck,1000_Genomes_Project_Consortium2015-mp}. These were
+\cite{Marcais2011-ck,10002015global}. These were
 compared against the collection of K-mers in each graph as enumerated by
 vg with an edge-crossing limit of 7. In order to account for K-mer
 frequencies, duplicate K-mers were \emph{not} ignored. K-mers containing
