@@ -233,6 +233,9 @@ So that we have a line to end
 \addtocounter{table}{-1}% There might be labels on subfigs
 \BODY
 % Don't reincrement the counter because the second caption did
+% Make this page render sideways in a PDF
+\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
+\afterpage{\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}}
 \end{fullpage}
 \end{sidewaystable}
 }
@@ -326,6 +329,12 @@ epstopdf --gsopt=-dNoOutputFonts #1 --outfile=\OutputFile
 
 % We need this for natbib for some reason
 \def\newblock{\hskip .11em plus .33em minus .07em}
+
+% Don't use a chapter heading here
+\makeatletter
+\let\@makechapterhead\@gobble
+\makeatother
+
 \bibliographystyle{abbrvnat}
 \bibliography{thesis}
 
