@@ -37,7 +37,7 @@
 \usepackage{subfig}
 \usepackage[countmax]{subfloat}
 \usepackage{placeins}
-\usepackage[numbers]{natbib}
+\usepackage[numbers,sort&compress]{natbib}
 \usepackage{epstopdf}
 \usepackage{algorithmicx}
 \usepackage[noend]{algpseudocode}
@@ -47,12 +47,14 @@
 %\usepackage[hyphenbreaks]{breakurl}
 \usepackage{setspace}
 \usepackage{rotating}
+\usepackage{pdflscape}
 \usepackage{epigraph}
 \usepackage{todonotes}
 \usepackage{multirow}
 \usepackage{bibentry}
-% Put bibliography in table of contents
-\usepackage[nottoc,numbib]{tocbibind}
+\usepackage{titlesec}
+% Put bibliography in table of contents, but with no number
+\usepackage[nottoc]{tocbibind}
 
 \usepackage{dpfloat}
 \usepackage{environ}
@@ -214,11 +216,13 @@ So that we have a line to end
 \FPsavedCaptionCommand[]{\expandafter\protect\FPCaptionText%
 % Put the label in the caption
 \ifthenelse{\equal{\FPLabelText}{\empty}}{}{\FPsavedLabelCommand{\FPLabelText}}%
+% After this page start rendering sideways
 }
 \end{adjustwidth}
 \end{leftfullpage}
 \end{table}
-\begin{sidewaystable}[p]
+\begin{landscape}
+\begin{table}[p]
 \begin{fullpage}
 % Now render the whole table again on the facing page
 \global\let\FPsavedSubfloatCommand\subfloat%
@@ -233,11 +237,10 @@ So that we have a line to end
 \addtocounter{table}{-1}% There might be labels on subfigs
 \BODY
 % Don't reincrement the counter because the second caption did
-% Make this page render sideways in a PDF
-\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 90}
-\afterpage{\global\pdfpageattr\expandafter{\the\pdfpageattr/Rotate 0}}
+% After this page stop rendering the PDF sideways
 \end{fullpage}
-\end{sidewaystable}
+\end{table}
+\end{landscape}
 }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -330,12 +333,13 @@ epstopdf --gsopt=-dNoOutputFonts #1 --outfile=\OutputFile
 % We need this for natbib for some reason
 \def\newblock{\hskip .11em plus .33em minus .07em}
 
-% Don't use a chapter heading here
-\makeatletter
-\let\@makechapterhead\@gobble
-\makeatother
+% Don't use "Chapter" in the heading
+% See <https://tex.stackexchange.com/a/120743>
+%\titleformat{\chapter}[display]{\normalfont\bfseries}{\bibname}{0pt}{\Large}
 
-\bibliographystyle{abbrvnat}
+\bibliographystyle{novak}
+{\raggedright
 \bibliography{thesis}
+}
 
 \end{document}

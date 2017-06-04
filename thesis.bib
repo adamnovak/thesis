@@ -13,7 +13,7 @@
 }
 
 @misc{10002013release,
-    author={1000 {G}enomes {P}roject {C}onsortium},
+    author={{1000 {G}enomes {P}roject {C}onsortium}},
     title={\texttt{release}},
     year={2013},
     url={ftp://ftp-trace.ncbi.nih.gov/1000genomes/ftp/release}
@@ -21,7 +21,7 @@
 
 @article{10002010map,
   title={A map of human genome variation from population-scale sequencing},
-  author={1000 {G}enomes {P}roject {C}onsortium and others},
+  author={{1000 {G}enomes {P}roject {C}onsortium}},
   journal={Nature},
   volume={467},
   number={7319},
@@ -82,7 +82,7 @@ url={https://groups.google.com/a/soe.ucsc.edu/d/msg/genome-announce/52Kv41YBXNY/
 }
 
 @article{degner2009effect,
-  title={Effect of read-mapping biases on detecting allele-specific expression from RNA-sequencing data},
+  title={Effect of read-mapping biases on detecting allele-specific expression from {RNA}-sequencing data},
   author={Degner, Jacob F and Marioni, John C and Pai, Athma A and Pickrell, Joseph K and Nkadori, Everlyne and Gilad, Yoav and Pritchard, Jonathan K},
   journal={Bioinformatics},
   volume={25},
@@ -93,7 +93,7 @@ url={https://groups.google.com/a/soe.ucsc.edu/d/msg/genome-announce/52Kv41YBXNY/
 }
 
 @article{brandt2015mapping,
-  title={Mapping bias overestimates reference allele frequencies at the HLA genes in the 1000 Genomes Project phase I data},
+  title={Mapping bias overestimates reference allele frequencies at the {HLA} genes in the 1000 {G}enomes {P}roject phase {I} data},
   author={Brandt, D{\'e}bora YC and Aguiar, Vitor RC and Bitarello, B{\'a}rbara D and Nunes, Kelly and Goudet, J{\'e}r{\^o}me and Meyer, Diogo},
   journal={G3: Genes| Genomes| Genetics},
   volume={5},
@@ -726,16 +726,15 @@ url={https://groups.google.com/a/soe.ucsc.edu/d/msg/genome-announce/52Kv41YBXNY/
   publisher={Oxford Univ Press}
 }
 
-@article{garrison2016vg,
-  title={vg: the variation graph toolkit},
-  author={Garrison, Erik},
-  year={2016},
-  url={https://github.com/vgteam/vg/blob/80e823f5d241796f10b7af6284e0d3d3d464c18f/doc/paper/main.tex}
+@misc{garrison2016vg,
+  title={Sequence variation aware references and read mapping with the variation graph toolkit},
+  author={Garrison, Erik and Sir{\'e}n, Jouni and Novak, Adam M and Hickey, Glenn and Eizenga, Jordan M and Dawson, Eric T and Jones, Will and Lin, Michael F and Paten, Benedict and Durbin, Richard},
+  year={in preparation}
 }
 
 @article{10002015global,
   title={A global reference for human genetic variation},
-  author={{1000 Genomes Project Consortium} and others},
+  author={{1000 Genomes Project Consortium}},
   journal={Nature},
   volume={526},
   number={7571},
@@ -755,13 +754,12 @@ url={https://groups.google.com/a/soe.ucsc.edu/d/msg/genome-announce/52Kv41YBXNY/
 	author = {Lunter, Gerton},
 	title = {Fast haplotype matching in very large cohorts using the {L}i and {S}tephens model},
 	year = {2016},
-	publisher = {Cold Spring Harbor Labs Journals},
 	url = {http://biorxiv.org/content/early/2016/04/12/048280},
-	eprint = {http://biorxiv.org/content/early/2016/04/12/048280.full.pdf},
 	journal = {bioRxiv},
 	doi = {10.1101/048280},
 	publisher={Cold Spring Harbor Labs Journals}
 }
+%eprint = {http://biorxiv.org/content/early/2016/04/12/048280.full.pdf},
 
 @inproceedings{nothaft2015rethinking,
   title={Rethinking data-intensive science using scalable analytics systems},
@@ -772,7 +770,7 @@ url={https://groups.google.com/a/soe.ucsc.edu/d/msg/genome-announce/52Kv41YBXNY/
   organization={ACM}
 }
 
-@article{hudson2015precision,
+@misc{hudson2015precision,
   title={The precision medicine initiative cohort program --- Building a Research Foundation for 21st Century Medicine},
   author={Hudson, Kathy and Lifton, Rick and Patrick-Lake, Bray and others},
   year={2015},
@@ -788,7 +786,6 @@ year= {2016},
 publisher= {Springer International Publishing},
 address= {Cham}, 
 pages= {246--256}, 
-isbn= {978-3-319-43681-4}
 }
 
 %%% BAKEOFF STUFF
@@ -1019,15 +1016,14 @@ isbn= {978-3-319-43681-4}
   year        =  2010
 }
 
-@article {paten2017superbubbles,
+@article{paten2017superbubbles,
 	author = {Paten, Benedict and Novak, Adam M and Garrison, Erik and Hickey, Glenn},
 	title = {Superbubbles, Ultrabubbles and Cacti},
 	year = {2017},
+	journal = {bioRxiv},
 	doi = {10.1101/101493},
-	publisher = {Cold Spring Harbor Labs Journals},
 	url = {http://biorxiv.org/content/early/2017/01/18/101493}},
 	eprint = {http://biorxiv.org/content/early/2017/01/18/101493.full.pdf},
-	journal = {bioRxiv},
 	publisher={Cold Spring Harbor Labs Journals}
 }
 
@@ -1097,8 +1093,11 @@ isbn= {978-3-319-43681-4}
 }
 
 @MISC{fastg2016fastg,
-  title        = "{FASTG} - An expressive representation for genome assemblies",
-  howpublished = "\url{http://fastg.sourceforge.net/}"
+  title        = {The {FASTG} Format Specification (v1.00)},
+  url = {http://fastg.sourceforge.net/FASTG_Spec_v1.00.pdf},
+  author={{The FASTG Format Specification Working Group}},
+  year={2012},
+  month = "12~" # dec,
 }
 %note         = "Accessed: 2016-10-11"
 
@@ -1198,10 +1197,7 @@ isbn= {978-3-319-43681-4}
 
 @ARTICLE{1000_Genomes_Project_Consortium2012-gr,
   title    = "An integrated map of genetic variation from 1,092 human genomes",
-  author   = "{1000 Genomes Project Consortium} and Abecasis, Goncalo R and
-              Auton, Adam and Brooks, Lisa D and DePristo, Mark A and Durbin,
-              Richard M and Handsaker, Robert E and Kang, Hyun Min and Marth,
-              Gabor T and McVean, Gil A",
+  author   = "{1000 Genomes Project Consortium}",
   journal  = "Nature",
   volume   =  491,
   number   =  7422,
@@ -1244,20 +1240,6 @@ isbn= {978-3-319-43681-4}
   publisher={Oxford Univ Press}
 }
 
-
-@ARTICLE{1000_Genomes_Project_Consortium2010-ky,
-  title    = "A map of human genome variation from population-scale sequencing",
-  author   = "{1000 Genomes Project Consortium} and Abecasis, Gon{\c c}alo R
-              and Altshuler, David and Auton, Adam and Brooks, Lisa D and
-              Durbin, Richard M and Gibbs, Richard A and Hurles, Matt E and
-              McVean, Gil A",
-  journal  = "Nature",
-  volume   =  467,
-  number   =  7319,
-  pages    = "1061--1073",
-  month    =  "28~" # oct,
-  year     =  2010
-}
 
 @MISC{Vgteam_undated-xe,
   title        = "vg",
