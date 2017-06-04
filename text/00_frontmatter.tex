@@ -7,7 +7,7 @@
 \degree{DOCTOR OF PHILOSOPHY}
 \chair{Professor Joshua Stuart}
 \committeememberone{Distinguished Professor David Haussler}
-\committeemembertwo{Associate Professor Richard Edward Green}
+\committeemembertwo{Associate Professor Richard E. Green}
 \committeememberthree{Professor Beth Shapiro}
 \numberofmembers{4} %% (including chair) possible: 3, 4, 5, 6
 \deanlineone{Dean \textbf{Tyrus Miller}}
@@ -28,7 +28,7 @@
 \addcontentsline{toc}{chapter}{List of Algorithms}
 
 \begin{abstract}
-The scale of the problems which human genomics is asked to solve necessitates that the field develop an ability to integrate and synthesize information across the entire human population. The abstraction of a single-copy human reference genome assembly, and the linear coordinate space that it induces, are more of a hindrance than a help at these scales, because they can only ever represent one sample at any given place, and because they make combining information about human variation across multiple studies and modalities difficult. To rectify these problems, I propose the construction and adoption of a graph-based alternative to the human reference genome assembly: a Human Genome Variation Map. In the four research projects presented here, I present a theory of mapping to references that is extensible to graphs, describe a novel data structure for embedding individual haplotype sequences into a graph reference, survey graph construction techniques to discover methods that produce graphs yielding read mapping and variant calling results superior to those obtained with linear, variation-free references, and extend these improvement results to chromosome-scale graphs constructed from multiple sources and modalities of variation data. These four projects describe a research program aimed towards the eventual release of an official Human Genome Variation Map build, providing a piece of vital infrastructure for the analysis of human genomic variation at population scale.
+The scale of the problems which human genomics is asked to solve necessitates that the field develop an ability to integrate and synthesize information across the entire human population. The abstraction of a single-copy human reference genome assembly, and the linear coordinate space that it induces, are more of a hindrance than a help at these scales. They can only ever represent one sample at any given place, and they make combining information about human variation across multiple studies and modalities difficult. To rectify these problems, I propose the construction and adoption of a graph-based alternative to the human reference genome assembly: a Human Genome Variation Map. I present here four research projects. The first is a theory of mapping to references that is extensible to graphs. The second describes a novel data structure for embedding individual haplotype sequences into a graph reference. The third surveys graph construction techniques to discover methods that produce graphs yielding read mapping and variant calling results superior to those obtained with linear, variation-free references. The fourth extends these improvement results to chromosome-scale graphs constructed from multiple sources and modalities of variation data. These four projects describe a research program aimed towards the eventual release of an official Human Genome Variation Map build, providing a piece of vital infrastructure for the analysis of human genomic variation at population scale.
 \end{abstract}
 
 \begin{dedication}
@@ -41,7 +41,7 @@ Dedicated to all those who carry human genomes.
 \end{dedication}
 
 \begin{acknowledgements}
-In addition to my advisor, Prof. David Haussler, and the other members of my committee, I would like to thank Dr. Benedict Paten for helping to direct my research efforts, Erik Garrison for his leadership of the \vg team, Glenn Hickey for all the software plumbing he has written, Yohei Rosen for his amazing mathematics skills, Jordan Eizenga for his useful algorithms, Charles Markello for his data wrangling, Maciek Smuga-Otto and Sean Blum for their help on the GA4GH bake-off project, Mike Lin for his technical challenges, Jouni Sir\'{e}n for his stringology expertise, Lynn Brazil, Kelly Sauder, and Tracie Tucker for their administrative assistance, and Microsoft Corporation for their provision of computing resources. I would also like to thank Anna Henderson for her contributions as an editor, a partner, and a friend.
+In addition to my advisor, Prof. David Haussler, and the other members of my committee, I would like to thank Dr. Benedict Paten for helping to direct my research efforts, Erik Garrison for his leadership of the \vg team, Glenn Hickey for all the software plumbing he has written, Yohei Rosen for his amazing mathematics skills, Jordan Eizenga for his useful algorithms, Charles Markello for his data wrangling, Maciek Smuga-Otto and Sean Blum for their help on the GA4GH bake-off project, Mike Lin for his technical challenges, Jouni Sir\'{e}n for his stringology expertise, Lynn Brazil, Kelly Sauder, and Tracie Tucker for their administrative assistance, and Microsoft Corporation for their provision of computing resources. I would also like to thank Anna Henderson for her contributions as an editor, a partner, and a friend, and my family for making all of this possible.
 
 The text of this thesis includes reprints of the following previously published or preprint material:
 
@@ -58,21 +58,21 @@ The text of this thesis includes reprints of the following previously published 
 
 \begin{singlespace}
 \noindent
-\bibentry{novak2015canonical}
+\bibentry{novak2015canonical}.
 \end{singlespace}
 
 In this work, I specifically helped develop the context scheme theory, wrote the majority of the custom software used in the analysis, produced the figures, and contributed substantially to the text of the manuscript.
 
 \begin{singlespace}
 \noindent
-\bibentry{novak2016graph}
+\bibentry{novak2016graph}.
 \end{singlespace}
 
 In this work, I specifically developed the details of the eponymous graph extension and its algorithms, wrote most of the implementation code, ran the experiments, produced the figures, and contributed substantially to the text of the manuscript.
 
 \begin{singlespace}
 \noindent
-\bibentry{novak2017genome}
+\bibentry{novak2017genome}.
 \end{singlespace}
 
 }
