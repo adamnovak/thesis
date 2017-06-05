@@ -293,7 +293,7 @@ difficult.
 \subsection{Graph Variant Calling}
 
 We implemented a comprehensive, albeit basic, variant calling pipeline
-based on the Samtools pileup approach \cite{Li2009-je}, modified to work
+based on the Samtools pileup approach \cite{li2009sequence}, modified to work
 with sequence graphs (see Online Methods for more details). In summary
 (Fig. \ref{fig:bakeoff:calling}), reads are mapped to the reference graph or \emph{base graph}
 and a pileup is computed at each graph position and edge. An
@@ -329,7 +329,7 @@ NA12878\cite{Eberle2016-zc} using vcfeval, which corrects for VCF
 representation ambiguity by comparing at the haplotype level
 \cite{Cleary2015-oy} \cite{Zook2014-tl}. To provide additional controls,
 FreeBayes \cite{garrison2012haplotype}, Platypus \cite{Rimmer2014-zj} and
-Samtools \cite{Li2009-je} were run on BWA-MEM \cite{li2009fast}
+Samtools \cite{li2009sequence} were run on BWA-MEM \cite{li2009fast}
 alignments of the same input data to GRCh38 with their default options
 in order to produce positive control variant calls. Figure \ref{fig:bakeoff:callingeval} (A) shows
 the precision and recall of each method aggregated across both samples
@@ -655,9 +655,9 @@ The submitted graphs were used to align reads from 2,691 low-coverage
 samples from the 1000 Genomes project, which had been aligned to GRCh38
 with BWA-MEM \cite{li2009fast}. Alignments to the primary reference and,
 where available, the GRCh38 alt loci for a region were downloaded using
-Samtools \cite{Li2009-je}. The process took advantage of the tool's
+Samtools \cite{li2009sequence}. The process took advantage of the tool's
 ability to subset indexed files over FTP in order to obtain just reads
-mapped within the region \cite{Li2009-je}. Next, the alignments were
+mapped within the region \cite{li2009sequence}. Next, the alignments were
 converted into reads, yielding the relevant reads for that sample and
 region. Unpaired reads in the downloaded set were discarded. An attempt
 was made to correct for a known data corruption bug in the version of
